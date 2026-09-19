@@ -1,0 +1,30 @@
+OIL INDIA LIMITED — DRILLING DIRECTORATE (DULIAJAN, ASSAM)
+WELL COMPLETION REPORT (WCR) — EXCERPT
+WELL NAME: MORAN-7 (MOR-07)
+BLOCK: MORAN PETROLEUM MINING LEASE (MOR-I)
+SPUD DATE: 10-MAR-2018 | TD REACHED: 22-AUG-2018 | TOTAL DEPTH: 3,450.0m MD
+RIG: OIL-RIG-01 (2000 HP AC-SCR)
+
+SECTION 4: LITHOLOGICAL & FORMATION TOPS
+- Alluvium / Dihing: Surface to 290m MD
+- Dhekiajuli: 290m to 790m MD (Coarse sands, grit, pebble beds)
+- Namsang: 790m to 1,490m MD (Sandstones, grits, conglomerate lenses)
+- Girujan Clay: 1,490m to 2,180m MD (Thick, highly reactive reddish-brown montmorillonite swelling clay)
+- Tipam Sandstone: 2,180m to 2,960m MD (Multi-storied braided river pay sands TS-1 to TS-6)
+- Bokabil / Surma: 2,960m to 3,060m MD (Claystones and thin sandstones)
+- Barail Group: 3,060m to 3,450m MD (Interbedded marine shales, carbonaceous coals & sandstones)
+
+SECTION 8: OPERATIONAL INCIDENTS & NPT RECORD (PAGE 147)
+DATE: 04-MAY-2018 | DEPTH: 1,680m MD | FORMATION: Girujan Clay
+INCIDENT: Differential Pipe Sticking
+DESCRIPTION:
+While pulling out of hole (POOH) for directional survey at 1,680m MD, drill string was kept stationary for 3 hours 15 minutes due to top-drive hydraulic leak. Upon resuming hoisting, string was found differentially stuck with overpull exceeding 110,000 lbs. Mud weight was 10.9 ppg water-based polymer mud with excessive filter cake thickness (8/32").
+
+MITIGATION ACTION & RESOLUTION:
+1. Implemented stuck pipe SOP: Worked jars with maximum allowable pull (95 klbs) for 4 hours without success.
+2. Mixed and spotted 50 bbl Oil-Based Mud (OBM) lubricant soak pill weighted to 11.0 ppg with 4% pipe-release surfactant.
+3. Allowed soak time of 12 hours. String jarred free at 08:30 hrs.
+4. Total NPT incurred: 14 days (including fishing preparation and clean-out run). Cost impact: INR 8.0 Crore.
+5. Recommendation for Offset Wells: When drilling Girujan Clay, maintain continuous drill string rotation (>60 RPM). Do not allow stationary drill string to exceed 5 minutes. Consider OBM displacement prior to entering Girujan Clay interval. Use KCl-polymer mud system with 5% KCl for clay inhibition.
+
+VERIFIED & APPROVED BY: P. Saikia (Chief Drilling Engineer, Oil India Ltd.)
