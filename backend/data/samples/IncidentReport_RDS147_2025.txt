@@ -1,0 +1,34 @@
+OIL & NATURAL GAS CORPORATION LIMITED — ASSAM ASSET
+INCIDENT INVESTIGATION REPORT — CONFIDENTIAL
+WELL: RUDRASAGAR-147 (RDS-147)
+RIG: ONGC-RIG-14 (3000 HP)
+DATE OF INCIDENT: JUNE 2025
+LOCATION: Rudrasagar Field, Sivasagar District, Assam (26.9680 N, 94.9420 E)
+
+SECTION 1: INCIDENT SUMMARY
+Well Rudrasagar-147, originally drilled in 2014 to a total depth of 3,350m MD in the Barail Group, experienced an uncontrolled gas leak during workover operations in June 2025. The well had been producing crude oil from Barail sandstone at ~3,200m with declining pressure (from 1,850 psi initial to 420 psi at time of workover).
+
+During workover to replace a corroded tubing string, gas migrated through a compromised cement sheath behind the 7" production casing. Gas was observed flowing from the casing annulus and eventually from the wellhead cellar area.
+
+SECTION 2: CHRONOLOGICAL SEQUENCE
+1. June 2025, Day 1: During tubing POOH at 1,800m, gas bubbles observed in kill fluid returns. Flow rate: 5 bbl/hr gas-cut fluid.
+2. Day 2: Gas migration intensified. Kill weight fluid (11.4 ppg) was insufficient to contain annular flow. Casing pressure built to 1,200 psi on the B-annulus.
+3. Day 3: Decision to shut in well and mobilize well control unit.
+4. Day 5: Cudd Well Control (international well control specialists) mobilized from Mumbai base.
+5. Day 12: Snubbing unit rigged up. Heavy kill mud (13.5 ppg) pumped down tubing. Gas flow controlled.
+6. Day 18: Well successfully killed. Cement squeeze performed across compromised interval (2,800m-3,000m).
+7. Day 25: Well secured and placed under long-term monitoring.
+
+SECTION 3: ROOT CAUSE ANALYSIS
+1. PRIMARY: Cement sheath degradation behind 7" production casing from prolonged exposure to CO2-rich formation fluids over 11 years of production, creating micro-annulus gas migration pathway.
+2. CONTRIBUTING: Tubing corrosion allowed gas entry into tubing-casing annulus during POOH.
+3. CONTRIBUTING: Absence of casing pressure monitoring protocol that would have detected gradual B-annulus pressure buildup over preceding 6 months.
+
+SECTION 4: LESSONS LEARNED & RECOMMENDATIONS
+1. Implement continuous B-annulus pressure monitoring on all producing wells >10 years old.
+2. Cement bond log (CBL) survey mandatory before any workover on wells with >8 years production history.
+3. Maintain minimum 2 independent barriers at all times during workover operations.
+4. Pre-position well control equipment at regional bases (Duliajan, Nazira) for rapid mobilization.
+
+INVESTIGATION TEAM: D. Kalita (Drilling Supt, ONGC Assam), M. Baruah (Well Control Specialist), Independent Safety Auditor
+REPORT STATUS: APPROVED | CLASSIFICATION: INTERNAL USE — LESSONS LEARNED DISSEMINATION AUTHORIZED
