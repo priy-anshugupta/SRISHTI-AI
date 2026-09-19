@@ -1,0 +1,43 @@
+GEOMECHANICAL STUDY — UPPER ASSAM BASIN (BAGHJAN FIELD)
+AAPG SEARCH & DISCOVERY ARTICLE #42308 (2018) — SUMMARY EXTRACT
+
+AUTHORS: Rajeev Kumar & Rahul Talreja (Schlumberger, Mumbai)
+TITLE: "Reducing Drilling Risks in J bend Wells Targeting Basement in Tectonic Area through Geomechanical Solutions"
+FIELD: Baghjan Field, Upper Assam Basin, Oil India Limited Operations
+
+SECTION 1: GEOLOGICAL CONTEXT
+The Upper Assam Basin is a compressional foreland basin bounded by:
+- Naga Thrust Belt (NE) — active collision zone
+- Mikir Hills (S) — Precambrian cratonic basement high
+- Brahmaputra River alluvial plain (W) — subsidence zone
+The Baghjan field lies on a NW-SE trending anticlinal structure within the Central Shelf trend.
+
+SECTION 2: MUD WEIGHT WINDOW ANALYSIS
+(Based on offset well wireline log analysis and leak-off test calibration)
+
+Formation         | Depth Range (m) | Pore Pressure (pcf) | Collapse Pressure (pcf) | Min MW (pcf) | Max MW / Frac Grad (pcf)
+Tipam Sandstone   | 2,200 - 3,000   | 63 (8.42 ppg)        | 65-68                   | 70 (9.35 ppg) | 108 (14.4 ppg)
+Barail Group      | 3,100 - 3,700   | 63-70 (8.42-9.35 ppg)| 68-73                   | 73 (9.75 ppg) | 112 (15.0 ppg)
+Kopili Formation  | 3,700 - 4,000   | 74 (9.90 ppg)        | 76-81                   | 81 (10.8 ppg) | 103 (13.8 ppg)
+  ** NARROW WINDOW **
+Sylhet Limestone  | 4,000 - 4,200   | 68 (9.10 ppg)        | 65-70                   | 72 (9.6 ppg)  | 116 (15.5 ppg)
+Lakadong/Therria  | 4,200 - 4,500   | 82 (11.0 ppg)        | 78-82                   | 85 (11.4 ppg) | 105 (14.0 ppg)
+  ** HIGH PRESSURE **
+
+SECTION 3: KEY FINDINGS
+1. KOPILI FORMATION is the critical drilling hazard: narrow MW window of only 0.9 ppg (10.15-10.8 ppg equivalent). At well deviations >25°, the collapse MW rises sharply to 81 pcf.
+2. PRESSURE REVERSAL observed below Kopili: pore pressure drops from 74 pcf to 68 pcf entering Sylhet Limestone, then rises sharply again to 82 pcf in Lakadong/Therria.
+3. Recommended CASING STRATEGY: Set 9-5/8" intermediate casing shoe deep into Kopili Formation to achieve high LOT before drilling narrow-window lower section.
+
+SECTION 4: IN-SITU STRESS REGIME (from Alam et al. 2019, GJI)
+Wells M1, M2, M3 (Moran) and N1 (Nahorkatiya):
+- Vertical Stress (Sv): 21.7 - 23.8 MPa/km
+- Max Horizontal Stress (SH): 14.9 - 23.1 MPa/km
+- Min Horizontal Stress (Sh): 12.0 - 21.4 MPa/km
+- Stress Regime: Normal to Strike-Slip transitional (Sh < Sv < SH in some intervals)
+- Tectonic strain causes horizontal stress rotation up to 20° near major fault blocks.
+
+EXTRACTED BY: SRISHTI·AI Document Processing Engine
+CONFIDENCE: 98.8% | ENTITIES EXTRACTED: 186 | PROCESSING TIME: 35s
+REVIEWER: S. Das (Geomechanics Lead, Schlumberger Mumbai)
+STATUS: APPROVED
