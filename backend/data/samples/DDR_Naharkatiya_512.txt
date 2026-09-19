@@ -1,0 +1,17 @@
+OIL INDIA LIMITED — 24-HOUR DAILY DRILLING REPORT (DDR)
+REPORT NO: 14 | DATE: 05-AUG-2019
+WELL: NAHORKATIYA-162 (NHK-162) | RIG: OIL-RIG-07
+LOCATION: 27.2845 N, 95.3567 E | CURRENT DEPTH: 2,560m MD (Drilled 45m from 2,515m)
+CURRENT FORMATION: Tipam Sandstone (TS-3)
+
+24-HOUR SUMMARY & DRILLING PARAMETERS:
+- 06:00 - 11:30: Rotary drilling 8-1/2" hole from 2,515m to 2,540m MD. WOB: 18 klbs, RPM: 110, Flow Rate: 620 GPM, SPP: 2,350 psi. ROP: 4.5 m/hr.
+- 11:30 - 14:00: Severe mud losses encountered at 2,540m MD upon penetrating coarse Tipam TS-3 pay sand. Returns dropped from 100% to 35% (Loss rate: 60 bbl/hr). Active pit volume dropped by 38 bbl.
+- 14:00 - 18:00: Pulled off bottom to 2,500m. Mixed and spotted 25 bbl Loss of Circulation Material (LCM) pill consisting of coarse Calcium Carbonate (CaCO3) 30 ppb and medium Mica 15 ppb.
+- 18:00 - 22:00: Squeeze LCM pill with 250 psi annular pressure. Monitored well for 2 hours; static fluid level stable.
+- 22:00 - 06:00: Resumed drilling with reduced mud weight: 10.4 ppg (reduced from 11.2 ppg). Full circulation restored with zero seepage. Drilled ahead to 2,560m.
+
+OPERATIONAL LESSON & MITIGATION SUMMARY:
+In Tipam Sandstone formation between 2,400m and 2,700m (TS-3 to TS-5 intervals), pore pressure gradient is normal hydrostatic (0.44 psi/ft). Equivalent mud weight exceeding 10.8 ppg induces micro-fracture propagation in permeable braided sands. Maintain mud density within 10.2 - 10.6 ppg window. Keep 30 bbl coarse CaCO3 pill pre-mixed in standby slug tank.
+
+SIGNED & SUBMITTED: B. Borah (Lead Mud Engineer, NHK-162)
