@@ -1,0 +1,68 @@
+@import "tailwindcss";
+
+@theme {
+  /* Petroleum & Hydrocarbon Brand Core */
+  --color-petroleum: #0D5C75;
+  --color-petroleum-400: #38BDF8;
+  --color-petroleum-500: #0EA5E9;
+  --color-petroleum-600: #0284C7;
+  --color-petroleum-700: #0369A1;
+  --color-petroleum-800: #0D5C75;
+  --color-petroleum-900: #093948;
+
+  --color-amber-gold: #D97706;
+  --color-amber-500: #F59E0B;
+  --color-amber-600: #D97706;
+
+  /* Industrial Canvases */
+  --color-wellbore: #0C1518;
+  --color-wellbore-light: #121F24;
+  --color-wellbore-dark: #070D0F;
+
+  /* Typography — variables match layout.tsx: --font-inter & --font-mono */
+  --font-sans: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: var(--font-mono), 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+}
+
+:root {
+  --foreground-rgb: 248, 249, 250;
+  --background-rgb: 12, 21, 24;
+}
+
+html, body {
+  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* Precision tabular figures for telemetry numbers & codes */
+.font-mono, [class*="font-mono"] {
+  font-feature-settings: "tnum" 1, "zero" 1;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.01em;
+}
+
+/* Precision Scrollbars */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(8, 14, 16, 0.6);
+}
+::-webkit-scrollbar-thumb {
+  background: #1e293b;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0D5C75;
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
