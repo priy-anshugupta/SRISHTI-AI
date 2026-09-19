@@ -1,0 +1,37 @@
+OIL INDIA LIMITED — DRILLING DIRECTORATE (DULIAJAN, ASSAM)
+WELL COMPLETION REPORT (WCR) — EXCERPT
+WELL NAME: NAHORKATIYA-162 (NHK-162)
+BLOCK: NAHORKATIYA PETROLEUM MINING LEASE (NHK-Main)
+SPUD DATE: 22-JUL-2019 | TD REACHED: 28-DEC-2019 | TOTAL DEPTH: 3,650.0m MD
+RIG: OIL-RIG-07 (2000 HP AC-SCR)
+
+SECTION 4: LITHOLOGICAL & FORMATION TOPS
+- Alluvium / Dihing: Surface to 285m MD
+- Dhekiajuli: 285m to 780m MD (Coarse sands, grit, pebble beds)
+- Namsang: 780m to 1,480m MD (Sandstones, grits, conglomerate lenses)
+- Girujan Clay: 1,480m to 2,180m MD (Reactive montmorillonite swelling clays)
+- Tipam Sandstone: 2,180m to 2,980m MD (Multi-storied braided sands TS-1 to TS-6)
+- Bokabil / Surma: 2,980m to 3,080m MD (Claystones and thin sandstones)
+- Barail Group: 3,080m to 3,650m MD (Carbonaceous shales, coal seams, fine sandstones)
+
+SECTION 8: OPERATIONAL INCIDENTS & NPT RECORD (PAGE 82)
+DATE: 05-AUG-2019 | DEPTH: 2,540m MD | FORMATION: Tipam Sandstone (TS-3)
+INCIDENT: Severe Lost Circulation
+
+DESCRIPTION:
+While drilling 8-1/2" hole at 2,540m MD with 11.2 ppg WBM at 620 GPM, complete loss of returns occurred upon penetrating micro-fractured porous Tipam TS-3 interval. Flow rate dropped from 100% to 35% returns within 15 minutes. Active pit volume dropped by 38 bbl. Loss rate estimated at 60 bbl/hr.
+
+MITIGATION ACTION & RESOLUTION:
+1. Immediately pulled off bottom to 2,500m MD to avoid packing off BHA.
+2. Reduced pump rate to minimum circulating speed (30 SPM / 250 GPM).
+3. Mixed 25 bbl LCM pill: Coarse Calcium Carbonate (CaCO3) 30 ppb + Medium Mica 15 ppb in slug tank.
+4. Spotted pill across loss zone (2,520m–2,560m) and squeezed with 250 psi annular pressure.
+5. Monitored well for 2 hours — static fluid level stable.
+6. Reduced mud weight from 11.2 ppg to 10.4 ppg to stay within 10.2–10.6 ppg safe window.
+7. Resumed drilling with full circulation restored. Zero seepage losses.
+8. Total NPT: 48 hours (2 days). Cost impact: INR 1.5 Crore.
+
+OPERATIONAL LESSON:
+In Tipam Sandstone TS-3 to TS-5 (2,400m–2,700m typical), pore pressure gradient is normal hydrostatic (0.44 psi/ft). Equivalent MW exceeding 10.8 ppg induces micro-fracture propagation in permeable braided sands. Maintain MW within 10.2–10.6 ppg window. Keep 30 bbl coarse CaCO3 pill pre-mixed in standby slug tank before entering Tipam TS-3.
+
+VERIFIED & APPROVED BY: B. Borah (Lead Mud Engineer, Oil India Ltd., NHK-162)
