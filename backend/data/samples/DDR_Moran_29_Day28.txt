@@ -1,0 +1,36 @@
+OIL INDIA LIMITED — 24-HOUR DAILY DRILLING REPORT (DDR)
+REPORT NO: 28 | DATE: 12-SEP-2026
+WELL: MORAN-29 (MOR-29) | RIG: OIL-RIG-04 (2000 HP AC-SCR)
+LOCATION: 27.4853 N, 95.3456 E | BLOCK: MOR-III
+CURRENT DEPTH: 2,418.0m MD (Drilled 12m from 2,406m)
+CURRENT FORMATION: Barail Group (Tikak Parbat member — carbonaceous shale/coal interbeds)
+
+24-HOUR SUMMARY & DRILLING PARAMETERS:
+- 06:00 - 10:00: Rotary drilling 8-1/2" hole from 2,406m to 2,412m MD. WOB: 18.5 klbs, RPM: 120, Flow Rate: 650 GPM, SPP: 2,440 psi, Torque: 14,000 ft-lbs. ROP: 1.5 m/hr (slow due to interbedded coal/shale).
+- 10:00 - 10:30: Connection gas observation. Background gas rose from 18 to 28 units during connection. Trip gas: 42 units. Monitored for 15 min — gas dissipated normally. No pit gain observed.
+- 10:30 - 14:00: Resumed drilling from 2,412m to 2,416m. ROP improved to 6.8 m/hr in sandy Barail interval. Torque stable at 14,000 ft-lbs.
+- 14:00 - 14:30: Wiper trip to 2,200m (last casing shoe) and back to bottom. No drag or tight spots observed. Hole clean.
+- 14:30 - 18:00: Drilled from 2,416m to 2,418m MD. Circulated 2 bottoms-up to clean hole before connection.
+- 18:00 - 06:00: Circulated and conditioned mud. MW adjusted from 10.6 to 10.8 ppg per safety margin for approaching hazard horizon at 2,450m (Barail gas kick precursor — reference BGH-05 EVT-03 at 3,380m equivalent interval).
+
+UPCOMING HAZARD ADVISORY:
+SRISHTI·AI ADVISORY ALT-101 (CRITICAL): Approaching 2,450m — Barail Gas Precursor Horizon
+- Offset well BAGHJAN-5 encountered 22 bbl pit gain at 3,380m in Barail carbonaceous sequence.
+- Distance to hazard: 32.0m remaining.
+- Recommended: Pre-position 12.8 ppg kill mud in reserve pit. BOP choke drill scheduled for Day 29.
+
+DRILLING FLUID REPORT:
+- Mud Type: KCl-Polymer Water-Based Mud
+- Mud Weight: 10.8 ppg (increased from 10.6 ppg)
+- Funnel Viscosity: 52 sec/qt
+- Plastic Viscosity: 18 cP | Yield Point: 22 lb/100sqft
+- pH: 9.8 | Chlorides: 45,000 mg/L
+- Filter Cake: 4/32" (improved from 8/32" in Girujan section)
+- KCl Concentration: 5% (for shale inhibition in Barail)
+
+BIT RECORD:
+- Bit #5: 8-1/2" PDC (Hughes Christensen HC506Z), In at 2,200m, Out at 2,418m
+- Total footage: 218m | Total hours: 48 hrs | Avg ROP: 4.5 m/hr
+- Dull grade: 1-1-BT-A-E-I-NO-TD (Good condition, minor gauge wear)
+
+SIGNED & SUBMITTED: K. Sarma (Company Man, MOR-29) | Day Toolpusher: R. Hazarika
