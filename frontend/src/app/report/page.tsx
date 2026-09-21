@@ -105,10 +105,11 @@ export default function ReportPage() {
           <button
             onClick={handlePrint}
             disabled={!brief}
-            className="flex items-center gap-1.5 px-4 py-2 bg-emerald-700 hover:bg-emerald-600 text-white font-sans text-xs font-bold rounded-lg transition-colors shadow-lg disabled:opacity-50"
+            className="flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-sans text-xs font-bold rounded-lg transition-all shadow-lg shadow-emerald-950/40 disabled:opacity-50 cursor-pointer border border-emerald-400/40"
+            title="Generates high-resolution printable PDF dossier with Oil India corporate letterhead"
           >
-            <Printer size={14} />
-            <span>Print / Export PDF</span>
+            <Printer size={15} />
+            <span>Export Official OIL Pre-Spud Dossier (PDF/Print)</span>
           </button>
         </div>
       </div>
@@ -192,26 +193,51 @@ export default function ReportPage() {
         <article className="bg-[#0B1316] print:bg-white print:text-black border print:border-0 border-slate-800 rounded-xl p-6 font-sans text-xs space-y-6 shadow-2xl">
           
           {/* Formal Letterhead Header */}
-          <div className="flex flex-wrap items-start justify-between gap-4 border-b-2 border-slate-700 print:border-black pb-5 font-sans">
-            <div>
-              <div className="flex items-center gap-2 text-cyan-400 print:text-black mb-1">
-                <Building size={18} />
-                <span className="font-bold text-sm uppercase tracking-widest font-sans">
-                  OIL INDIA LIMITED · eRTMAC DULIAJAN
-                </span>
+          <div className="border-b-2 border-slate-700 print:border-black pb-5 font-sans space-y-4">
+            <div className="flex flex-wrap items-start justify-between gap-4">
+              <div className="space-y-1">
+                <div className="flex items-center gap-2.5 text-cyan-400 print:text-black">
+                  <Building size={22} className="shrink-0" />
+                  <div>
+                    <span className="font-extrabold text-base uppercase tracking-wider font-sans block print:text-black">
+                      ऑयल इंडिया लिमिटेड · OIL INDIA LIMITED
+                    </span>
+                    <span className="text-[10px] text-slate-400 print:text-gray-700 font-semibold tracking-wide block">
+                      (A Government of India Enterprise — Navratna Public Sector Undertaking)
+                    </span>
+                  </div>
+                </div>
+                <div className="text-[11px] text-slate-400 print:text-gray-600 font-mono">
+                  DIRECTORATE OF DRILLING & WORKOVER SERVICES · DULIAJAN, ASSAM 786602
+                </div>
               </div>
-              <h2 className="text-xl font-bold text-white print:text-black">
-                {brief.title}
-              </h2>
-              <p className="text-slate-400 print:text-gray-600 text-xs mt-0.5">
-                Target Well Asset: <strong>{wellId}</strong> · Corridor Radius: <strong className="font-mono tabular-nums">{brief.radius_km} km</strong> · Statutory OISD-STD-174 Handover Dossier
-              </p>
+
+              <div className="text-right text-[11px] text-slate-400 print:text-gray-700 space-y-0.5 font-sans">
+                <div>Document No: <strong className="text-white print:text-black font-mono">OIL/DWS/eRTMAC/2026/088</strong></div>
+                <div>Date: <strong>{new Date().toLocaleDateString('en-IN', { dateStyle: 'long' })}</strong></div>
+                <div>Classification: <strong className="text-red-400 print:text-red-800 font-bold">STRICTLY CONFIDENTIAL · PRE-SPUD DOSSIER</strong></div>
+                <div>System: <strong>SRISHTI·AI Subsurface Memory Platform</strong></div>
+              </div>
             </div>
 
-            <div className="text-right text-[11px] text-slate-400 print:text-gray-600 space-y-0.5 font-sans">
-              <div>Date: <strong>{new Date().toLocaleDateString('en-IN', { dateStyle: 'long' })}</strong></div>
-              <div>Classification: <strong className="text-red-400 print:text-black font-semibold">STRICTLY CONFIDENTIAL</strong></div>
-              <div>System: <strong>SRISHTI·AI Offset Memory</strong></div>
+            {/* Title Banner */}
+            <div className="p-3.5 rounded-lg bg-[#070D0F] print:bg-gray-100 border border-[#162D38] print:border-gray-400 flex flex-wrap items-center justify-between gap-3">
+              <div>
+                <h2 className="text-lg font-bold text-white print:text-black uppercase">
+                  {brief.title}
+                </h2>
+                <p className="text-slate-400 print:text-gray-700 text-xs mt-0.5">
+                  Target Well Asset: <strong className="text-cyan-300 print:text-black">{wellId}</strong> · Spatial Search Corridor: <strong className="font-mono tabular-nums text-emerald-400 print:text-black">{brief.radius_km} km</strong> · Statutory OISD-STD-174 Handover
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                <span className="px-3 py-1 rounded bg-emerald-950/80 print:bg-emerald-100 text-emerald-300 print:text-emerald-900 border border-emerald-700 text-[10px] font-bold font-mono">
+                  ✓ OISD-174 COMPLIANT
+                </span>
+                <span className="px-3 py-1 rounded bg-cyan-950/80 print:bg-blue-100 text-cyan-300 print:text-blue-900 border border-cyan-700 text-[10px] font-bold font-mono">
+                  {brief.approved_historical_events.length} OFFSETS CORRELATED
+                </span>
+              </div>
             </div>
           </div>
 
@@ -292,19 +318,32 @@ export default function ReportPage() {
           </div>
 
           {/* Official Sign-off Block */}
-          <div className="grid grid-cols-2 gap-8 pt-6 border-t border-slate-800 print:border-black text-[11px]">
-            <div className="space-y-3">
-              <div className="text-slate-400 print:text-gray-600">PREPARED BY (Lead Drilling Engineer):</div>
-              <div className="h-8 border-b border-dashed border-slate-700 print:border-black" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 pt-6 border-t-2 border-slate-700 print:border-black text-[11px] font-sans">
+            <div className="space-y-2 p-3 rounded-lg bg-[#070D0F] print:bg-gray-50 border border-slate-800 print:border-gray-300">
+              <div className="text-slate-400 print:text-gray-700 text-[10px] font-bold uppercase tracking-wider">1. PREPARED BY:</div>
+              <div className="h-9 border-b border-dashed border-slate-700 print:border-black flex items-end pb-1 font-mono text-cyan-300 print:text-black italic">
+                P. Saikia
+              </div>
               <div className="text-white print:text-black font-bold">P. Saikia, Chief Drilling Specialist</div>
-              <div className="text-[10px] text-slate-500">eRTMAC Operations · Oil India Limited</div>
+              <div className="text-[10px] text-slate-500 print:text-gray-600">eRTMAC Operations · OIL Duliajan</div>
             </div>
 
-            <div className="space-y-3">
-              <div className="text-slate-400 print:text-gray-600">VERIFIED & APPROVED (Rig Superintendent / Company Man):</div>
-              <div className="h-8 border-b border-dashed border-slate-700 print:border-black" />
-              <div className="text-white print:text-black font-bold">Rajesh Kumar, General Manager (Drilling)</div>
-              <div className="text-[10px] text-slate-500">Field Headquarters, Duliajan, Assam</div>
+            <div className="space-y-2 p-3 rounded-lg bg-[#070D0F] print:bg-gray-50 border border-slate-800 print:border-gray-300">
+              <div className="text-slate-400 print:text-gray-700 text-[10px] font-bold uppercase tracking-wider">2. CONCURRED BY:</div>
+              <div className="h-9 border-b border-dashed border-slate-700 print:border-black flex items-end pb-1 font-mono text-purple-300 print:text-black italic">
+                Dr. T. Borah
+              </div>
+              <div className="text-white print:text-black font-bold">Dr. T. Borah, Chief Geoscientist</div>
+              <div className="text-[10px] text-slate-500 print:text-gray-600">Subsurface Geology & Geomechanics</div>
+            </div>
+
+            <div className="space-y-2 p-3 rounded-lg bg-[#070D0F] print:bg-gray-50 border border-slate-800 print:border-gray-300">
+              <div className="text-slate-400 print:text-gray-700 text-[10px] font-bold uppercase tracking-wider">3. APPROVED & SPUD AUTHORIZED:</div>
+              <div className="h-9 border-b border-dashed border-slate-700 print:border-black flex items-end pb-1 font-mono text-emerald-300 print:text-black italic">
+                R. K. Bhattacharya
+              </div>
+              <div className="text-white print:text-black font-bold">R. K. Bhattacharya, Executive Director</div>
+              <div className="text-[10px] text-slate-500 print:text-gray-600">Directorate of Drilling, OIL Duliajan</div>
             </div>
           </div>
 

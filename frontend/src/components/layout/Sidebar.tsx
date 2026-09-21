@@ -61,7 +61,7 @@ export default function Sidebar() {
     <>
       <aside
         className={cn(
-          "h-full bg-[#030709] border-r-2 border-[#162D38] shadow-[8px_0_30px_rgba(0,0,0,0.85)] flex flex-col transition-all duration-300 relative z-30 shrink-0 select-none",
+          "print:hidden h-full bg-[#030709] border-r-2 border-[#162D38] shadow-[8px_0_30px_rgba(0,0,0,0.85)] flex flex-col transition-all duration-300 relative z-30 shrink-0 select-none",
           expanded ? "w-64" : "w-18"
         )}
       >
