@@ -7,6 +7,7 @@ import {
   Sparkles, CheckCircle2, ChevronRight
 } from 'lucide-react';
 import { api } from '@/lib/api';
+import RoiCalculator from '@/components/dashboard/RoiCalculator';
 
 type Formation = {
   id: string;
@@ -190,10 +191,15 @@ export default function AnalyticsPage() {
       )}
 
       {/* 2. TAB 1: QUANTIFIED ROI & NPT COST IMPACT DASHBOARD (Key SIH Differentiator) */}
-      {activeMetricTab === 'roi' && roiData && (
-        <div className="space-y-5 font-sans">
-          {/* Top 4 KPI Metrics Banner */}
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 font-sans">
+      {activeMetricTab === 'roi' && (
+        <div className="space-y-6 font-sans">
+          {/* Interactive Executive Simulator */}
+          <RoiCalculator />
+
+          {roiData && (
+            <div className="space-y-5 font-sans">
+              {/* Top 4 KPI Metrics Banner */}
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 font-sans">
             <div className="p-4 bg-[#050C10] border-2 border-[#162D38] border-t-[3px] border-t-red-500 rounded-2xl space-y-1 font-sans shadow-xl ring-1 ring-red-500/10">
               <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider font-sans">HISTORICAL NPT COST</span>
               <div className="text-2xl font-bold font-mono tabular-nums text-red-400">
@@ -315,6 +321,8 @@ export default function AnalyticsPage() {
             </div>
 
           </div>
+          </div>
+          )}
         </div>
       )}
 
