@@ -64,11 +64,15 @@ function ShellContent({ children }: { children: React.ReactNode }) {
   );
 }
 
+import { NetworkModeProvider } from '@/context/NetworkModeContext';
+
 export default function AppShell({ children }: { children: React.ReactNode }) {
   return (
     <AuthProvider>
       <TelemetryProvider>
-        <ShellContent>{children}</ShellContent>
+        <NetworkModeProvider>
+          <ShellContent>{children}</ShellContent>
+        </NetworkModeProvider>
       </TelemetryProvider>
     </AuthProvider>
   );

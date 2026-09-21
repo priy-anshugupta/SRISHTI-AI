@@ -3,7 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Bell, Cpu, LogOut } from 'lucide-react';
+import { useNetworkMode } from '@/context/NetworkModeContext';
+import { Bell, Cpu, LogOut, Wifi, WifiOff, ShieldCheck } from 'lucide-react';
 import SwarmTraceModal from '@/components/modals/SwarmTraceModal';
 import { useAuth } from '@/context/AuthContext';
 import { useTelemetry } from '@/context/TelemetryContext';
@@ -27,6 +28,7 @@ export default function Topbar() {
   const [showSwarmModal, setShowSwarmModal] = useState(false);
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const { isAirGapped, toggleNetworkMode } = useNetworkMode();
   const {
     depthMd,
     rop,
@@ -42,7 +44,7 @@ export default function Topbar() {
 
   return (
     <>
-    <header className="h-14 shrink-0 bg-[#04090C]/95 backdrop-blur-md border-b-2 border-[#162D38] shadow-[0_4px_25px_rgba(0,0,0,0.7)] flex items-center justify-between gap-3 sm:gap-4 lg:gap-6 px-3 sm:px-4 lg:px-6 z-20 w-full font-sans select-none relative">
+    <header className="print:hidden h-14 shrink-0 bg-[#04090C]/95 backdrop-blur-md border-b-2 border-[#162D38] shadow-[0_4px_25px_rgba(0,0,0,0.7)] flex items-center justify-between gap-3 sm:gap-4 lg:gap-6 px-3 sm:px-4 lg:px-6 z-20 w-full font-sans select-none relative">
       {/* Luminous bottom accent hairline */}
       <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent pointer-events-none" />
 
@@ -87,6 +89,35 @@ export default function Topbar() {
 
       {/* 3. Right Action Controls */}
       <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 whitespace-nowrap">
+        {/* Rig Air-Gap / Edge Server vs Cloud Mode Toggle */}
+        <button
+          onClick={toggleNetworkMode}
+          className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all shadow-sm cursor-pointer ${
+            isAirGapped
+              ? 'bg-amber-950/60 hover:bg-amber-900/60 border-amber-500/80 text-amber-300 shadow-amber-950/40 animate-pulse'
+              : 'bg-emerald-950/40 hover:bg-emerald-900/50 border-emerald-500/60 text-emerald-300 shadow-emerald-950/30'
+          }`}
+          title={
+            isAirGapped
+              ? 'ACTIVE: Sovereign Rig Edge (Local Ollama qwen2.5:7b / Zero Internet). Click to switch to Cloud.'
+              : 'ACTIVE: Cloud Hybrid (OpenAI gpt-4o-mini / Groq). Click to switch to Rig Edge.'
+          }
+        >
+          {isAirGapped ? (
+            <>
+              <WifiOff size={13} className="text-amber-400 shrink-0" />
+              <span className="hidden lg:inline text-[11px] text-amber-400 font-medium">Rig Air-Gap:</span>
+              <span className="font-mono text-[11px] font-bold text-amber-200">Ollama (Edge)</span>
+            </>
+          ) : (
+            <>
+              <Wifi size={13} className="text-emerald-400 shrink-0" />
+              <span className="hidden lg:inline text-[11px] text-emerald-400 font-medium">Cloud:</span>
+              <span className="font-mono text-[11px] font-bold text-emerald-200">OpenAI (gpt-4o-mini)</span>
+            </>
+          )}
+        </button>
+
         {/* 10-Agent Swarm Trace Button */}
         <button
           onClick={() => setShowSwarmModal(true)}
