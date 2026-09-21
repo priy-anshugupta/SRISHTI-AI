@@ -49,15 +49,26 @@ def root():
         ]
     }
 
+from backend.core.config import get_settings
+
 @app.get("/health")
 def health_check():
+    settings = get_settings()
     wells_count = len(db_service.get_wells())
     events_count = len(db_service.get_events())
     docs_count = len(db_service.get_documents())
     current_frame = ertmac_stream.get_current_frame()
 
+    status = "ready" if settings.supabase_ready else "configuration_required"
+
     return {
-        "status": "HEALTHY",
+        "status": status,
+        "health": "HEALTHY",
+        "dependencies": {
+            "supabase": "configured" if settings.supabase_ready else "unconfigured_local_fallback",
+            "ai_provider": settings.ai_provider,
+            "evidence_store": "persistent_local_and_cloud"
+        },
         "evidence_store": "PERSISTENT",
         "database": {
             "wells_loaded": wells_count,
