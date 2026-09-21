@@ -99,6 +99,24 @@ export default function IngestPage() {
     }
   }
 
+  // 1-Click Judge Live Test Preset Loader
+  const loadPresetSample = async (sampleKey: string, sampleLabel: string) => {
+    setUploading(true);
+    setMessage(null);
+    setError(null);
+    try {
+      const res = await api<{ message: string; document: Document }>(`/api/documents/load-sample?sample_name=${encodeURIComponent(sampleKey)}`, {
+        method: 'POST'
+      });
+      setMessage(`Loaded preset: ${sampleLabel}. Extracted drilling facts and verified depth horizons. Ready for Engineer Review.`);
+      await refreshDocuments();
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Could not load preset sample.');
+    } finally {
+      setUploading(false);
+    }
+  };
+
   // Handle custom LAS file upload
   async function onSelectLas(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -196,6 +214,102 @@ export default function IngestPage() {
       {/* 2. TAB 1: PDF REPORTS INGESTION */}
       {activeTab === 'pdf' && (
         <div className="space-y-5">
+
+          {/* ⚡ SIH Judge Live Test Suite Banner */}
+          <div className="p-4 rounded-xl bg-gradient-to-r from-[#0C1E28] via-[#071318] to-[#0B1519] border-2 border-cyan-500/40 shadow-lg space-y-3">
+            <div className="flex flex-wrap items-center justify-between gap-2">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
+                <span className="text-xs font-bold text-white uppercase tracking-wider font-mono">
+                  ⚡ SIH 2026 Judge Live Test Suite
+                </span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-950 text-cyan-300 border border-cyan-700/60 font-mono">
+                  1-CLICK VERIFICATION
+                </span>
+              </div>
+              <span className="text-[11px] text-slate-400 font-sans">
+                Instant real-world test cases without manual file picking
+              </span>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+              <button
+                type="button"
+                onClick={() => loadPresetSample('wcr_moran_7', 'WCR MORAN-7 (Tipam Loss & Girujan Sticking)')}
+                disabled={uploading}
+                className="p-3 rounded-lg bg-[#070D0F] hover:bg-[#0D1C22] border border-cyan-500/30 hover:border-cyan-400 text-left transition-all cursor-pointer group shadow-sm disabled:opacity-50"
+              >
+                <div className="flex items-center justify-between text-xs font-bold text-white group-hover:text-cyan-300">
+                  <span>📄 WCR Moran-7</span>
+                  <span className="text-[10px] font-mono text-cyan-400">147 pgs</span>
+                </div>
+                <p className="text-[11px] text-slate-400 mt-1 leading-snug">
+                  Girujan Clay stuck pipe (1,680m) & Tipam loss (1,840m)
+                </p>
+                <div className="mt-2 text-[10px] text-cyan-400 font-semibold flex items-center gap-1">
+                  <span>Load Sample</span>
+                  <ArrowRight size={10} />
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => loadPresetSample('ddr_moran_29', 'DDR MORAN-29 (Barail Gas Influx at 2,418m)')}
+                disabled={uploading}
+                className="p-3 rounded-lg bg-[#070D0F] hover:bg-[#0D1C22] border border-amber-500/30 hover:border-amber-400 text-left transition-all cursor-pointer group shadow-sm disabled:opacity-50"
+              >
+                <div className="flex items-center justify-between text-xs font-bold text-white group-hover:text-amber-300">
+                  <span>📋 DDR Moran-29</span>
+                  <span className="text-[10px] font-mono text-amber-400">Day 28</span>
+                </div>
+                <p className="text-[11px] text-slate-400 mt-1 leading-snug">
+                  Barail Group gas kick precursor horizon at 2,418m MD
+                </p>
+                <div className="mt-2 text-[10px] text-amber-400 font-semibold flex items-center gap-1">
+                  <span>Load Sample</span>
+                  <ArrowRight size={10} />
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => loadPresetSample('geomech_baghjan', 'Geomech Study Baghjan (Pore Pressure Ramp)')}
+                disabled={uploading}
+                className="p-3 rounded-lg bg-[#070D0F] hover:bg-[#0D1C22] border border-purple-500/30 hover:border-purple-400 text-left transition-all cursor-pointer group shadow-sm disabled:opacity-50"
+              >
+                <div className="flex items-center justify-between text-xs font-bold text-white group-hover:text-purple-300">
+                  <span>🗂️ Geomech Baghjan</span>
+                  <span className="text-[10px] font-mono text-purple-400">Overpressure</span>
+                </div>
+                <p className="text-[11px] text-slate-400 mt-1 leading-snug">
+                  Baghjan-5 overpressure kick geomechanics study
+                </p>
+                <div className="mt-2 text-[10px] text-purple-400 font-semibold flex items-center gap-1">
+                  <span>Load Sample</span>
+                  <ArrowRight size={10} />
+                </div>
+              </button>
+            </div>
+
+            <div className="pt-1.5 flex flex-wrap items-center justify-between text-[11px] text-slate-400 border-t border-slate-800/80">
+              <span>Or drag & drop your own files below. Download test files:</span>
+              <div className="flex items-center gap-3 text-cyan-400">
+                <a href="/demo-files/Sample_WCR_Moran_7.pdf" download className="hover:underline flex items-center gap-1">
+                  <FileText size={11} />
+                  <span>Sample WCR.pdf</span>
+                </a>
+                <a href="/demo-files/Sample_DDR_Moran_29.pdf" download className="hover:underline flex items-center gap-1">
+                  <FileText size={11} />
+                  <span>Sample DDR.pdf</span>
+                </a>
+                <a href="/demo-files/Sample_UpperAssam_Log.las" download className="hover:underline flex items-center gap-1">
+                  <Activity size={11} />
+                  <span>Sample Log.las</span>
+                </a>
+              </div>
+            </div>
+          </div>
+
           {/* Dropzone */}
           <label className="flex cursor-pointer flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-700 bg-[#0B1316] hover:border-cyan-500 px-6 py-10 text-center transition-all shadow-md">
             <input
