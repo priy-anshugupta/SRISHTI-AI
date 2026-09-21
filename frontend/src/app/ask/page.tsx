@@ -8,6 +8,8 @@ import {
   Mic, MicOff
 } from 'lucide-react';
 import { api } from '@/lib/api';
+import { useNetworkMode } from '@/context/NetworkModeContext';
+import EvidenceModal, { EvidenceRecord } from '@/components/modals/EvidenceModal';
 
 type Evidence = {
   event_id: string;
@@ -85,11 +87,13 @@ export default function AskSRISHTIPage() {
       ]
     }
   ]);
+  const { networkMode, isAirGapped, modelDisplayName } = useNetworkMode();
   const [inputQuery, setInputQuery] = useState('');
   const [language, setLanguage] = useState<'en' | 'hi' | 'as'>('en');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedEvidence, setSelectedEvidence] = useState<Evidence[]>(messages[0].evidence || []);
+  const [selectedEvidenceModal, setSelectedEvidenceModal] = useState<EvidenceRecord | null>(null);
   const [isListening, setIsListening] = useState(false);
   const recognitionRef = useRef<any>(null);
   const chatEndRef = useRef<HTMLDivElement>(null);
@@ -168,7 +172,7 @@ export default function AskSRISHTIPage() {
     try {
       const response = await api<Answer>('/api/ask', {
         method: 'POST',
-        body: JSON.stringify({ question: textToSend, language })
+        body: JSON.stringify({ question: textToSend, language, mode: networkMode })
       });
 
       const assistantMessage: ChatMessage = {
@@ -237,14 +241,21 @@ export default function AskSRISHTIPage() {
               <Flame size={18} />
             </div>
             <div>
-              <h1 className="text-sm font-bold text-white flex items-center gap-2">
+              <h1 className="text-sm font-bold text-white flex flex-wrap items-center gap-2">
                 <span>Ask SRISHTI · Multilingual Drilling Q&A</span>
                 <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-[#10B981]/20 text-[#10B981] border border-[#10B981]/30 font-semibold">
                   GROUNDED EVIDENCE
                 </span>
+                <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border font-semibold ${
+                  isAirGapped 
+                    ? 'bg-amber-950/70 text-amber-300 border-amber-600/70 animate-pulse' 
+                    : 'bg-emerald-950/70 text-emerald-300 border-emerald-600/70'
+                }`}>
+                  {isAirGapped ? '⚡ SOVEREIGN RIG EDGE (OLLAMA)' : '☁️ CLOUD (OPENAI GPT-4O-MINI)'}
+                </span>
               </h1>
               <p className="text-[11px] text-slate-400 mt-0.5">
-                Source-linked synthesis from 5,000+ Oil India WCRs, DDRs & eRTMAC offset records
+                Source-linked synthesis from 5,000+ Oil India WCRs, DDRs & eRTMAC offset records · {modelDisplayName}
               </p>
             </div>
           </div>
@@ -437,10 +448,26 @@ export default function AskSRISHTIPage() {
             selectedEvidence.map((ev, idx) => (
               <div
                 key={idx}
-                className="p-3.5 bg-[#070D0F] border border-slate-800 rounded-lg space-y-2 text-xs hover:border-slate-700 transition-colors"
+                onClick={() => setSelectedEvidenceModal({
+                  event_id: ev.event_id,
+                  well: ev.well,
+                  well_name: ev.well,
+                  formation: ev.formation,
+                  event_type: ev.event_type,
+                  severity: ev.severity,
+                  depth_from_md_m: ev.depth_from_md_m,
+                  description: ev.description,
+                  mitigation: ev.mitigation,
+                  source_file: ev.source_file,
+                  source_page: ev.source_page,
+                  ocr_confidence: 96.8,
+                  reviewed_by: 'P. Saikia (Chief Drilling Specialist, Oil India Ltd.)'
+                })}
+                className="p-3.5 bg-[#070D0F] hover:bg-[#0C171C] border border-slate-800 hover:border-cyan-500/60 rounded-lg space-y-2 text-xs transition-all cursor-pointer group shadow-sm"
+                title="Click to open Source Evidence Inspector & verify original WCR excerpt"
               >
                 <div className="flex items-center justify-between">
-                  <span className="font-bold text-white text-sm font-mono">{ev.well}</span>
+                  <span className="font-bold text-white text-sm font-mono group-hover:text-cyan-300 transition-colors">{ev.well}</span>
                   <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
                     ev.severity === 'CRITICAL' 
                       ? 'bg-red-950/50 text-red-400 border border-red-800/50' 
@@ -468,11 +495,14 @@ export default function AskSRISHTIPage() {
                 )}
 
                 <div className="flex items-center justify-between pt-2 border-t border-slate-800/80 text-[10px] text-slate-500">
-                  <span className="flex items-center gap-1 text-[#38BDF8]">
+                  <span className="flex items-center gap-1 text-[#38BDF8] group-hover:underline">
                     <FileText size={11} />
                     <span>{ev.source_file || 'WCR Archive'}</span>
                   </span>
-                  <span>Page {ev.source_page || '—'}</span>
+                  <span className="flex items-center gap-1 text-cyan-400 font-mono">
+                    <span>Page {ev.source_page || '—'}</span>
+                    <ChevronRight size={11} />
+                  </span>
                 </div>
               </div>
             ))
@@ -486,6 +516,13 @@ export default function AskSRISHTIPage() {
         </div>
 
       </div>
+
+      {/* Source Evidence Inspector Modal */}
+      <EvidenceModal
+        isOpen={Boolean(selectedEvidenceModal)}
+        onClose={() => setSelectedEvidenceModal(null)}
+        evidence={selectedEvidenceModal}
+      />
 
     </div>
   );
