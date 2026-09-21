@@ -26,11 +26,46 @@ class HybridAgentOrchestrator:
     def __init__(self):
         self.settings = get_settings()
 
-    def _resolve_ai_client(self) -> Tuple[Optional[OpenAI], Optional[str], str]:
+    def _resolve_ai_client(self, mode_override: Optional[str] = None) -> Tuple[Optional[OpenAI], Optional[str], str]:
         """
-        Determines the active AI provider based on configuration.
-        Supports Groq, OpenAI, Gemini, Ollama, and Deterministic Fallback.
+        Determines the active AI provider based on configuration and mode_override.
+        Supports Cloud Mode (OpenAI gpt-4o-mini, Groq, Gemini) and Rig Edge Mode (Local Ollama / Air-Gap).
         """
+        override = (mode_override or "").lower().strip()
+
+        # Rig Edge Mode requested explicitly
+        if override in ("edge", "ollama", "airgap", "offline"):
+            return (
+                OpenAI(base_url=self.settings.ollama_base_url, api_key="ollama"),
+                self.settings.ollama_model,
+                f"Ollama Sovereign Air-Gap (Rig Edge) · {self.settings.ollama_model}"
+            )
+
+        # Cloud Mode requested explicitly
+        if override in ("cloud", "openai"):
+            if self.settings.openai_api_key:
+                return (
+                    OpenAI(api_key=self.settings.openai_api_key),
+                    self.settings.openai_model,
+                    f"OpenAI Cloud · {self.settings.openai_model}"
+                )
+            if self.settings.groq_api_key:
+                return (
+                    OpenAI(base_url="https://api.groq.com/openai/v1", api_key=self.settings.groq_api_key),
+                    self.settings.groq_model,
+                    f"Groq Cloud · {self.settings.groq_model}"
+                )
+            if self.settings.gemini_api_key:
+                return (
+                    OpenAI(
+                        base_url="https://generativelanguage.googleapis.com/v1beta/openai/",
+                        api_key=self.settings.gemini_api_key
+                    ),
+                    self.settings.gemini_model,
+                    f"Google Gemini · {self.settings.gemini_model}"
+                )
+            return None, None, "SRISHTI Evidence Engine · Deterministic Offline Fallback"
+
         provider_pref = self.settings.ai_provider.lower().strip()
 
         # 1. Groq (Free, ultra-fast Llama-3.3-70B)
@@ -41,7 +76,7 @@ class HybridAgentOrchestrator:
                 f"Groq Cloud · {self.settings.groq_model}"
             )
 
-        # 2. OpenAI (GPT-4.1-mini / GPT-4o-mini)
+        # 2. OpenAI (GPT-4o-mini)
         if provider_pref in ("auto", "openai") and self.settings.openai_api_key:
             return (
                 OpenAI(api_key=self.settings.openai_api_key),
@@ -76,7 +111,8 @@ class HybridAgentOrchestrator:
         query: str,
         target_well: str = "MORAN-29",
         current_depth_md: float = 2418.0,
-        language: str = "EN"
+        language: str = "EN",
+        mode: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Zero-hallucination deterministic fallback executed when no API key is set
@@ -138,13 +174,22 @@ class HybridAgentOrchestrator:
                 "verified_by": evt.get("verified_by", "Chief Drilling Engineer, OIL")
             })
 
+        model_label = "SRISHTI Evidence Engine · Deterministic Fallback"
+        mode_label = "DETERMINISTIC_OFFLINE"
+        if mode == "edge":
+            model_label = "Sovereign Rig Edge · Offline Deterministic Engine"
+            mode_label = "edge"
+        elif mode == "cloud":
+            model_label = "Cloud Engine · Deterministic Fallback"
+            mode_label = "cloud"
+
         return {
             "answer": answer_text,
             "evidence_grounded_answer": answer_text,
             "evidence": evidence_cards,
             "evidence_sources": evidence_cards,
-            "model": "SRISHTI Evidence Engine · Deterministic Fallback",
-            "mode": "DETERMINISTIC_OFFLINE",
+            "model": model_label,
+            "mode": mode_label,
             "tools_used": ["keyword_semantic_matching", "database_evidence_retrieval", "oisd_standard_mapping"],
             "verification_status": "COMMITTED_EVIDENCE_RETRIEVAL",
             "matched_offset_records": len(matched_events),
@@ -157,17 +202,19 @@ class HybridAgentOrchestrator:
         query: str,
         target_well: str = "MORAN-29",
         current_depth_md: float = 2418.0,
-        language: str = "EN"
+        language: str = "EN",
+        mode: Optional[str] = None
     ) -> Dict[str, Any]:
         """
         Main entry point: Runs hybrid LLM reasoning with deterministic tool calling.
         Automatically falls back to deterministic rule engine if no API key or upon failure.
+        Respects mode: 'cloud' (OpenAI gpt-4o-mini) vs 'edge' (Ollama / Air-Gap).
         """
-        client, model, provider_name = self._resolve_ai_client()
+        client, model, provider_name = self._resolve_ai_client(mode_override=mode)
 
         # If no LLM configured, execute deterministic fallback
         if not client or not model:
-            return self.run_deterministic_fallback(query, target_well, current_depth_md, language)
+            return self.run_deterministic_fallback(query, target_well, current_depth_md, language, mode=mode)
 
         # System prompt with domain guardrails
         system_prompt = (
@@ -246,7 +293,7 @@ class HybridAgentOrchestrator:
                 "evidence": collected_evidence,
                 "evidence_sources": collected_evidence,
                 "model": provider_name,
-                "mode": "HYBRID_LLM_TOOL_CALLING",
+                "mode": mode or "HYBRID_LLM_TOOL_CALLING",
                 "tools_used": tools_used or ["direct_llm_synthesis"],
                 "verification_status": "COMMITTED_EVIDENCE_RETRIEVAL",
                 "matched_offset_records": len(collected_evidence),
@@ -256,7 +303,7 @@ class HybridAgentOrchestrator:
 
         except Exception as e:
             logger.warning(f"Hybrid LLM execution failed ({e}); switching to deterministic fallback.")
-            fallback = self.run_deterministic_fallback(query, target_well, current_depth_md, language)
+            fallback = self.run_deterministic_fallback(query, target_well, current_depth_md, language, mode=mode)
             fallback["notice"] = f"LLM provider error ({type(e).__name__}). Automatically seamlessly fell back to deterministic engine."
             return fallback
 

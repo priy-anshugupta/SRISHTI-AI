@@ -11,6 +11,7 @@ class QueryRequest(BaseModel):
     target_well: Optional[str] = "MORAN-29"
     current_depth_md: Optional[float] = 2418.0
     language: Optional[str] = "EN"
+    mode: Optional[str] = None  # "cloud" or "edge"
 
 @router.post("")
 def ask_drilling_intelligence(req: QueryRequest):
@@ -19,12 +20,14 @@ def ask_drilling_intelligence(req: QueryRequest):
     lang = req.language or "EN"
     target = req.target_well or "MORAN-29"
     depth = req.current_depth_md if req.current_depth_md is not None else 2418.0
+    mode = req.mode
 
     result = agent_orchestrator.run_query(
         query=user_query,
         target_well=target,
         current_depth_md=depth,
-        language=lang
+        language=lang,
+        mode=mode
     )
 
     # Ensure backward compatibility with all fields expected by frontend
