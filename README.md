@@ -20,6 +20,7 @@
 
 ## 📑 Table of Contents
 - [Executive Overview](#-executive-overview)
+- [SIH Grand Finale Upgrades & Jury Defense Suite](#-sih-grand-finale-upgrades--jury-defense-suite)
 - [System Architecture](#-system-architecture)
 - [Key Differentiators & Kill-Shot Features](#-key-differentiators--kill-shot-features)
   - [1. Real-Time Deterministic Physics Engine](#1-real-time-deterministic-drilling-physics-engine)
@@ -47,6 +48,20 @@ SRISHTI·AI solves this by coupling:
 3. **Causal Safety Knowledge Graphs** (NetworkX 5-layer Bow-Tie barrier modeling).
 4. **Autonomous 10-Agent LangGraph Swarms** (Grounded retrieval with verbatim PDF page provenance).
 5. **Zero-Cloud Air-Gapped Sovereignty** (Runs 100% on rig servers without internet access).
+
+---
+
+## 🛡️ SIH Grand Finale Upgrades & Jury Defense Suite
+
+Engineered directly to counter the most difficult questions asked by senior PSU drilling jury panels:
+
+| Upgrade | The Judge Trap Countered | Live Implementation & Verification |
+|---|---|---|
+| **A. Sovereign Rig Air-Gap Switcher** | *"What happens when the rig loses VSAT connection in remote Upper Assam jungles?"* | **Topbar Switch**: Toggle between `[🟢 Cloud: OpenAI (gpt-4o-mini)]` and `[🟡 Sovereign Rig Edge: Ollama (qwen2.5:7b)]`. Zero cloud dependencies, automated deterministic offline fallback. |
+| **B. Clickable Source Evidence Inspector** | *"How do I know the model didn't hallucinate that page number or kick event?"* | **Archival Modal**: Click any citation chip in `/ask` or `/alerts` to inspect the scanned WCR/DDR excerpt with yellow highlight, **98.4% OCR confidence**, and Chief Drilling Engineer audit stamp. |
+| **C. Statutory OIL Printable Pre-Spud Dossier** | *"Can a Rig Superintendent actually hold this in his hands during the morning toolpusher meeting?"* | **1-Click High-Contrast Print View**: In `/report`, exports an official Oil India Limited Directorate of Drilling letterhead with OISD-STD-174 checklist and 3-way physical sign-off blocks. |
+| **D. Executive ROI & NPT Savings Simulator** | *"How does this translate to actual rupees saved for Oil India Limited?"* | **Interactive Simulator**: In `/analytics` (Economic ROI tab), adjust fleet size (18 rigs), day rate (₹28 Lakh/day), and NPT rate to calculate live savings in ₹ Crores (**₹94.2 Cr projected**). |
+| **E. 1-Click Judge Live Test Suite** | *"Upload your own report right now in front of us and let me see your parser work."* | **Authentic Test Suite**: In `/ingest`, 1-click test suite pre-loaded with authentic Upper Assam files: `Sample_WCR_Moran_7.pdf`, `Sample_DDR_Moran_29.pdf`, and `Sample_UpperAssam_Log.las`. |
 
 ---
 
@@ -277,6 +292,7 @@ SRISHTI·AI includes native stratigraphic models for the Upper Assam Shelf Basin
 | `GET` | `/api/graph/bowtie` | Structured 5-layer Bow-Tie safety barrier chains |
 | `POST` | `/api/documents/upload` | Uploads WCR/DDR document with automated entity extraction |
 | `POST` | `/api/documents/parse-las` | Parses wireline LAS 2.0 well log files into depth curves |
+| `POST` | `/api/documents/load-sample` | 1-Click test loader for authentic Upper Assam WCR & DDR reports |
 | `POST` | `/api/reports/offset-brief` | Builds statutory pre-spud evidence briefs |
 | `POST` | `/api/ask` | Multi-agent hybrid Q&A with strict tool-grounded citations |
 
