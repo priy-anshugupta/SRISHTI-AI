@@ -7,10 +7,25 @@
 
 ---
 
-## 🎨 Professional Slide Design Standards (For Your Designers)
-* **Color Palette**: Deep Industrial Navy (`#0B132B`), Warning Safety Amber (`#FF9F1C`), High-Tech Emerald (`#2EC4B6`), Slate White (`#F8F9FA`).
-* **Visual Density**: Each slide should use **60% visual graphics/flowcharts** and **40% crisp, punchy bullet cards**.
-* **Header Format**: Keep the official SIH header on all 5 slides: `Your Team Name Oval (Top Left)` | `Official Slide Title (Center)` | `SIH 2026 Logo (Top Right)`.
+## 🎯 SIH Grand Finale Evaluator Rubric Mapping (100/100 Marks Strategy)
+
+| SIH Judging Criterion | Weightage | Where It Is Proven in This 5-Slide Deck |
+|---|:---:|---|
+| **1. Novelty & Innovation** | **20 Marks** | **Slide 1**: 32m Spatial Lookahead Radar, Sovereign Rig Air-Gap toggle, Clickable Source Evidence Inspector Modal with OCR audit stamp. |
+| **2. Technical Depth & Complexity** | **20 Marks** | **Slide 2**: 4 Deterministic Physics Engines (Eaton Pore Pressure, $d_{cs}$, MSE, ECD), 10-Agent LangGraph Swarm (<100ms), 1 Hz WITSML WebSocket. |
+| **3. Feasibility, Viability & Rig Durability** | **20 Marks** | **Slide 3**: 100% verified working prototype (7/7 pytest tests pass, 17 Next.js routes), runs on $1,500 fanless rig PC, glove-friendly Doghouse HUD. |
+| **4. Quantified Business, Social & ESG Impact** | **20 Marks** | **Slide 4**: **₹ 94.2 Crore annual fleet savings**, **336 rig days recovered**, ₹8.5 Cr foreign license savings, Dibru-Saikhowa eco-protection. |
+| **5. Regulatory Compliance & Rigorous Research** | **20 Marks** | **Slide 5**: Native **OISD-STD-174**, **DGMS Rules 84/85**, Justice Katakey NGT Inquiry analysis, Eaton SPE 5544, open-source GitHub verification. |
+
+---
+
+## 🎨 Visual Slide Assembly Guide (For Your Slide Designer)
+
+* **Slide 1 Layout**: Left 55% = Idea Napkin Flowchart + Baghjan 2020 Tragedy Callout Card. Right 45% = 3 Solution Pillars + 5 Uniqueness Badges.
+* **Slide 2 Layout**: Left 55% = 4-Layer Implementation Pipeline Diagram. Right 45% = 4 Deterministic Physics Formulas + 10-Agent Swarm Latencies.
+* **Slide 3 Layout**: Left 50% = Feasibility Shield Matrix Diagram. Right 50% = 5 Rig Risks vs Engineered Mitigations Table + Hardware specs.
+* **Slide 4 Layout**: Left 50% = Value Multiplier Diagram. Right 50% = The ₹94.2 Cr Formula + 336 Rig Days Callout + Environmental / ESG Impact.
+* **Slide 5 Layout**: Left 50% = Statutory Compliance Lineage Diagram. Right 50% = OISD-STD-174 / DGMS / Literature References + Live GitHub & Test Verification Badges.
 
 ---
 
