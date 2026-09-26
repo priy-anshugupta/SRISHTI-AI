@@ -19,7 +19,8 @@ import {
   ShieldCheck,
   ChevronLeft,
   Menu,
-  Flame
+  Flame,
+  Activity
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { useAuth, PRESET_PERSONAS } from '@/context/AuthContext';
@@ -46,7 +47,7 @@ const navGroups: NavGroup[] = [
     subtitle: 'Live',
     dotColor: '#ef4444', // Red
     items: [
-      { name: 'Active Well (MOR-29)', href: '/well/MOR-29', icon: FileText, shortcut: 'Alt+1' },
+      { name: 'Well Profile & Dossier', href: '/well/MOR-29', icon: FileText, shortcut: 'Alt+1' },
       { name: 'Early Safety Alerts', href: '/alerts', icon: AlertTriangle, shortcut: 'Alt+2', badge: 'LIVE', badgeColor: 'bg-red-950 text-red-300 border border-red-800/80 font-bold' },
       { name: 'Rig Floor View', href: '/doghouse', icon: Monitor, shortcut: 'Alt+3', badge: 'Rig', badgeColor: 'bg-emerald-950 text-emerald-300 border border-emerald-800/80 font-bold' },
     ],
@@ -159,7 +160,7 @@ export default function Sidebar() {
               <div className="space-y-0.5">
                 {group.items.map((item) => {
                   const Icon = item.icon;
-                  const active = pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href));
+                  const active = pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href)) || (item.href.startsWith('/well') && pathname?.startsWith('/well'));
 
                   return (
                     <Link
