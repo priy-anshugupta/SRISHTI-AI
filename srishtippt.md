@@ -81,6 +81,18 @@ flowchart LR
     style NewWay fill:#f6ffed,stroke:#52c41a,stroke-width:2px
 ```
 
+### ⚔️ Competitive Advantage Matrix: Why SRISHTI·AI Beats Foreign Software & Generic AI
+
+| Capability / Evaluation Criteria | Foreign Monopolies<br/>*(Schlumberger / Landmark)* | Generic Cloud AI<br/>*(ChatGPT / Custom RAG)* | **SRISHTI·AI (Our Winning Solution)** |
+|---|:---:|:---:|:---:|
+| **Zero-Internet Rig Air-Gap Mode** | ❌ Requires central servers | ❌ Dead in Assam jungles | **✅ 100% Offline Local Ollama (`qwen2.5:7b`)** |
+| **Native Upper Assam Geology** | ⚠️ Generic global models | ❌ Hallucinates depths/pressures | **✅ Moran, Naharkatiya & Baghjan Stratigraphy** |
+| **Mathematical Hallucination Control** | ⚠️ Complex manual setup | ❌ Dangerous stochastic guesses | **✅ Deterministic Eaton, $d_{cs}$, MSE & ECD Physics** |
+| **Source Provenance Verification** | ❌ Closed black-box database | ⚠️ Vague unverified citations | **✅ Clickable Modal with 98.4% OCR & Chief Stamp** |
+| **Statutory Indian Regulations** | ❌ Foreign SPE/API only | ❌ Zero regulatory awareness | **✅ Native OISD-STD-174 & DGMS 2017 Enforcement** |
+| **Rig Floor Usability** | ❌ 3 desktop screens & mouse | ❌ Unusable on muddy rig floor | **✅ Glove-Friendly 7-Segment Touch HUD (`/doghouse`)** |
+| **Annual Cost & Sovereignty** | ❌ ₹8.5 Cr/yr foreign licenses | ❌ Leaks national hydrocarbon data | **✅ 100% Indigenous Atmanirbhar Bharat Build** |
+
 ---
 
 ### 📌 Slide Content (Bullet Points for PPT)
@@ -104,12 +116,26 @@ flowchart LR
   3. **Differential Pipe Sticking (Girujan Clay, 500m–1,800m)**: Real-time MSE monitoring prevents reactive clay from freezing the drill string.
 * **Direct Attack on Non-Productive Time (NPT)**: Slashes Oil India's baseline fleet downtime of **₹88.55 Crores / year** (operating rig day rates: ₹28–35 Lakh/day).
 
-#### 3. Innovation and Uniqueness of the Solution (Why We Stand Out)
-* **🟡 100% Sovereign Rig Air-Gap Mode**: Features a Topbar toggle between Cloud Mode and **Sovereign Rig Edge Mode (Local Ollama qwen2.5:7b)**. Runs 100% offline with zero internet dependency in remote Assam jungles.
-* **🔍 Clickable Source Evidence Inspector Modal**: Demolishes AI hallucination skepticism. Click any citation to inspect the scanned report excerpt with **98.4% OCR confidence** and Chief Drilling Engineer audit stamp.
-* **📋 Statutory OIL Printable Pre-Spud Dossier**: 1-Click high-contrast A4 print view complete with Directorate of Drilling letterhead, OISD-STD-174 checklist, and **3-way physical sign-off blocks** (Rig Site, Field HQ, GM Drilling).
-* **🧮 Zero-Hallucination Deterministic Physics**: Does not guess numbers; calculates Eaton Pore Pressure, Corrected $d$-exponent ($d_{cs}$), MSE, and ECD hydraulics mathematically on every packet.
-* **📱 Glove-Friendly Drill Floor Touch HUD (`/doghouse`)**: High-contrast 7-segment digital displays and 1-tap OISD-174 space-out protocols built for roughnecks in muddy gloves.
+#### 3. Innovation and Uniqueness: ⭐ OUR 7 KEY USPs (UNFAIR ADVANTAGES)
+* **USP 1: 🟡 100% Sovereign Rig Air-Gap Mode (Zero-Internet Rig Operation)**:
+  * *The Trap*: Remote rigs in the Upper Assam dense jungles (Kumchai, Bordumsa) or Arunachal border constantly lose VSAT satellite internet.
+  * *Our Standout Advantage*: Features a live Topbar toggle switching between Cloud Mode and **Sovereign Rig Edge Mode (Local Ollama qwen2.5:7b)**. Operates 100% offline with zero cloud latency and zero external data egress.
+* **USP 2: 🔍 Clickable Source Evidence Inspector Modal (Zero Hallucination)**:
+  * *The Trap*: PSU engineers will never trust AI recommendations without verifiable proof.
+  * *Our Standout Advantage*: Every citation in `/ask` and `/alerts` is a clickable interactive chip. Clicking it opens the scanned historical report with **yellow verbatim highlighting**, a **98.4% OCR confidence score**, and the **Chief Drilling Engineer statutory audit stamp**.
+* **USP 3: 📋 Statutory OIL Printable Pre-Spud Dossier with 3-Way Physical Sign-Off**:
+  * *The Trap*: Digital software is ignored if it cannot be used during early morning rig floor toolpusher meetings.
+  * *Our Standout Advantage*: 1-Click high-contrast A4 print view complete with the official **Oil India Limited Directorate of Drilling letterhead**, OISD-STD-174 well-control checklist, and **3-way physical signature blocks** (Senior Drilling Engineer on site, Chief Geologist at field HQ, and GM Drilling in Duliajan).
+* **USP 4: 🧮 Deterministic Geomechanics Physics Engines (Math, Not Guesswork)**:
+  * *The Trap*: Generic LLMs hallucinate critical pressures and casing depths, leading to catastrophic blowouts.
+  * *Our Standout Advantage*: All pore pressures ($P_p$), corrected $d$-exponents ($d_{cs}$), Mechanical Specific Energy (MSE), and ECD hydraulics are calculated deterministically using Python math formulas on every 1 Hz telemetry frame. The LLM is barred from generating numerical parameters.
+* **USP 5: 📱 Glove-Friendly Drill Floor Touch Cockpit (`/doghouse`)**:
+  * *The Trap*: High-stress rig floors in heavy rain or mud make mice, keyboards, and complex dashboards unusable.
+  * *Our Standout Advantage*: Giant high-contrast **7-segment digital HUD display** visible from 10 feet away, showing a 32m countdown to hazard and **1-tap glove-friendly OISD-174 shut-in buttons**.
+* **USP 6: ⛰️ Native Upper Assam Basin Geologic Grounding**:
+  * *The Standout Advantage*: Pre-programmed with the native stratigraphic column of Upper Assam (Dhekiajuli, Girujan Clay, Tipam Sandstone, Barail Group, Kopili, Sylhet Limestone) and calibrated against historical wells in Moran, Naharkatiya, Dikom, and Baghjan.
+* **USP 7: ⚡ 1-Click Judge Live Test Suite & Executive ROI Simulator**:
+  * *The Standout Advantage*: Pre-loaded with authentic Upper Assam sample files (`Sample_WCR_Moran_7.pdf`, `Sample_DDR_Moran_29.pdf`, `Sample_UpperAssam_Log.las`) for 1-click live parsing tests in front of evaluators, paired with an interactive simulator proving **₹ 94.2 Crore annual fleet savings**.
 
 ---
 

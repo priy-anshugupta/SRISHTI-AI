@@ -240,5 +240,3 @@ export default function RoiCalculator() {
     </div>
   );
 }
-
-/* commit-step-47: feat(roi) */

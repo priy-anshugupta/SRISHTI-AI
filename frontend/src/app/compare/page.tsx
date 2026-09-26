@@ -356,5 +356,3 @@ export default function ComparePage() {
     </div>
   );
 }
-
-/* commit-step-38: feat(compare) */

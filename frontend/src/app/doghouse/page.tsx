@@ -371,5 +371,3 @@ export default function DoghouseTerminal() {
     </div>
   );
 }
-
-/* commit-step-33: feat(doghouse) */
