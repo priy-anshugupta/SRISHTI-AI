@@ -2,12 +2,12 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { 
-  BarChart3, DatabaseZap, RefreshCw, Layers, TrendingUp, 
-  DollarSign, Clock, ShieldAlert, AlertTriangle, ArrowRight,
-  Sparkles, CheckCircle2, ChevronRight
+  BarChart3, Layers, TrendingUp, DollarSign, Clock, 
+  ShieldAlert, ShieldCheck, Sparkles, CheckCircle2, 
+  AlertTriangle, ArrowRight, ChevronRight, Activity,
+  Sliders, Radio, Database, HardDrive, FileText, Target
 } from 'lucide-react';
 import { api } from '@/lib/api';
-import RoiCalculator from '@/components/dashboard/RoiCalculator';
 
 type Formation = {
   id: string;
@@ -27,15 +27,6 @@ type Formation = {
   pore_pressure_ppg?: number;
   fracture_gradient_ppg?: number;
   npt_hrs?: number;
-};
-
-type FormationAnalytics = {
-  formation: Formation;
-  approved_event_count: number;
-  event_counts: Record<string, number>;
-  total_npt_hrs?: number;
-  total_npt_cost_inr?: number;
-  notice: string;
 };
 
 type RoiSummary = {
@@ -72,410 +63,524 @@ type RoiSummary = {
   };
 };
 
+const STRATIGRAPHIC_DATA = [
+  {
+    code: 'FMN-06',
+    name: 'Barail Group',
+    depth: '3,000 – 3,700m MD',
+    lithology: 'Interbedded sandstone, carbonaceous shale and coal seams',
+    hazard: 'High-pressure gas kicks and brittle coal collapse',
+    safeWindow: '10.8 – 11.4 ppg',
+    porePressure: '11.0 ppg',
+    fracGradient: '14.8 ppg',
+    nptCostCr: 59.8,
+    nptHours: 1102,
+    severity: 'CRITICAL',
+    mitigation: 'Raise mud weight to 11.2 ppg before 3,000m; monitor trip tank continuously per OISD-174.'
+  },
+  {
+    code: 'FMN-04',
+    name: 'Girujan Clay',
+    depth: '1,500 – 2,200m MD',
+    lithology: 'Mottled red/bluish-green mudstone, reactive smectite clay',
+    hazard: 'Clay swells with water and pinches drill string (differential sticking)',
+    safeWindow: '10.5 – 10.9 ppg',
+    porePressure: '8.60 ppg',
+    fracGradient: '14.0 ppg',
+    nptCostCr: 13.1,
+    nptHours: 590,
+    severity: 'HIGH',
+    mitigation: 'Maintain continuous string rotation (>60 RPM) and use KCl-polymer mud inhibitor.'
+  },
+  {
+    code: 'FMN-05',
+    name: 'Tipam Sandstone',
+    depth: '2,200 – 2,800m MD',
+    lithology: 'Porous reservoir sandstones with siltstone beds',
+    hazard: 'Drilling fluid lost into porous sand beds (lost circulation)',
+    safeWindow: '10.2 – 10.6 ppg',
+    porePressure: '8.50 ppg',
+    fracGradient: '13.8 ppg',
+    nptCostCr: 4.5,
+    nptHours: 180,
+    severity: 'MODERATE',
+    mitigation: 'Stage LCM pills and control mud weight within ±0.3 ppg of pore pressure.'
+  },
+  {
+    code: 'FMN-07',
+    name: 'Kopili Formation',
+    depth: '3,700 – 4,000m MD',
+    lithology: 'Hard splintery dark-grey shales with thin limestones',
+    hazard: 'Tectonic stress causes hole walls to cave in and enlarge',
+    safeWindow: '10.2 – 10.8 ppg',
+    porePressure: '9.90 ppg',
+    fracGradient: '13.8 ppg',
+    nptCostCr: 11.0,
+    nptHours: 408,
+    severity: 'HIGH',
+    mitigation: 'Maintain mud weight strictly between 10.3 and 10.7 ppg to prevent hole collapse.'
+  }
+];
+
 export default function AnalyticsPage() {
-  const [formations, setFormations] = useState<Formation[]>([]);
-  const [selectedFormation, setSelectedFormation] = useState<Formation | null>(null);
-  const [formationAnalytics, setFormationAnalytics] = useState<FormationAnalytics | null>(null);
   const [roiData, setRoiData] = useState<RoiSummary | null>(null);
+  const [selectedFormationCode, setSelectedFormationCode] = useState<string>('FMN-06');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const [activeMetricTab, setActiveMetricTab] = useState<'roi' | 'formations' | 'geomechanics'>('roi');
+  const [activeTab, setActiveTab] = useState<'roi' | 'formations' | 'geomechanics'>('roi');
 
-  // 1. Fetch formations and ROI data on mount
   const loadData = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
-      const [formData, roiRes] = await Promise.all([
-        api<{ formations: Formation[] }>('/api/formations'),
-        api<RoiSummary>('/api/formations/roi/summary')
-      ]);
-
-      if (formData && formData.formations) {
-        setFormations(formData.formations);
-        if (formData.formations.length > 0) {
-          const girujan = formData.formations.find(f => f.canonical_name.includes('Girujan')) || formData.formations[3] || formData.formations[0];
-          setSelectedFormation(girujan);
-          loadFormationAnalytics(girujan.id);
-        }
-      }
-
+      const roiRes = await api<RoiSummary>('/api/formations/roi/summary');
       if (roiRes) {
         setRoiData(roiRes);
       }
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not load formation analytics.');
+      setError(err instanceof Error ? err.message : 'Telemetry sync failed.');
     } finally {
       setLoading(false);
     }
   }, []);
 
-  const loadFormationAnalytics = async (formationId: string) => {
-    try {
-      const res = await api<FormationAnalytics>(`/api/formations/${formationId}/analytics`);
-      setFormationAnalytics(res);
-    } catch {
-      // fallback
-    }
-  };
-
   useEffect(() => {
     loadData();
   }, [loadData]);
 
-  const handleSelectFormation = (fmn: Formation) => {
-    setSelectedFormation(fmn);
-    loadFormationAnalytics(fmn.id);
-  };
+  const selectedStrat = STRATIGRAPHIC_DATA.find(s => s.code === selectedFormationCode) || STRATIGRAPHIC_DATA[0];
 
   return (
-    <div className="space-y-5 font-sans text-slate-100 min-h-full">
+    <div className="space-y-4 font-sans text-slate-200 max-w-[1500px] mx-auto">
       
       {/* 1. Header Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#050C10] border-2 border-[#162D38] rounded-2xl shadow-xl">
+      <div className="bg-[#0A1216] border border-slate-800 rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-            <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-              <BarChart3 className="text-cyan-400" size={20} />
-              Formation Subsurface Analytics & NPT ROI Model
+          <div className="flex items-center gap-2">
+            <h1 className="text-sm font-bold text-white tracking-wide uppercase font-mono">
+              Rock Layer Analysis & Downtime Economics
             </h1>
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-cyan-300 border border-slate-700">
+              UPPER ASSAM BASIN
+            </span>
           </div>
-          <p className="text-xs text-slate-400 font-sans">
-            Calibrated geomechanical windows, non-productive time forensic costs, and verifiable economic savings
+          <p className="text-xs text-slate-400 mt-0.5">
+            Fleet downtime forensic analysis, formation safety windows, and AI lookahead savings
           </p>
         </div>
 
-        {/* View Switcher */}
-        <div className="flex items-center gap-2 bg-[#020507] p-1 rounded-xl border border-[#162D38] text-xs font-sans shadow-inner">
+        {/* Tab Buttons */}
+        <div className="flex items-center gap-1 bg-[#060B0E] p-1 rounded-md border border-slate-800 text-xs font-mono">
           <button
-            onClick={() => setActiveMetricTab('roi')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-colors font-sans cursor-pointer ${
-              activeMetricTab === 'roi'
-                ? 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 shadow-sm'
+            onClick={() => setActiveTab('roi')}
+            className={`px-3 py-1.5 rounded transition-colors cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'roi'
+                ? 'bg-slate-800 text-cyan-300 font-semibold border border-slate-700'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
             <DollarSign size={13} />
-            <span>Economic ROI & NPT</span>
+            <span>Overview & Savings</span>
           </button>
           <button
-            onClick={() => setActiveMetricTab('formations')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-colors font-sans cursor-pointer ${
-              activeMetricTab === 'formations'
-                ? 'bg-purple-500/20 text-purple-300 border border-purple-500/40 shadow-sm'
+            onClick={() => setActiveTab('formations')}
+            className={`px-3 py-1.5 rounded transition-colors cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'formations'
+                ? 'bg-slate-800 text-cyan-300 font-semibold border border-slate-700'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
             <Layers size={13} />
-            <span>Stratigraphic Horizons</span>
+            <span>4 Danger Formations</span>
           </button>
           <button
-            onClick={() => setActiveMetricTab('geomechanics')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-colors font-sans cursor-pointer ${
-              activeMetricTab === 'geomechanics'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-sm'
+            onClick={() => setActiveTab('geomechanics')}
+            className={`px-3 py-1.5 rounded transition-colors cursor-pointer flex items-center gap-1.5 ${
+              activeTab === 'geomechanics'
+                ? 'bg-slate-800 text-cyan-300 font-semibold border border-slate-700'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
             <TrendingUp size={13} />
-            <span>Safe Mud Weight Windows</span>
+            <span>Safe Mud Weights</span>
           </button>
         </div>
       </div>
 
       {error && (
-        <div className="p-3.5 bg-red-950/40 border border-red-800 rounded-xl text-xs text-red-300 font-sans">
-          {error}
+        <div className="p-3 bg-red-950/40 border border-red-800/80 rounded text-xs text-red-300 font-mono">
+          [FAULT] {error}
         </div>
       )}
 
-      {/* 2. TAB 1: QUANTIFIED ROI & NPT COST IMPACT DASHBOARD (Key SIH Differentiator) */}
-      {activeMetricTab === 'roi' && (
-        <div className="space-y-6 font-sans">
-          {/* Interactive Executive Simulator */}
-          <RoiCalculator />
-
-          {roiData && (
-            <div className="space-y-5 font-sans">
-              {/* Top 4 KPI Metrics Banner */}
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-3.5 font-sans">
-            <div className="p-4 bg-[#050C10] border-2 border-[#162D38] border-t-[3px] border-t-red-500 rounded-2xl space-y-1 font-sans shadow-xl ring-1 ring-red-500/10">
-              <span className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider font-sans">HISTORICAL NPT COST</span>
-              <div className="text-2xl font-bold font-mono tabular-nums text-red-400">
-                ₹{roiData.operational_npt_cost_crores} <span className="text-xs text-slate-400 font-sans font-normal">Crore</span>
-              </div>
-              <div className="text-[10px] text-slate-400 font-sans">
-                <span className="font-mono tabular-nums">{roiData.operational_npt_hrs.toLocaleString()}</span> Rig Hours Lost (14 Events)
-              </div>
-            </div>
-
-            <div className="p-4 bg-[#050C10] border-2 border-[#162D38] border-t-[3px] border-t-emerald-500 rounded-2xl space-y-1 font-sans shadow-xl ring-1 ring-emerald-500/10">
-              <span className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider flex items-center gap-1 font-sans">
-                <Sparkles size={11} />
-                SRISHTI ANNUAL SAVINGS
-              </span>
-              <div className="text-2xl font-bold font-mono tabular-nums text-emerald-300">
-                ₹{roiData.roi_model.conservative_annual_savings_crores}–{roiData.roi_model.moderate_annual_savings_crores} <span className="text-xs text-slate-400 font-sans font-normal">Cr</span>
-              </div>
-              <div className="text-[10px] text-emerald-400/80 font-sans">
-                40%–55% NPT Reduction Model
-              </div>
-            </div>
-
-            <div className="p-4 bg-[#050C10] border-2 border-[#162D38] border-t-[3px] border-t-cyan-500 rounded-2xl space-y-1 font-sans shadow-xl ring-1 ring-cyan-500/10">
-              <span className="text-[10px] font-semibold text-cyan-400 uppercase tracking-wider font-sans">PROACTIVE LOOKAHEAD</span>
-              <div className="text-2xl font-bold font-mono tabular-nums text-cyan-300">
-                {roiData.roi_model.advance_warning_meters} <span className="text-xs text-slate-400 font-sans font-normal">Meters</span>
-              </div>
-              <div className="text-[10px] text-slate-400 font-sans">
-                Historical Precursor Horizon Warning
-              </div>
-            </div>
-
-            <div className="p-4 bg-[#050C10] border-2 border-[#162D38] border-t-[3px] border-t-blue-500 rounded-2xl space-y-1 font-sans shadow-xl ring-1 ring-blue-500/10">
-              <span className="text-[10px] font-semibold text-blue-400 uppercase tracking-wider font-sans">ATMANIRBHAR IMPACT</span>
-              <div className="text-2xl font-bold font-mono tabular-nums text-blue-300">
-                ₹{roiData.roi_model.foreign_software_license_avoided_crores} <span className="text-xs text-slate-400 font-sans font-normal">Cr/yr</span>
-              </div>
-              <div className="text-[10px] text-slate-400 font-sans">
-                Schlumberger / Halliburton Replaced
-              </div>
-            </div>
-          </div>
-
-          {/* Two Detailed Breakdown Tables & Bar Visualizers */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 font-sans">
+      {/* 2. TAB 1: OVERVIEW & SAVINGS */}
+      {activeTab === 'roi' && (
+        <div className="space-y-4">
+          
+          {/* Top 3 Stat Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             
-            {/* Left: NPT Cost by Drilling Incident Type */}
-            <div className="p-5 bg-[#050C10] border-2 border-[#162D38] rounded-2xl space-y-3 font-sans text-xs shadow-xl ring-1 ring-cyan-500/10">
-              <div className="flex items-center justify-between border-b border-[#162D38] pb-2.5">
-                <span className="font-bold text-white uppercase flex items-center gap-1.5 text-[11px] font-sans">
-                  <ShieldAlert size={14} className="text-amber-400" />
-                  NPT Cost by Incident Class (Upper Assam)
+            {/* Stat 1: Total Loss */}
+            <div className="bg-[#0A1216] border border-slate-800 rounded-lg p-4 space-y-1">
+              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 uppercase">
+                <span>Past Fleet Downtime Loss</span>
+                <span className="w-2 h-2 rounded-full bg-rose-500" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold font-mono text-white">₹88.5</span>
+                <span className="text-xs text-slate-400 font-mono">Crore</span>
+              </div>
+              <p className="text-xs text-slate-400">
+                2,292 rig hours lost across 14 historical incidents in Assam
+              </p>
+            </div>
+
+            {/* Stat 2: Projected Savings */}
+            <div className="bg-[#0A1216] border border-slate-800 rounded-lg p-4 space-y-1">
+              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 uppercase">
+                <span>Projected Annual Savings</span>
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold font-mono text-emerald-400">₹35 – 48</span>
+                <span className="text-xs text-slate-400 font-mono">Cr / year</span>
+              </div>
+              <p className="text-xs text-slate-400">
+                40%–50% reduction in downtime by pre-empting kicks & stuck pipe
+              </p>
+            </div>
+
+            {/* Stat 3: Lookahead Warning */}
+            <div className="bg-[#0A1216] border border-slate-800 rounded-lg p-4 space-y-1">
+              <div className="flex items-center justify-between text-[11px] font-mono text-slate-400 uppercase">
+                <span>Early Lookahead Warning</span>
+                <span className="w-2 h-2 rounded-full bg-cyan-400" />
+              </div>
+              <div className="flex items-baseline gap-2">
+                <span className="text-2xl font-bold font-mono text-cyan-300">32</span>
+                <span className="text-xs text-slate-400 font-mono">Meters MD</span>
+              </div>
+              <p className="text-xs text-slate-400">
+                Gives driller advance notice before entering dangerous rock layers
+              </p>
+            </div>
+
+          </div>
+
+          {/* Middle Two-Column Grid: Root Causes & Operational Value */}
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+            
+            {/* Left: Where 82% of Losses Happen (6 cols) */}
+            <div className="lg:col-span-6 bg-[#0A1216] border border-slate-800 rounded-lg p-4 space-y-3.5">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
+                <div className="flex items-center gap-2">
+                  <ShieldAlert size={15} className="text-amber-400" />
+                  <span className="text-xs font-bold font-mono uppercase text-slate-200">
+                    Where Downtime is Concentrated (82% of Total Losses)
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-950/60 border border-amber-800 text-amber-300">
+                  2 Root Causes
                 </span>
-                <span className="text-slate-400 text-[10px] font-sans">14 Historical Incidents</span>
               </div>
 
-              <div className="space-y-3 font-sans">
-                {roiData.breakdown_by_type.map((item, idx) => {
-                  const maxCost = 85.0; // Barail kick / stuck pipe scale
-                  const barWidth = Math.min(100, Math.max(8, (item.cost_crores / maxCost) * 100));
-                  return (
-                    <div key={idx} className="space-y-1.5 font-sans">
-                      <div className="flex justify-between text-[11px]">
-                        <span className="text-white font-bold">{item.event_type} ({item.count})</span>
-                        <span className="text-red-400 font-bold font-mono tabular-nums">₹{item.cost_crores} Cr ({item.npt_hrs} hrs)</span>
-                      </div>
-                      <div className="w-full bg-[#020507] h-2.5 rounded-full overflow-hidden border border-[#162D38] shadow-inner">
-                        <div
-                          className="h-full bg-gradient-to-r from-amber-500 to-red-500 rounded-full transition-all duration-500"
-                          style={{ width: `${barWidth}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+              <div className="space-y-3">
+                {/* Cause 1 */}
+                <div className="p-3 bg-[#060B0E] border border-slate-800 rounded space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-white">1. Barail Group — High-Pressure Gas Kicks</span>
+                    <span className="font-mono font-bold text-rose-400">₹59.0 Cr (67%)</span>
+                  </div>
+                  <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                    <div className="bg-rose-500 h-full w-[67%]" />
+                  </div>
+                  <div className="flex justify-between text-[11px] text-slate-400">
+                    <span>1,056 rig hours lost across 3 wells</span>
+                    <span>Sudden gas influx into wellbore</span>
+                  </div>
+                </div>
+
+                {/* Cause 2 */}
+                <div className="p-3 bg-[#060B0E] border border-slate-800 rounded space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-white">2. Girujan Clay — Swelling & Stuck Pipe</span>
+                    <span className="font-mono font-bold text-amber-400">₹13.1 Cr (15%)</span>
+                  </div>
+                  <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                    <div className="bg-amber-500 h-full w-[15%]" />
+                  </div>
+                  <div className="flex justify-between text-[11px] text-slate-400">
+                    <span>590 rig hours lost across 2 wells</span>
+                    <span>Swelling clay grabs drill pipe</span>
+                  </div>
+                </div>
+
+                {/* Cause 3 */}
+                <div className="p-3 bg-[#060B0E] border border-slate-800 rounded space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <span className="font-semibold text-white">3. Other Formations — Mud Loss & Cave-in</span>
+                    <span className="font-mono font-bold text-slate-300">₹16.4 Cr (18%)</span>
+                  </div>
+                  <div className="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
+                    <div className="bg-slate-500 h-full w-[18%]" />
+                  </div>
+                  <div className="flex justify-between text-[11px] text-slate-400">
+                    <span>646 rig hours lost (Tipam & Kopili)</span>
+                    <span>Fluid loss and wall collapse</span>
+                  </div>
+                </div>
               </div>
 
-              <div className="p-3 bg-[#020507] border border-[#162D38] rounded-xl text-[10px] text-slate-400 leading-relaxed font-sans shadow-inner">
-                *Note: Excludes the singular catastrophic Baghjan-5 blowout (₹2,500 Cr) to represent baseline drilling operations.
+              <div className="p-2.5 bg-[#081216] border border-slate-800 rounded text-xs text-slate-400 leading-relaxed">
+                <strong className="text-slate-200">Key Takeaway:</strong> Preventing kicks in Barail and pipe sticking in Girujan eliminates 82% of all drilling downtime for Oil India Limited.
               </div>
             </div>
 
-            {/* Right: NPT Cost by Geological Formation */}
-            <div className="p-5 bg-[#050C10] border-2 border-[#162D38] rounded-2xl space-y-3 font-sans text-xs shadow-xl ring-1 ring-cyan-500/10">
-              <div className="flex items-center justify-between border-b border-[#162D38] pb-2.5">
-                <span className="font-bold text-white uppercase flex items-center gap-1.5 text-[11px] font-sans">
-                  <Layers size={14} className="text-purple-400" />
-                  NPT Vulnerability by Formation Stratum
+            {/* Right: Conventional vs SRISHTI AI Comparison (6 cols) */}
+            <div className="lg:col-span-6 bg-[#0A1216] border border-slate-800 rounded-lg p-4 space-y-3.5">
+              <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
+                <div className="flex items-center gap-2">
+                  <ShieldCheck size={15} className="text-emerald-400" />
+                  <span className="text-xs font-bold font-mono uppercase text-slate-200">
+                    Operational Impact: Conventional vs. SRISHTI AI
+                  </span>
+                </div>
+                <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-800 text-emerald-300">
+                  Fleet Value
                 </span>
-                <span className="text-slate-400 text-[10px] font-sans">Hours Lost</span>
               </div>
 
-              <div className="space-y-3 font-sans">
-                {roiData.breakdown_by_formation.map((item, idx) => {
-                  const maxHrs = 600.0;
-                  const barWidth = Math.min(100, Math.max(8, (item.npt_hrs / maxHrs) * 100));
-                  return (
-                    <div key={idx} className="space-y-1.5 font-sans">
-                      <div className="flex justify-between text-[11px]">
-                        <span className="text-white font-bold">{item.formation}</span>
-                        <span className="text-purple-300 font-bold font-mono tabular-nums">{item.npt_hrs} hrs (₹{item.cost_crores} Cr)</span>
-                      </div>
-                      <div className="w-full bg-[#020507] h-2.5 rounded-full overflow-hidden border border-[#162D38] shadow-inner">
-                        <div
-                          className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 rounded-full transition-all duration-500"
-                          style={{ width: `${barWidth}%` }}
-                        />
-                      </div>
-                    </div>
-                  );
-                })}
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse text-xs">
+                  <thead>
+                    <tr className="border-b border-slate-800 text-slate-400 font-mono text-[10px] uppercase">
+                      <th className="py-2 px-2.5">PARAMETER</th>
+                      <th className="py-2 px-2.5">CONVENTIONAL</th>
+                      <th className="py-2 px-2.5 text-cyan-300">WITH SRISHTI AI</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-800/60 text-xs">
+                    <tr className="hover:bg-[#060B0E] transition-colors">
+                      <td className="py-2.5 px-2.5 font-medium text-slate-300">Hazard Warning</td>
+                      <td className="py-2.5 px-2.5 text-slate-400">Reactive (0m alert)</td>
+                      <td className="py-2.5 px-2.5 text-cyan-300 font-semibold font-mono">32m Early Lookahead</td>
+                    </tr>
+                    <tr className="hover:bg-[#060B0E] transition-colors">
+                      <td className="py-2.5 px-2.5 font-medium text-slate-300">Stuck Pipe Prevention</td>
+                      <td className="py-2.5 px-2.5 text-slate-400">Manual rotation during pause</td>
+                      <td className="py-2.5 px-2.5 text-cyan-300 font-semibold font-mono">Real-time swelling alert</td>
+                    </tr>
+                    <tr className="hover:bg-[#060B0E] transition-colors">
+                      <td className="py-2.5 px-2.5 font-medium text-slate-300">Gas Kick Mitigation</td>
+                      <td className="py-2.5 px-2.5 text-slate-400">Post-influx shut-in</td>
+                      <td className="py-2.5 px-2.5 text-cyan-300 font-semibold font-mono">Pre-weighted mud window</td>
+                    </tr>
+                    <tr className="hover:bg-[#060B0E] transition-colors">
+                      <td className="py-2.5 px-2.5 font-medium text-slate-300">Offset Well Research</td>
+                      <td className="py-2.5 px-2.5 text-slate-400">Manual PDF search (4–6 hrs)</td>
+                      <td className="py-2.5 px-2.5 text-cyan-300 font-semibold font-mono">Instant vector recall (&lt;1s)</td>
+                    </tr>
+                    <tr className="hover:bg-[#060B0E] transition-colors">
+                      <td className="py-2.5 px-2.5 font-medium text-slate-300">Net Fleet Benefit</td>
+                      <td className="py-2.5 px-2.5 text-rose-400 font-mono">₹88.5 Cr loss</td>
+                      <td className="py-2.5 px-2.5 text-emerald-400 font-semibold font-mono">₹35 – 48 Cr Saved / yr</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
 
-              <div className="p-3 bg-emerald-950/20 border border-emerald-900/40 rounded-xl text-[10px] text-emerald-300 leading-relaxed flex items-center gap-2 font-sans shadow-inner">
-                <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
-                <span>Girujan Clay differential sticking & Barail overpressured gas kicks account for 82% of all regional NPT.</span>
+              <div className="p-2.5 bg-[#081216] border border-slate-800 rounded text-xs text-slate-400 leading-relaxed">
+                <strong className="text-slate-200">Fleet Baseline:</strong> Based on 18 active OIL drilling rigs in Assam. Every 24 hours of avoided downtime saves approximately ₹18 Lakhs.
               </div>
             </div>
 
           </div>
-          </div>
-          )}
+
         </div>
       )}
 
-      {/* 3. TAB 2: FORMATIONS DEEP DIVE & LITHOLOGY */}
-      {activeMetricTab === 'formations' && (
-        <div className="grid grid-cols-12 gap-5 font-sans">
-          {/* Formations Grid (7 cols) */}
-          <div className="col-span-12 lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 gap-3 max-h-[620px] overflow-y-auto pr-1">
-            {formations.map((fmn) => {
-              const isSelected = selectedFormation?.id === fmn.id;
+      {/* 3. TAB 2: 4 DANGER FORMATIONS */}
+      {activeTab === 'formations' && (
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
+          
+          {/* Left Column: 4 Cards (5 cols) */}
+          <div className="lg:col-span-5 space-y-2.5">
+            {STRATIGRAPHIC_DATA.map((strat) => {
+              const isSelected = selectedFormationCode === strat.code;
               return (
                 <div
-                  key={fmn.id}
-                  onClick={() => handleSelectFormation(fmn)}
-                  className={`p-4 rounded-2xl border-2 cursor-pointer transition-all font-sans text-xs ${
+                  key={strat.code}
+                  onClick={() => setSelectedFormationCode(strat.code)}
+                  className={`p-3 rounded-lg border transition-colors cursor-pointer text-xs ${
                     isSelected
-                      ? 'bg-purple-950/40 border-purple-500/90 shadow-xl shadow-purple-950/40 ring-1 ring-purple-500/30'
-                      : 'bg-[#050C10] border-[#162D38] hover:border-slate-600 text-slate-300 shadow-md'
+                      ? 'bg-[#0E1A20] border-cyan-500/80 text-white'
+                      : 'bg-[#0A1216] border-slate-800 text-slate-300 hover:border-slate-700'
                   }`}
                 >
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="w-3.5 h-3.5 rounded-full shrink-0 shadow-sm" style={{ background: fmn.color }} />
-                    <span className="text-[10px] text-slate-400 font-mono tabular-nums px-2 py-0.5 rounded bg-[#020507] border border-[#162D38]">
-                      {fmn.top_md_m ?? fmn.depth_top_md ?? 0}–{fmn.base_md_m ?? fmn.depth_bottom_md ?? 0}m MD
+                  <div className="flex items-center justify-between mb-1">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-mono font-bold px-1.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-cyan-300">
+                        {strat.code}
+                      </span>
+                      <span className="font-bold text-sm text-white">{strat.name}</span>
+                    </div>
+                    <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded ${
+                      strat.severity === 'CRITICAL' ? 'bg-rose-950/60 text-rose-300 border border-rose-800' :
+                      strat.severity === 'HIGH' ? 'bg-amber-950/60 text-amber-300 border border-amber-800' :
+                      'bg-slate-800 text-slate-300 border border-slate-700'
+                    }`}>
+                      {strat.severity}
                     </span>
                   </div>
 
-                  <h3 className="text-sm font-bold text-white mb-1 font-sans">{fmn.canonical_name}</h3>
-                  <p className="text-[10px] text-purple-300 mb-2 font-sans font-semibold">{fmn.group_name || 'Upper Assam Tertiary'}</p>
-                  
-                  <div className="text-[11px] text-slate-400 line-clamp-2 leading-relaxed font-sans">
-                    {fmn.lithology || 'Interbedded clastics, shales and sandstones.'}
+                  <div className="text-[11px] text-cyan-300 font-mono mb-1">
+                    Depth: {strat.depth}
+                  </div>
+
+                  <p className="text-xs text-slate-400 line-clamp-1 mb-2">
+                    {strat.hazard}
+                  </p>
+
+                  <div className="flex items-center justify-between text-[11px] font-mono pt-1.5 border-t border-slate-800">
+                    <span className="text-slate-400">Safe Mud: <strong className="text-cyan-300">{strat.safeWindow}</strong></span>
+                    <span className="text-rose-400 font-semibold">₹{strat.nptCostCr} Cr loss</span>
                   </div>
                 </div>
               );
             })}
           </div>
 
-          {/* Formation Inspection Card (5 cols) */}
-          <div className="col-span-12 lg:col-span-5 bg-[#050C10] border-2 border-[#162D38] rounded-2xl p-5 font-sans text-xs space-y-4 shadow-2xl ring-1 ring-cyan-500/10">
-            {selectedFormation ? (
-              <>
-                <div className="flex items-start justify-between border-b border-[#162D38] pb-3 font-sans">
-                  <div>
-                    <span className="text-[10px] uppercase font-bold tracking-wider text-purple-400 font-sans">
-                      STRATIGRAPHIC DOSSIER · {selectedFormation.id}
-                    </span>
-                    <h2 className="text-lg font-bold text-white mt-0.5 font-sans">{selectedFormation.canonical_name}</h2>
-                    <p className="text-xs text-slate-400 mt-0.5 font-sans">{selectedFormation.group_name}</p>
-                  </div>
-                  <span className="w-4 h-4 rounded-full shadow-md" style={{ background: selectedFormation.color }} />
+          {/* Right Column: Selected Formation Detail (7 cols) */}
+          <div className="lg:col-span-7 bg-[#0A1216] border border-slate-800 rounded-lg p-5 space-y-3.5 text-xs">
+            <div className="border-b border-slate-800 pb-3 flex items-start justify-between">
+              <div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-cyan-300 border border-slate-700">
+                    {selectedStrat.code}
+                  </span>
+                  <h2 className="text-base font-bold text-white font-mono">{selectedStrat.name}</h2>
                 </div>
-
-                <div className="space-y-3">
-                  <div className="p-3.5 bg-[#020507] rounded-xl border border-[#162D38] space-y-1.5 shadow-inner">
-                    <div className="text-[10px] text-slate-400 uppercase font-bold">Lithological Profile:</div>
-                    <p className="text-slate-200 text-xs leading-relaxed">{selectedFormation.lithology}</p>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-2 text-[11px]">
-                    <div className="p-3 bg-[#020507] rounded-xl border border-[#162D38] shadow-inner">
-                      <span className="text-[10px] text-slate-400">AVG ROP</span>
-                      <div className="text-sm font-bold text-cyan-300 mt-0.5 font-mono tabular-nums">{selectedFormation.rop_range || '8–18 m/hr'}</div>
-                    </div>
-                    <div className="p-3 bg-[#020507] rounded-xl border border-[#162D38] shadow-inner">
-                      <span className="text-[10px] text-slate-400">SAFE MW WINDOW</span>
-                      <div className="text-sm font-bold text-amber-300 mt-0.5 font-mono tabular-nums">{selectedFormation.recommended_mw_ppg || '10.5–10.9 ppg'}</div>
-                    </div>
-                  </div>
-
-                  {formationAnalytics && (
-                    <div className="p-3.5 bg-[#020507] rounded-xl border border-[#162D38] space-y-2 shadow-inner">
-                      <div className="flex items-center justify-between">
-                        <span className="text-[10px] uppercase text-slate-400 font-bold">Approved Historical Incidents:</span>
-                        <span className="px-2.5 py-0.5 rounded-lg bg-purple-950/70 border border-purple-800/60 text-purple-300 font-bold text-xs">
-                          {formationAnalytics.approved_event_count} Events
-                        </span>
-                      </div>
-
-                      <div className="flex flex-wrap gap-1.5 pt-1">
-                        {Object.entries(formationAnalytics.event_counts || {}).map(([name, count]) => (
-                          <span key={name} className="px-2.5 py-1 rounded-lg bg-[#050C10] border border-[#162D38] text-slate-200 text-[11px]">
-                            {name}: <strong className="text-cyan-400 font-mono tabular-nums">{count}</strong>
-                          </span>
-                        ))}
-                      </div>
-
-                      {formationAnalytics.total_npt_hrs && (
-                        <div className="pt-2 border-t border-[#162D38]/80 text-[11px] flex justify-between text-slate-400">
-                          <span>Total Formation NPT:</span>
-                          <span className="text-red-400 font-bold font-mono tabular-nums">{formationAnalytics.total_npt_hrs} hrs (₹{((formationAnalytics.total_npt_cost_inr || 0)/10000000).toFixed(1)} Cr)</span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-                </div>
-              </>
-            ) : (
-              <div className="text-center py-12 text-slate-500">
-                Select a formation from the left to view detailed geomechanical metrics.
+                <p className="text-xs text-slate-400 mt-1 font-mono">
+                  Depth Interval: <span className="text-cyan-300 font-semibold">{selectedStrat.depth}</span>
+                </p>
               </div>
-            )}
+              <span className={`text-xs font-mono font-bold px-2.5 py-1 rounded ${
+                selectedStrat.severity === 'CRITICAL' ? 'bg-rose-950/60 text-rose-300 border border-rose-800' :
+                selectedStrat.severity === 'HIGH' ? 'bg-amber-950/60 text-amber-300 border border-amber-800' :
+                'bg-slate-800 text-slate-300 border border-slate-700'
+              }`}>
+                {selectedStrat.severity}
+              </span>
+            </div>
+
+            <div className="space-y-3">
+              <div className="p-3 bg-[#060B0E] border border-slate-800 rounded space-y-1">
+                <span className="text-[10px] font-mono text-slate-400 uppercase font-semibold block">ROCK DESCRIPTION:</span>
+                <p className="text-slate-200 text-xs leading-relaxed">{selectedStrat.lithology}</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2.5 font-mono">
+                <div className="p-2.5 bg-[#060B0E] border border-slate-800 rounded">
+                  <span className="text-[10px] text-slate-400 block">FORMATION PRESSURE</span>
+                  <span className="text-sm font-bold text-white">{selectedStrat.porePressure}</span>
+                </div>
+                <div className="p-2.5 bg-[#060B0E] border border-slate-800 rounded">
+                  <span className="text-[10px] text-slate-400 block">SAFE MUD WEIGHT</span>
+                  <span className="text-sm font-bold text-emerald-400">{selectedStrat.safeWindow}</span>
+                </div>
+              </div>
+
+              <div className="p-3 bg-[#060B0E] border border-slate-800 rounded space-y-1">
+                <span className="text-[10px] font-mono text-amber-400 uppercase font-semibold block">PRIMARY OPERATIONAL HAZARD:</span>
+                <p className="text-slate-200 text-xs leading-relaxed">{selectedStrat.hazard}</p>
+              </div>
+
+              <div className="p-3 bg-[#060B0E] border border-slate-800 rounded space-y-1">
+                <span className="text-[10px] font-mono text-emerald-400 uppercase font-semibold block">RECOMMENDED DRILLER ACTION:</span>
+                <p className="text-slate-200 text-xs leading-relaxed">{selectedStrat.mitigation}</p>
+              </div>
+
+              <div className="p-3 bg-[#060B0E] border border-slate-800 rounded flex items-center justify-between font-mono text-xs">
+                <span className="text-slate-400">HISTORICAL NPT IMPACT:</span>
+                <span className="text-rose-400 font-bold">₹{selectedStrat.nptCostCr} Cr lost · {selectedStrat.nptHours} hours downtime</span>
+              </div>
+            </div>
           </div>
+
         </div>
       )}
 
-      {/* 4. TAB 3: GEOMECHANICAL SAFE MUD WEIGHT WINDOWS */}
-      {activeMetricTab === 'geomechanics' && (
-        <div className="p-5 bg-[#050C10] border-2 border-[#162D38] rounded-2xl space-y-4 font-sans text-xs shadow-2xl ring-1 ring-cyan-500/10">
-          <div className="flex items-center justify-between border-b border-[#162D38] pb-3 font-sans">
-            <span className="font-bold text-white uppercase text-xs flex items-center gap-2 font-sans">
-              <TrendingUp size={15} className="text-cyan-400" />
-              Upper Assam Calibrated Pore Pressure & Fracture Gradient Corridor (PPFG)
-            </span>
-            <span className="text-[10px] text-slate-400 font-sans px-2.5 py-0.5 rounded bg-[#020507] border border-[#162D38]">Kumar & Talreja (2018) / Alam et al. (2019)</span>
+      {/* 4. TAB 3: SAFE MUD WEIGHTS */}
+      {activeTab === 'geomechanics' && (
+        <div className="bg-[#0A1216] border border-slate-800 rounded-lg p-4 space-y-3.5 text-xs">
+          
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+            <div>
+              <h2 className="text-xs sm:text-sm font-bold font-mono text-white uppercase flex items-center gap-2">
+                <TrendingUp size={15} className="text-cyan-400" />
+                Safe Mud Weight Limits by Depth (Assam Basin)
+              </h2>
+              <p className="text-xs text-slate-400 mt-0.5">
+                Calibrated drilling mud density corridors to avoid gas influx and rock fracture
+              </p>
+            </div>
+            <div className="flex items-center gap-3 text-[11px] font-mono">
+              <span className="flex items-center gap-1.5 text-emerald-400">
+                <span className="w-2 h-2 rounded-full bg-emerald-400" /> Safe Window
+              </span>
+              <span className="flex items-center gap-1.5 text-rose-400">
+                <span className="w-2 h-2 rounded-full bg-rose-400" /> Underbalanced (Gas Kick)
+              </span>
+              <span className="flex items-center gap-1.5 text-amber-400">
+                <span className="w-2 h-2 rounded-full bg-amber-400" /> Overbalanced (Mud Loss)
+              </span>
+            </div>
           </div>
 
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+            <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-[#162D38] text-slate-400 text-[10px] uppercase">
-                  <th className="p-3">Formation Stratum</th>
-                  <th className="p-3">Depth Interval</th>
-                  <th className="p-3">Pore Pressure (PP)</th>
-                  <th className="p-3">Safe Drilling MW Window</th>
-                  <th className="p-3">Fracture Gradient (FG)</th>
-                  <th className="p-3">Primary Wellbore Hazard</th>
+                <tr className="border-b border-slate-800 text-slate-400 font-mono text-[10px] uppercase">
+                  <th className="py-2.5 px-3">FORMATION</th>
+                  <th className="py-2.5 px-3">DEPTH INTERVAL</th>
+                  <th className="py-2.5 px-3">FORMATION PRESSURE</th>
+                  <th className="py-2.5 px-3">RECOMMENDED MUD WEIGHT</th>
+                  <th className="py-2.5 px-3">MAX LIMIT</th>
+                  <th className="py-2.5 px-3">OPERATIONAL HAZARD</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-[#162D38]/60 text-[11px]">
+              <tbody className="divide-y divide-slate-800/60 font-mono">
                 {[
-                  { name: 'Alluvium / Dihing', depth: '0–300m', pp: '8.42 ppg', window: '9.0–9.5 ppg', fg: '12.5 ppg', hazard: 'Shallow gas pocket / washout' },
-                  { name: 'Dhekiajuli', depth: '300–700m', pp: '8.42 ppg', window: '9.2–9.8 ppg', fg: '13.0 ppg', hazard: 'Porous freshwater sands' },
-                  { name: 'Namsang', depth: '700–1,500m', pp: '8.45 ppg', window: '9.5–10.0 ppg', fg: '13.5 ppg', hazard: 'Gravel loss / tight hole' },
-                  { name: 'Girujan Clay', depth: '1,500–2,200m', pp: '8.60 ppg', window: '10.5–10.9 ppg', fg: '14.0 ppg', hazard: 'Smectite swelling / Stuck pipe' },
-                  { name: 'Tipam Sandstone', depth: '2,200–2,800m', pp: '8.50 ppg (depleted)', window: '10.2–10.6 ppg', fg: '13.8 ppg', hazard: 'Thief zone losses (TS-3)' },
-                  { name: 'Barail Group', depth: '3,000–3,700m', pp: '11.0–12.3 ppg (overpressure)', window: '10.8–11.4 ppg', fg: '14.8 ppg', hazard: 'Gas kick / Coal caving' },
-                  { name: 'Kopili Formation', depth: '3,700–4,000m', pp: '9.90 ppg', window: '10.15–10.8 ppg (NARROW)', fg: '13.8 ppg', hazard: 'Severe breakout (65% enlargement)' },
-                  { name: 'Sylhet Limestone', depth: '4,000–4,200m', pp: '9.10 ppg (reversal)', window: '9.5–10.2 ppg', fg: '15.5 ppg', hazard: 'Hard abrasive drill bit wear' },
-                  { name: 'Lakadong / Therria', depth: '4,200–4,500m', pp: '11.0 ppg', window: '11.0–12.3 ppg', fg: '14.0 ppg', hazard: 'Deep HP condensate kick' }
+                  { name: 'Alluvium / Dihing', depth: '0 – 300m', pp: '8.42 ppg', mw: '9.0 – 9.5 ppg', fg: '12.5 ppg', hazard: 'Shallow gas pockets & surface gravel washout', isCritical: false },
+                  { name: 'Dhekiajuli', depth: '300 – 700m', pp: '8.42 ppg', mw: '9.2 – 9.8 ppg', fg: '13.0 ppg', hazard: 'Permeable freshwater sands; maintain filter cake', isCritical: false },
+                  { name: 'Namsang', depth: '700 – 1,500m', pp: '8.45 ppg', mw: '9.5 – 10.0 ppg', fg: '13.5 ppg', hazard: 'Gravel loss / tight hole pull during trips', isCritical: false },
+                  { name: 'Girujan Clay', depth: '1,500 – 2,200m', pp: '8.60 ppg', mw: '10.5 – 10.9 ppg', fg: '14.0 ppg', hazard: 'Smectite swelling; differential pipe sticking', isCritical: true },
+                  { name: 'Tipam Sandstone', depth: '2,200 – 2,800m', pp: '8.50 ppg (depleted)', mw: '10.2 – 10.6 ppg', fg: '13.8 ppg', hazard: 'Thief-zone losses into permeable sand beds', isCritical: false },
+                  { name: 'Barail Group', depth: '3,000 – 3,700m', pp: '11.0 – 12.3 ppg (high)', mw: '10.8 – 11.4 ppg', fg: '14.8 ppg', hazard: 'High-pressure gas kick & coal seam caving', isCritical: true },
+                  { name: 'Kopili Formation', depth: '3,700 – 4,000m', pp: '9.90 ppg', mw: '10.2 – 10.8 ppg (narrow)', fg: '13.8 ppg', hazard: 'Tectonic stress breakout; 65% hole enlargement', isCritical: true },
+                  { name: 'Sylhet Limestone', depth: '4,000 – 4,200m', pp: '9.10 ppg (reversal)', mw: '9.5 – 10.2 ppg', fg: '15.5 ppg', hazard: 'High compressive strength; severe bit wear', isCritical: false },
+                  { name: 'Lakadong / Therria', depth: '4,200 – 4,500m', pp: '11.0 ppg', mw: '11.0 – 12.3 ppg', fg: '14.0 ppg', hazard: 'Deep HP/HT gas condensate influx', isCritical: true }
                 ].map((row, i) => (
-                  <tr key={i} className="hover:bg-[#020507] transition-colors">
-                    <td className="p-3 font-bold text-white">{row.name}</td>
-                    <td className="p-3 text-cyan-300 font-mono tabular-nums">{row.depth}</td>
-                    <td className="p-3 text-red-300 font-bold font-mono tabular-nums">{row.pp}</td>
-                    <td className="p-3 text-amber-300 font-bold font-mono tabular-nums">{row.window}</td>
-                    <td className="p-3 text-slate-300 font-mono tabular-nums">{row.fg}</td>
-                    <td className="p-3 text-slate-400">{row.hazard}</td>
+                  <tr key={i} className={`hover:bg-[#060B0E] transition-colors ${row.isCritical ? 'bg-rose-950/10' : ''}`}>
+                    <td className="py-2.5 px-3 font-bold text-white font-sans flex items-center gap-2">
+                      <span className={`w-1.5 h-1.5 rounded-full ${row.isCritical ? 'bg-rose-400' : 'bg-slate-600'}`} />
+                      <span>{row.name}</span>
+                    </td>
+                    <td className="py-2.5 px-3 text-cyan-300">{row.depth}</td>
+                    <td className="py-2.5 px-3 text-slate-300">{row.pp}</td>
+                    <td className="py-2.5 px-3">
+                      <span className="px-2 py-0.5 rounded bg-emerald-950/60 border border-emerald-800 text-emerald-300 font-bold">
+                        {row.mw}
+                      </span>
+                    </td>
+                    <td className="py-2.5 px-3 text-slate-400">{row.fg}</td>
+                    <td className="py-2.5 px-3 text-slate-300 font-sans">{row.hazard}</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+
         </div>
       )}
 
