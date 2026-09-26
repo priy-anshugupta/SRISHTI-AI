@@ -10,6 +10,7 @@ import {
 import { api } from '@/lib/api';
 import { useNetworkMode } from '@/context/NetworkModeContext';
 import EvidenceModal, { EvidenceRecord } from '@/components/modals/EvidenceModal';
+import ReactMarkdown from 'react-markdown';
 
 type Evidence = {
   event_id: string;
