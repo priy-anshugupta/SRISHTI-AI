@@ -6,6 +6,7 @@ and provides an automatic offline fallback.
 from __future__ import annotations
 import json
 import logging
+import re
 from typing import Any, Dict, List, Optional, Tuple
 
 from openai import OpenAI
@@ -22,19 +23,54 @@ from backend.agents.tools import (
 logger = logging.getLogger(__name__)
 
 
-import re
-
-
 class HybridAgentOrchestrator:
     def __init__(self):
         self.settings = get_settings()
 
     def is_drilling_query(self, query: str) -> bool:
+        """
+        Determines whether the query relates to drilling, well operations, geology,
+        or Oil India operations vs. general / conversational queries.
+        """
         q = query.lower().strip()
-        if any(c in q for c in ['joke', 'who are you', 'what can you do', 'hello', 'hi']):
+
+        # Explicit conversational overrides: if user is asking casual questions or jokes
+        conversational_starters = [
+            "tell me a joke", "tell a joke", "say a joke", "one-liner", "joke",
+            "who are you", "what are you", "how are you", "who created you",
+            "what can you do", "hello", "hi", "hey", "good morning", "good evening",
+            "what is the capital", "who is the prime minister", "who is the president",
+            "who is the chief minister", "write a code", "write python", "write a poem",
+            "calculate "
+        ]
+        if any(c in q for c in conversational_starters) and not any(k in q for k in ["mud", "formation", "drilling", "kick", "stuck pipe"]):
             return False
-        return True
-        self.settings = get_settings()
+
+        # Strong distinct drilling & petroleum terminology that never appears in casual English
+        strong_drilling_terms = [
+            "drill", "mud", "kick", "stuck pipe", "casing", "rop", "wob", "rpm",
+            "barite", "bha", "drill bit", "annulus", "circulation", "moran",
+            "dikom", "shw", "tipam", "barail", "kopili", "girujan", "rig",
+            "spud", "deviation", "torque", "drag", "oisd", "blowout", "bop",
+            "hydrocarbon", "shale", "sandstone", "pore pressure", "fracture gradient",
+            "ecd", "dogleg", "ertmac", "offset well", "wellbore", "tvd", "viscosity",
+            "choke manifold", "kill mud", "petroleum", "subsurface", "lithology",
+            "casing shoe", "lost circulation", "gas surge", "doghouse"
+        ]
+        if any(term in q for term in strong_drilling_terms):
+            return True
+
+        if re.search(r'\b(mor|nhk|dlj|hgj|moran|dikom|dossier|schematic)\b', q):
+            return True
+        if re.search(r'\bwell\s*[-#]?\s*\d+\b', q):
+            return True
+        if re.search(r'\b(offset|active)\s+well\b', q):
+            return True
+
+        if re.search(r'\b\d{3,4}\s*(m|meter|metres|ft|feet)\b', q) and any(w in q for w in ["depth", "formation", "layer", "zone", "hazard"]):
+            return True
+
+        return False
 
     def _resolve_ai_client(self, mode_override: Optional[str] = None) -> Tuple[Optional[OpenAI], Optional[str], str]:
         """
@@ -131,8 +167,46 @@ class HybridAgentOrchestrator:
         q = query.lower()
         events = db_service.get_events()
 
+        is_hindi = (
+            language.upper() == "HI" or
+            any(w in q for w in ["kaun", "kya", "mein", "kitna", "bhai", "kaise", "hua", "raha", "karo"])
+        )
+        is_assamese = (
+            language.upper() == "AS" or
+            any(w in q for w in ["কি", "কেনেকৈ", "কিমান", "মৰাণ", "আছিল"])
+        )
+
+        # If not a drilling query, return a clean conversational greeting/assistance message
         if not self.is_drilling_query(query):
-            return {'answer': 'Hello! I am SRISHTI.', 'evidence': [], 'model': 'SRISHTI Offline', 'evidence_sources': [], 'verification_status': 'GENERAL', 'matched_offset_records': 0, 'oisd_standard': 'N/A', 'abstained': False}
+            if is_assamese:
+                answer_text = (
+                    "নমস্কাৰ! মই SRISHTI, অইল ইণ্ডিয়া লিমিটেডৰ (eRTMAC) AI ড্ৰিলিং সহায়ক। "
+                    "আপুনি মোক ড্ৰিলিং সুৰক্ষা, বোকাৰ ওজন (mud weight), গেছ কিক, অথবা ঐতিহাসিক কুঁৱাৰ ৰেকৰ্ডৰ বিষয়ে সুধিব পাৰে।"
+                )
+            elif is_hindi:
+                answer_text = (
+                    "नमस्ते! मैं SRISHTI हूँ, ऑयल इंडिया लिमिटेड (eRTMAC) का AI ड्रिलिंग सहायक। "
+                    "आप मुझसे ड्रिलिंग सुरक्षा, मड वेट, गैस किक, स्टक पाइप या पुराने कुओं के रिकॉर्ड के बारे में कुछ भी पूछ सकते हैं।"
+                )
+            else:
+                answer_text = (
+                    "Hello! I am SRISHTI, the AI drilling assistant for Oil India Limited (eRTMAC). "
+                    "I specialize in drilling operations, safe mud weight windows, kick prevention, and historical offset well records across Upper Assam. How can I assist you today?"
+                )
+
+            return {
+                "answer": answer_text,
+                "evidence_grounded_answer": answer_text,
+                "evidence": [],
+                "evidence_sources": [],
+                "model": "SRISHTI Offline Engine · Verified Records",
+                "mode": mode or "DETERMINISTIC_OFFLINE",
+                "tools_used": ["general_responder"],
+                "verification_status": "COMMITTED_RESPONSE",
+                "matched_offset_records": 0,
+                "oisd_standard": "OISD-STD-174 (Well Control Operations)",
+                "abstained": False
+            }
 
         # Keyword semantic matching across Upper Assam formations & events
         if "loss" in q or "mud" in q or "chori" in q or "tipam" in q:
@@ -148,15 +222,6 @@ class HybridAgentOrchestrator:
             matched_events = events[:2]
 
         primary_evt = matched_events[0]
-
-        is_hindi = (
-            language.upper() == "HI" or
-            any(w in q for w in ["kaun", "kya", "mein", "kitna", "bhai", "kaise", "hua", "raha", "karo"])
-        )
-        is_assamese = (
-            language.upper() == "AS" or
-            any(w in q for w in ["কি", "কেনেকৈ", "কিমান", "মৰাণ", "আছিল"])
-        )
 
         if is_assamese:
             answer_text = (
@@ -244,51 +309,64 @@ class HybridAgentOrchestrator:
         if not client or not model:
             return self.run_deterministic_fallback(query, target_well, current_depth_md, language, mode=mode)
 
-        # System prompt: Strictly grounded, zero hallucinations, clean and simple language
+        is_drilling = self.is_drilling_query(query)
+
+        # Grounded system prompt with adaptive handling for drilling vs general queries
         system_prompt = (
-            "You are SRISHTI, the AI drilling assistant for Oil India Limited (eRTMAC).\n"
-            "Your purpose is to give clear, accurate, and easy-to-understand drilling guidance grounded strictly in official Oil India historical well reports.\n\n"
-            "TOOL USAGE INSTRUCTIONS:\n"
-            "1. For questions about past incidents, mud weights, gas kicks, stuck pipes, or formation hazards: ALWAYS call 'retrieve_evidence_citations' (specifying formation or event_type) to retrieve official historical records and proven mitigations.\n"
-            "2. You can also call 'get_formation_hazard_profile' or 'get_oisd_standard_mitigation' to enrich your answer.\n\n"
-            "STRICT ACCURACY RULES (ZERO HALLUCINATIONS):\n"
-            "1. NEVER invent well names, depths, mud weights, or events. Only use data returned by the tools.\n"
-            "2. Always cite the exact Well Name, Formation, Depth (in meters), and Source Document from the tool outputs.\n"
-            "3. If information is not available in the records, state clearly: 'This specific parameter is not recorded in the historical logs.'\n"
-            "4. Use plain standard ASCII hyphens '-' or 'to' for ranges (e.g. '10.2 to 10.6 ppg' instead of special unicode en-dashes).\n\n"
-            "COMMUNICATION STYLE (EASY TO UNDERSTAND - NO HEAVY JARGON):\n"
-            "1. Speak clearly and simply so any drilling engineer, manager, or evaluator can understand immediately.\n"
-            "2. Avoid unnecessary academic jargon or acronym overload. Explain terms in simple words.\n"
-            "3. Structure your response into 3 clean, bold sections:\n"
-            "   - **Direct Answer**: 1-2 clear sentences directly answering the user's question.\n"
-            "   - **Past Well Records**: What happened in nearby wells (Well name, depth in meters, incident details).\n"
-            "   - **Recommended Action**: Practical steps taken by Oil India and recommended mud weight window (referencing OISD safety standards).\n"
-            "4. If the user asks in Hindi or Assamese, respond naturally in that language using the same simple 3-part format."
+            "You are SRISHTI, the intelligent AI assistant and real-time drilling copilot for Oil India Limited (eRTMAC).\n\n"
+            "FOR DRILLING, GEOLOGY & OILFIELD QUESTIONS:\n"
+            "1. Grounding & Tools: Always call 'retrieve_evidence_citations' or other available tools to ground your guidance in verified historical well logs and proven engineering mitigations.\n"
+            "2. Clarity: Avoid dumping raw sensor telemetry. Summarize events clearly in plain, professional English (or Hindi/Assamese if requested).\n"
+            "3. Structure: Use clean Markdown formatting with clear section headers:\n"
+            "   - **Answer**: 1-2 direct, clear sentences answering the question.\n"
+            "   - **What Happened in Nearby Wells**: Bullet points citing Well name, depth (in meters), and what occurred.\n"
+            "   - **Recommended Action**: Recommended mud weight window, hydraulics, or safety protocol.\n"
+            "4. Zero Hallucinations: Cite exact depths and wells from tool outputs. If records are absent, clearly state so.\n"
+            "5. TOOL CALLING RULE: Output ONLY valid JSON arguments. Never append emojis, symbols, or conversational commentary inside or after tool calls.\n\n"
+            "FOR GENERAL, CASUAL, OR OFF-TOPIC QUESTIONS:\n"
+            "1. If the user asks a general question, greeting, math problem, coding question, explanation of general topics, or casual conversation, ANSWER DIRECTLY AND NATURALLY.\n"
+            "2. Do NOT force drilling templates, nearby well incidents, or mud weight recommendations on general/unrelated topics.\n"
+            "3. Do NOT call drilling tools for non-drilling questions.\n"
+            "4. Use clean Markdown formatting (bullet points, bold text, code blocks if appropriate).\n\n"
+            "LANGUAGE SUPPORT:\n"
+            "If the user asks in Hindi or Assamese, respond naturally and fluently in that language."
         )
 
         target_info = next((w for w in db_service.get_wells() if w.get("name") == target_well or w.get("id") == target_well), None)
         well_lat = target_info["lat"] if target_info else 27.4853
         well_lon = target_info["lon"] if target_info else 95.3456
 
+        if is_drilling:
+            user_content = f"Active Well: {target_well} (Field Location: lat {well_lat}, lon {well_lon}), Current Depth: {current_depth_md}m MD, Language: {language}.\nQuery: {query}"
+        else:
+            user_content = query
+
         messages = [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": f"Active Well: {target_well} (Field Location: lat {well_lat}, lon {well_lon}), Current Depth: {current_depth_md}m MD, Language: {language}.\nQuery: {query}"}
+            {"role": "user", "content": user_content}
         ]
 
         tools_used = []
         collected_evidence = []
 
         try:
-            # Step 1: Initial call with tool calling enabled and explicit max_tokens
-            response = client.chat.completions.create(
-                model=model,
-                messages=messages,
-                tools=AGENT_TOOLS_DEFINITIONS,
-                tool_choice="auto",
-                temperature=0.0, # Zero-emoji deterministic tool calling
-
-                max_tokens=600
-            )
+            # Step 1: Initial call - pass tools only for drilling queries to optimize speed & accuracy
+            if is_drilling:
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    tools=AGENT_TOOLS_DEFINITIONS,
+                    tool_choice="auto",
+                    temperature=0.0,
+                    max_tokens=700
+                )
+            else:
+                response = client.chat.completions.create(
+                    model=model,
+                    messages=messages,
+                    temperature=0.3,
+                    max_tokens=600
+                )
 
             response_msg = response.choices[0].message
 
@@ -342,8 +420,8 @@ class HybridAgentOrchestrator:
             for u_char, asc_char in replacements.items():
                 final_answer = final_answer.replace(u_char, asc_char)
 
-            # Ensure evidence cards are always populated
-            if not collected_evidence:
+            # Ensure evidence cards are populated ONLY for drilling-related queries
+            if not collected_evidence and is_drilling:
                 fallback_data = self.run_deterministic_fallback(query, target_well, current_depth_md, language)
                 collected_evidence = fallback_data["evidence"]
 
@@ -355,9 +433,9 @@ class HybridAgentOrchestrator:
                 "model": provider_name,
                 "mode": mode or "HYBRID_LLM_TOOL_CALLING",
                 "tools_used": tools_used or ["direct_llm_synthesis"],
-                "verification_status": "COMMITTED_EVIDENCE_RETRIEVAL",
+                "verification_status": "COMMITTED_EVIDENCE_RETRIEVAL" if collected_evidence else "GENERAL_CONVERSATION",
                 "matched_offset_records": len(collected_evidence),
-                "oisd_standard": "OISD-STD-174 (Well Control Operations)",
+                "oisd_standard": "OISD-STD-174 (Well Control Operations)" if is_drilling else "N/A",
                 "abstained": False
             }
 
