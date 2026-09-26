@@ -10,17 +10,18 @@ import { useAuth } from '@/context/AuthContext';
 import { useTelemetry } from '@/context/TelemetryContext';
 
 const routeLabels: Record<string, string> = {
-  '/map': 'Geospatial Well Map',
-  '/ask': 'Ask SRISHTI (AI Chat)',
-  '/compare': 'Offset Comparison',
-  '/knowledge': 'Drilling Knowledge Graph',
-  '/alerts': 'Proactive Hazard Alerts',
-  '/analytics': 'Formation Analytics',
-  '/ingest': 'Document Ingestion',
-  '/report': 'Well Program Generator',
-  '/doghouse': 'Doghouse Touch Cockpit',
-  '/monitor': 'DCS Control Room',
-  '/plan': 'Offset Intelligence',
+  '/map': 'Nearby Well Map',
+  '/ask': 'Ask SRISHTI (AI Copilot)',
+  '/well': 'Active Well Profile',
+  '/compare': 'Compare Nearby Wells',
+  '/knowledge': 'Past Incident Memory',
+  '/alerts': 'Early Safety Alerts',
+  '/analytics': 'Rock Layer Analysis',
+  '/ingest': 'Upload & Read Reports',
+  '/report': 'Pre-Drill Safety Brief',
+  '/doghouse': 'Rig Floor View',
+  '/monitor': 'Rig Operations Monitor',
+  '/plan': 'Well Planning',
   '/review': 'Review & Verification',
 };
 
@@ -40,16 +41,16 @@ export default function Topbar() {
   } = useTelemetry();
 
   const baseRoute = '/' + (pathname?.split('/')[1] || '');
-  const currentLabel = routeLabels[baseRoute] || 'Operations';
+  const currentLabel = routeLabels[baseRoute] || 'Well Operations';
 
   return (
     <>
-    <header className="print:hidden h-14 shrink-0 bg-[#04090C]/95 backdrop-blur-md border-b-2 border-[#162D38] shadow-[0_4px_25px_rgba(0,0,0,0.7)] flex items-center justify-between gap-3 sm:gap-4 lg:gap-6 px-3 sm:px-4 lg:px-6 z-20 w-full font-sans select-none relative">
-      {/* Luminous bottom accent hairline */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/40 to-transparent pointer-events-none" />
+    <header className="print:hidden h-14 shrink-0 bg-[#04090C]/95 backdrop-blur-md border-b-2 border-[#162D38] shadow-[0_4px_25px_rgba(0,0,0,0.7)] flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 z-20 w-full font-sans select-none relative">
+      {/* Subtle bottom accent */}
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-[#162D38] pointer-events-none" />
 
       {/* 1. Left Breadcrumb Capsule */}
-      <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#071014] border border-[#162D38] shadow-inner text-xs whitespace-nowrap shrink-0">
+      <div className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#071014] border border-[#162D38] shadow-inner text-xs whitespace-nowrap shrink-0">
         <Link href="/" className="text-slate-400 hover:text-white transition-colors font-medium flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
           <span>Operations</span>
@@ -58,85 +59,81 @@ export default function Topbar() {
         <span className="text-white font-semibold tracking-wide">{currentLabel}</span>
       </div>
 
-      {/* 2. Center Active Rig Live Telemetry Ticker (Exact specification with live sync) */}
-      <div className="flex items-center justify-center flex-1 min-w-0 px-2 overflow-hidden">
-        <div className="flex items-center gap-2 sm:gap-2.5 px-3 sm:px-3.5 py-1.5 rounded-lg bg-[#071014] border border-[#162D38] shadow-inner text-xs text-slate-300 whitespace-nowrap max-w-full overflow-x-auto no-scrollbar shrink-0">
+      {/* 2. Center Active Rig Live Telemetry Ticker */}
+      <div className="flex items-center justify-center flex-1 min-w-0 px-1 overflow-visible">
+        <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#071014] border border-[#162D38] shadow-inner text-xs text-slate-300 whitespace-nowrap shrink-0">
           <span
-            className={`w-1.5 h-1.5 rounded-full shrink-0 ${
+            className={`w-2 h-2 rounded-full shrink-0 ${
               isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
             }`}
             title={isConnected ? 'Real-Time Telemetry Connected' : 'Polling Backend Telemetry'}
           />
-          <span className="text-[11px] font-mono text-[#38BDF8] font-bold">{rig || 'OIL-RIG-04'}</span>
+          <span className="text-[11px] text-[#38BDF8] font-semibold shrink-0">{rig || 'OIL-RIG-04'}</span>
           <span className="text-slate-600">·</span>
-          <span className="text-[11px] text-slate-400 font-medium">Well:</span>
-          <span className="text-[11px] font-bold text-white">{wellName || 'MORAN-29'}</span>
+          <span className="text-[11px] font-bold text-white shrink-0">{wellName || 'MORAN-29'}</span>
           <span className="text-slate-600">·</span>
-          <span className="text-[11px] text-slate-400 font-medium">Depth:</span>
-          <span className="text-[11px] font-mono tabular-nums text-emerald-400 font-bold">
-            {Number(depthMd || 2418.0).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}m MD
+          <span className="text-[11px] tabular-nums text-emerald-400 font-semibold shrink-0">
+            {Number(depthMd || 2418.0).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}m
           </span>
           <span className="text-slate-600">·</span>
-          <span className="text-[11px] text-slate-400 font-medium">Stratum:</span>
-          <span className="text-[11px] font-semibold text-[#38BDF8]">{formation || 'Barail Group'}</span>
-          <span className="text-slate-600">·</span>
-          <span className="text-[11px] text-slate-400 font-medium">ROP:</span>
-          <span className="text-[11px] font-mono tabular-nums text-white font-bold">
-            {Number(rop || 14.2).toFixed(1)} m/hr
+          <span className="text-[11px] font-semibold text-[#38BDF8] shrink-0 whitespace-nowrap">
+            {formation || 'Barail Group'}
+          </span>
+          <span className="text-slate-600 hidden sm:inline">·</span>
+          <span className="text-[11px] tabular-nums text-white font-semibold shrink-0 hidden sm:inline">
+            {Number(rop || 14.2).toFixed(1)} m/h
           </span>
         </div>
       </div>
 
       {/* 3. Right Action Controls */}
-      <div className="flex items-center gap-2 sm:gap-2.5 shrink-0 whitespace-nowrap">
+      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
         {/* Rig Air-Gap / Edge Server vs Cloud Mode Toggle */}
         <button
           onClick={toggleNetworkMode}
-          className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border text-xs font-semibold transition-all shadow-sm cursor-pointer ${
+          className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
             isAirGapped
-              ? 'bg-amber-950/60 hover:bg-amber-900/60 border-amber-500/80 text-amber-300 shadow-amber-950/40 animate-pulse'
-              : 'bg-emerald-950/40 hover:bg-emerald-900/50 border-emerald-500/60 text-emerald-300 shadow-emerald-950/30'
+              ? 'bg-amber-950/40 hover:bg-amber-900/40 border-amber-700/60 text-amber-300'
+              : 'bg-emerald-950/30 hover:bg-emerald-900/40 border-emerald-700/50 text-emerald-300'
           }`}
           title={
             isAirGapped
-              ? 'ACTIVE: Sovereign Rig Edge (Local Ollama qwen2.5:7b / Zero Internet). Click to switch to Cloud.'
-              : 'ACTIVE: Cloud Hybrid (OpenAI gpt-4o-mini / Groq). Click to switch to Rig Edge.'
+              ? 'Rig Edge Mode: Local Ollama (Runs offline without internet). Click to switch to Cloud.'
+              : 'Cloud AI Mode: High-speed cloud processing. Click to switch to Rig Edge.'
           }
         >
           {isAirGapped ? (
             <>
               <WifiOff size={13} className="text-amber-400 shrink-0" />
-              <span className="hidden lg:inline text-[11px] text-amber-400 font-medium">Rig Air-Gap:</span>
-              <span className="font-mono text-[11px] font-bold text-amber-200">Ollama (Edge)</span>
+              <span className="text-[11px] font-semibold text-amber-200">Local AI (Offline)</span>
             </>
           ) : (
             <>
               <Wifi size={13} className="text-emerald-400 shrink-0" />
-              <span className="hidden lg:inline text-[11px] text-emerald-400 font-medium">Cloud:</span>
-              <span className="font-mono text-[11px] font-bold text-emerald-200">OpenAI (gpt-4o-mini)</span>
+              <span className="text-[11px] font-semibold text-emerald-200">Cloud AI</span>
             </>
           )}
         </button>
 
-        {/* 10-Agent Swarm Trace Button */}
+        {/* AI Agent Trace Button */}
         <button
           onClick={() => setShowSwarmModal(true)}
-          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-[#0A1A22] hover:bg-[#0D2633] border border-cyan-500/50 hover:border-cyan-400 text-cyan-300 text-xs font-semibold rounded-lg transition-all shadow-md shadow-cyan-950/30"
-          title="Inspect 10-Agent LangGraph Swarm Execution Trace"
+          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-[#071014] hover:bg-[#0C1B22] border border-[#162D38] hover:border-slate-600 text-slate-300 text-xs font-medium rounded-lg transition-colors cursor-pointer"
+          title="Inspect Multi-Agent AI Decision Trace"
         >
-          <Cpu size={13} className="text-cyan-400 shrink-0" />
-          <span>Swarm Trace</span>
+          <Cpu size={13} className="text-slate-400 shrink-0" />
+          <span>AI Agent Trace</span>
         </button>
 
         {/* Proactive Notification Bell with Badge */}
         <Link
           href="/alerts"
-          className="relative p-2 bg-[#071014] hover:bg-[#0C1B22] border border-[#162D38] hover:border-cyan-500/50 rounded-lg text-slate-300 hover:text-white transition-colors shadow-sm"
+          className="relative p-2 bg-[#071014] hover:bg-[#0C1B22] border border-[#162D38] hover:border-slate-600 rounded-lg text-slate-300 hover:text-white transition-colors shrink-0"
           title="Active Drilling Advisory Alerts"
         >
           <Bell size={15} />
           {unreadAlertsCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center border border-[#04090C] animate-pulse">
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center border border-[#04090C]">
               {unreadAlertsCount}
             </span>
           )}
@@ -144,8 +141,8 @@ export default function Topbar() {
 
         {/* User Identity & Quick Log Out Button */}
         {user && (
-          <div className="flex items-center gap-2 bg-[#071014] border border-[#162D38] px-2 sm:px-2.5 py-1 rounded-lg shadow-sm">
-            <div className="hidden md:flex flex-col text-right text-xs">
+          <div className="flex items-center gap-2 bg-[#071014] border border-[#162D38] px-2 sm:px-2 py-1 rounded-lg shadow-sm shrink-0">
+            <div className="hidden xl:flex flex-col text-right text-xs">
               <span className="text-white font-semibold text-[11px] leading-tight truncate max-w-[120px]">{user.name}</span>
               <span className="text-[9px] text-slate-400 font-mono leading-tight">{user.badge}</span>
             </div>
