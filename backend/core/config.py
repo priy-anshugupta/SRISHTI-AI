@@ -14,7 +14,7 @@ class Settings(BaseSettings):
     openai_api_key: str | None = None
     openai_model: str = "gpt-4o-mini"
     groq_api_key: str | None = None
-    groq_model: str = "llama-3.3-70b-versatile"
+    groq_model: str = "qwen/qwen3.8-27b"
     gemini_api_key: str | None = None
     gemini_model: str = "gemini-1.5-flash"
     ollama_base_url: str = "http://localhost:11434/v1"
