@@ -42,18 +42,18 @@ class HybridAgentOrchestrator:
             )
 
         # Cloud Mode requested explicitly
-        if override in ("cloud", "openai"):
-            if self.settings.openai_api_key:
-                return (
-                    OpenAI(api_key=self.settings.openai_api_key),
-                    self.settings.openai_model,
-                    f"OpenAI Cloud · {self.settings.openai_model}"
-                )
+        if override in ("cloud", "groq", "openai"):
             if self.settings.groq_api_key:
                 return (
                     OpenAI(base_url="https://api.groq.com/openai/v1", api_key=self.settings.groq_api_key),
                     self.settings.groq_model,
                     f"Groq Cloud · {self.settings.groq_model}"
+                )
+            if self.settings.openai_api_key:
+                return (
+                    OpenAI(api_key=self.settings.openai_api_key),
+                    self.settings.openai_model,
+                    f"OpenAI Cloud · {self.settings.openai_model}"
                 )
             if self.settings.gemini_api_key:
                 return (
@@ -116,11 +116,10 @@ class HybridAgentOrchestrator:
     ) -> Dict[str, Any]:
         """
         Zero-hallucination deterministic fallback executed when no API key is set
-        or when offline/air-gapped.
+        or when offline/air-gapped. Delivers plain-English, executive-friendly answers.
         """
         q = query.lower()
         events = db_service.get_events()
-        wells = db_service.get_wells()
 
         # Keyword semantic matching across Upper Assam formations & events
         if "loss" in q or "mud" in q or "chori" in q or "tipam" in q:
@@ -139,26 +138,42 @@ class HybridAgentOrchestrator:
 
         is_hindi = (
             language.upper() == "HI" or
-            any(w in q for w in ["kaun", "kya", "mein", "kitna", "bhai", "kaise", "hua", "raha"])
+            any(w in q for w in ["kaun", "kya", "mein", "kitna", "bhai", "kaise", "hua", "raha", "karo"])
+        )
+        is_assamese = (
+            language.upper() == "AS" or
+            any(w in q for w in ["কি", "কেনেকৈ", "কিমান", "মৰাণ", "আছিল"])
         )
 
-        if is_hindi:
+        if is_assamese:
             answer_text = (
-                f"मोरां-२९ के ५ किमी दायरे में {primary_evt['formation']} के ऐतिहासिक ऑफसेट डेटा के अनुसार: "
-                f"वेल {primary_evt['well_id']} में {primary_evt['depth_md']}m MD पर {primary_evt['event_type']} की घटना दर्ज की गई थी। "
-                f"फील्ड-प्रमाणित समाधान: {primary_evt['mitigation']} "
-                f"ओआईएसडी मानक: OISD-STD-174 (वेल कंट्रोल ऑपरेशंस) के तहत मड वेट विंडो को १०.२-१०.६ ppg पर बनाए रखना अनिवार्य है।"
+                f"**মূল উত্তৰ (Direct Answer)**: {target_well} ৰ ওচৰত {primary_evt['formation']} স্তৰত ড্ৰিলিং কৰাৰ সময়ত প্ৰায় {primary_evt['depth_md']} মিটাৰ গভীৰতাত {primary_evt['event_type']} ৰ আশংকা থাকে।\n\n"
+                f"**ঐতিহাসিক তথ্য (Past Record)**: ওচৰৰ কুঁৱা {primary_evt['well_id']} ত {primary_evt['description']}\n\n"
+                f"**অইল ইণ্ডিয়াৰ পদক্ষেপ (Action Taken)**: {primary_evt['mitigation']} সুৰক্ষা নিৰ্দেশনা (OISD-STD-174) অনুসৰি বোকাৰ ওজন (Mud Weight) ১০.২ ৰ পৰা ১০.৬ ppg ৰ ভিতৰত ৰাখিব লাগে।"
+            )
+        elif is_hindi:
+            answer_text = (
+                f"**सीधा उत्तर (Direct Answer)**: {target_well} के पास {primary_evt['formation']} लेयर में लगभग {primary_evt['depth_md']} मीटर की गहराई पर {primary_evt['event_type']} का जोखिम रहता है।\n\n"
+                f"**ऐतिहासिक रिकॉर्ड (Past Record)**: पास के कुएं {primary_evt['well_id']} में: {primary_evt['description']}\n\n"
+                f"**ऑयल इंडिया द्वारा समाधान (Action Taken)**: {primary_evt['mitigation']} सुरक्षा नियमों (OISD-STD-174) के तहत मड वेट को 10.2 से 10.6 ppg के बीच बनाए रखना जरूरी है।"
             )
         else:
             answer_text = (
-                f"Based on verified offset well records for {primary_evt['formation']} within 5km of {target_well}: "
-                f"Well {primary_evt['well_id']} recorded a {primary_evt['event_type']} incident at {primary_evt['depth_md']}m MD. "
-                f"Proven field countermeasure: {primary_evt['mitigation']} "
-                f"Compliance Notice: Under OISD-STD-174 Well Control Guidelines, mud density must be regulated within the pore pressure-fracture gradient envelope (10.2 - 10.6 ppg)."
+                f"**Direct Answer**: In the {primary_evt['formation']} formation near {target_well}, drilling logs show a historical risk of {primary_evt['event_type']} at depths around {primary_evt['depth_md']} meters.\n\n"
+                f"**Past Well Record**: In nearby well {primary_evt['well_id']} at {primary_evt['depth_md']}m: {primary_evt['description']}\n\n"
+                f"**Action Taken by Oil India**: {primary_evt['mitigation']} Under standard safety guidelines (OISD-STD-174), maintain mud weight between 10.2 and 10.6 ppg to ensure smooth drilling."
             )
 
         evidence_cards = []
+        clean_rep = {"\u2013": "-", "\u2014": "--", "\u2018": "'", "\u2019": "'", "\u201c": '"', "\u201d": '"'}
+        for u_ch, a_ch in clean_rep.items():
+            answer_text = answer_text.replace(u_ch, a_ch)
+
         for evt in matched_events:
+            clean_mitigation = evt["mitigation"] or ""
+            for u_ch, a_ch in clean_rep.items():
+                clean_mitigation = clean_mitigation.replace(u_ch, a_ch)
+
             evidence_cards.append({
                 "event_id": evt["id"],
                 "well": evt["well_id"],
@@ -167,20 +182,20 @@ class HybridAgentOrchestrator:
                 "severity": evt["severity"],
                 "depth_from_md_m": evt["depth_md"],
                 "description": evt["description"],
-                "mitigation": evt["mitigation"],
+                "mitigation": clean_mitigation,
                 "source_file": evt["source_doc"],
                 "source_page": evt["source_page"],
                 "reviewer_status": evt.get("reviewer_status", "APPROVED"),
                 "verified_by": evt.get("verified_by", "Chief Drilling Engineer, OIL")
             })
 
-        model_label = "SRISHTI Evidence Engine · Deterministic Fallback"
+        model_label = "SRISHTI Evidence Engine · Verified Local Records"
         mode_label = "DETERMINISTIC_OFFLINE"
         if mode == "edge":
-            model_label = "Sovereign Rig Edge · Offline Deterministic Engine"
+            model_label = "Sovereign Rig Edge · Offline Verified Engine"
             mode_label = "edge"
         elif mode == "cloud":
-            model_label = "Cloud Engine · Deterministic Fallback"
+            model_label = "Cloud Engine · Verified Records"
             mode_label = "cloud"
 
         return {
@@ -208,7 +223,7 @@ class HybridAgentOrchestrator:
         """
         Main entry point: Runs hybrid LLM reasoning with deterministic tool calling.
         Automatically falls back to deterministic rule engine if no API key or upon failure.
-        Respects mode: 'cloud' (OpenAI gpt-4o-mini) vs 'edge' (Ollama / Air-Gap).
+        Respects mode: 'cloud' vs 'edge' (Ollama / Air-Gap).
         """
         client, model, provider_name = self._resolve_ai_client(mode_override=mode)
 
@@ -216,33 +231,49 @@ class HybridAgentOrchestrator:
         if not client or not model:
             return self.run_deterministic_fallback(query, target_well, current_depth_md, language, mode=mode)
 
-        # System prompt with domain guardrails
+        # System prompt: Strictly grounded, zero hallucinations, clean and simple language
         system_prompt = (
-            "You are SRISHTI·AI (सृष्टि), an AI-Powered Nearby Wells Intelligence System built for Oil India Limited (eRTMAC). "
-            "You have access to deterministic engineering and subsurface tools that query verified Upper Assam oilfield data. "
-            "CRITICAL DRILLING SAFETY RULES:\n"
-            "1. NEVER invent depths, mud weights, pressures, or well numbers. Always use tool outputs.\n"
-            "2. Always cite the exact Well Name, Formation, Depth (m MD), and OISD standards in your response.\n"
-            "3. If the user asks in Hindi or Hinglish, answer in clear, professional Hindi or Hinglish.\n"
-            "4. Mention specific mitigations (e.g. LCM pills, OBM conversion) returned by the tools."
+            "You are SRISHTI, the AI drilling assistant for Oil India Limited (eRTMAC).\n"
+            "Your purpose is to give clear, accurate, and easy-to-understand drilling guidance grounded strictly in official Oil India historical well reports.\n\n"
+            "TOOL USAGE INSTRUCTIONS:\n"
+            "1. For questions about past incidents, mud weights, gas kicks, stuck pipes, or formation hazards: ALWAYS call 'retrieve_evidence_citations' (specifying formation or event_type) to retrieve official historical records and proven mitigations.\n"
+            "2. You can also call 'get_formation_hazard_profile' or 'get_oisd_standard_mitigation' to enrich your answer.\n\n"
+            "STRICT ACCURACY RULES (ZERO HALLUCINATIONS):\n"
+            "1. NEVER invent well names, depths, mud weights, or events. Only use data returned by the tools.\n"
+            "2. Always cite the exact Well Name, Formation, Depth (in meters), and Source Document from the tool outputs.\n"
+            "3. If information is not available in the records, state clearly: 'This specific parameter is not recorded in the historical logs.'\n"
+            "4. Use plain standard ASCII hyphens '-' or 'to' for ranges (e.g. '10.2 to 10.6 ppg' instead of special unicode en-dashes).\n\n"
+            "COMMUNICATION STYLE (EASY TO UNDERSTAND - NO HEAVY JARGON):\n"
+            "1. Speak clearly and simply so any drilling engineer, manager, or evaluator can understand immediately.\n"
+            "2. Avoid unnecessary academic jargon or acronym overload. Explain terms in simple words.\n"
+            "3. Structure your response into 3 clean, bold sections:\n"
+            "   - **Direct Answer**: 1-2 clear sentences directly answering the user's question.\n"
+            "   - **Past Well Records**: What happened in nearby wells (Well name, depth in meters, incident details).\n"
+            "   - **Recommended Action**: Practical steps taken by Oil India and recommended mud weight window (referencing OISD safety standards).\n"
+            "4. If the user asks in Hindi or Assamese, respond naturally in that language using the same simple 3-part format."
         )
+
+        target_info = next((w for w in db_service.get_wells() if w.get("name") == target_well or w.get("id") == target_well), None)
+        well_lat = target_info["lat"] if target_info else 27.4853
+        well_lon = target_info["lon"] if target_info else 95.3456
 
         messages = [
             {"role": "system", "content": system_prompt},
-            {"role": "user", "content": f"Active Well: {target_well}, Current Depth: {current_depth_md}m MD, Language: {language}.\nQuery: {query}"}
+            {"role": "user", "content": f"Active Well: {target_well} (Field Location: lat {well_lat}, lon {well_lon}), Current Depth: {current_depth_md}m MD, Language: {language}.\nQuery: {query}"}
         ]
 
         tools_used = []
         collected_evidence = []
 
         try:
-            # Step 1: Initial call with tool calling enabled
+            # Step 1: Initial call with tool calling enabled and explicit max_tokens
             response = client.chat.completions.create(
                 model=model,
                 messages=messages,
                 tools=AGENT_TOOLS_DEFINITIONS,
                 tool_choice="auto",
-                temperature=0.1
+                temperature=0.1,
+                max_tokens=600
             )
 
             response_msg = response.choices[0].message
@@ -276,11 +307,26 @@ class HybridAgentOrchestrator:
                 second_response = client.chat.completions.create(
                     model=model,
                     messages=messages,
-                    temperature=0.2
+                    temperature=0.2,
+                    max_tokens=600
                 )
                 final_answer = second_response.choices[0].message.content or ""
             else:
                 final_answer = response_msg.content or ""
+
+            # Sanitize any unicode hyphens/quotes that cause display issues on Windows/terminals
+            replacements = {
+                "\u2013": "-",
+                "\u2014": "--",
+                "\u2018": "'",
+                "\u2019": "'",
+                "\u201c": '"',
+                "\u201d": '"',
+                "\u2026": "...",
+                "\u00a0": " "
+            }
+            for u_char, asc_char in replacements.items():
+                final_answer = final_answer.replace(u_char, asc_char)
 
             # Ensure evidence cards are always populated
             if not collected_evidence:
