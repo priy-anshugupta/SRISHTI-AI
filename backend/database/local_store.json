@@ -42,7 +42,8 @@
       "total_npt_hrs": 336.0,
       "mud_weight_ppg": 10.9,
       "bit_size": "8-1/2\"",
-      "casing_shoe_md": 2100.0
+      "casing_shoe_md": 2100.0,
+      "current_depth_md_m": 3450.0
     },
     {
       "id": "MOR-12",
@@ -64,7 +65,8 @@
       "total_npt_hrs": 88.0,
       "mud_weight_ppg": 10.4,
       "bit_size": "8-1/2\"",
-      "casing_shoe_md": 2150.0
+      "casing_shoe_md": 2150.0,
+      "current_depth_md_m": 3520.0
     },
     {
       "id": "MOR-56",
@@ -74,9 +76,9 @@
       "lat": 27.483,
       "lon": 95.351,
       "spud_date": "2024-06-20",
-      "td_depth_md": 2890.0,
+      "td_depth_md": 3400.0,
       "target_depth_md": 3400.0,
-      "status": "SUSPENDED",
+      "status": "COMPLETED",
       "rig": "OIL-RIG-06",
       "well_type": "Development",
       "current_formation": "Tipam Sandstone",
@@ -86,7 +88,8 @@
       "total_npt_hrs": 72.0,
       "mud_weight_ppg": 10.2,
       "bit_size": "12-1/4\"",
-      "casing_shoe_md": 1500.0
+      "casing_shoe_md": 1500.0,
+      "current_depth_md_m": 3400.0
     },
     {
       "id": "NHK-162",
@@ -108,7 +111,8 @@
       "total_npt_hrs": 114.0,
       "mud_weight_ppg": 10.4,
       "bit_size": "8-1/2\"",
-      "casing_shoe_md": 2200.0
+      "casing_shoe_md": 2200.0,
+      "current_depth_md_m": 3650.0
     },
     {
       "id": "NHK-342",
@@ -130,7 +134,8 @@
       "total_npt_hrs": 46.0,
       "mud_weight_ppg": 11.0,
       "bit_size": "8-1/2\"",
-      "casing_shoe_md": 2250.0
+      "casing_shoe_md": 2250.0,
+      "current_depth_md_m": 3420.0
     },
     {
       "id": "NHK-561",
@@ -140,19 +145,20 @@
       "lat": 27.292,
       "lon": 95.378,
       "spud_date": "2026-05-10",
-      "td_depth_md": 3100.0,
+      "td_depth_md": 3800.0,
       "target_depth_md": 3800.0,
-      "status": "ACTIVE DRILLING",
+      "status": "COMPLETED",
       "rig": "OIL-RIG-08",
       "well_type": "Exploration",
       "current_formation": "Barail Group",
-      "current_rop": 5.2,
-      "active_hazard_distance_m": 600.0,
+      "current_rop": 0.0,
+      "active_hazard_distance_m": 0.0,
       "primary_hazard": "Approaching Kopili overpressure zone (3,700m)",
       "total_npt_hrs": 24.0,
       "mud_weight_ppg": 10.6,
       "bit_size": "8-1/2\"",
-      "casing_shoe_md": 2300.0
+      "casing_shoe_md": 2300.0,
+      "current_depth_md_m": 3800.0
     },
     {
       "id": "NHK-656",
@@ -174,7 +180,8 @@
       "total_npt_hrs": 168.0,
       "mud_weight_ppg": 10.8,
       "bit_size": "6\"",
-      "casing_shoe_md": 3100.0
+      "casing_shoe_md": 3100.0,
+      "current_depth_md_m": 3850.0
     },
     {
       "id": "BGH-05",
@@ -196,7 +203,8 @@
       "total_npt_hrs": 4560.0,
       "mud_weight_ppg": 12.8,
       "bit_size": "8-1/2\"",
-      "casing_shoe_md": 3100.0
+      "casing_shoe_md": 3100.0,
+      "current_depth_md_m": 3870.0
     },
     {
       "id": "BGH-09",
@@ -218,7 +226,8 @@
       "total_npt_hrs": 192.0,
       "mud_weight_ppg": 11.2,
       "bit_size": "8-1/2\"",
-      "casing_shoe_md": 3050.0
+      "casing_shoe_md": 3050.0,
+      "current_depth_md_m": 3720.0
     },
     {
       "id": "BGH-21",
@@ -240,7 +249,8 @@
       "total_npt_hrs": 240.0,
       "mud_weight_ppg": 12.3,
       "bit_size": "6\"",
-      "casing_shoe_md": 3650.0
+      "casing_shoe_md": 3650.0,
+      "current_depth_md_m": 4100.0
     },
     {
       "id": "DLJ-101",
@@ -262,7 +272,8 @@
       "total_npt_hrs": 18.0,
       "mud_weight_ppg": 10.0,
       "bit_size": "12-1/4\"",
-      "casing_shoe_md": 2100.0
+      "casing_shoe_md": 2100.0,
+      "current_depth_md_m": 3250.0
     },
     {
       "id": "HGJ-48",
@@ -284,7 +295,8 @@
       "total_npt_hrs": 96.0,
       "mud_weight_ppg": 10.3,
       "bit_size": "8-1/2\"",
-      "casing_shoe_md": 2150.0
+      "casing_shoe_md": 2150.0,
+      "current_depth_md_m": 3380.0
     },
     {
       "id": "LK-112",
@@ -306,7 +318,8 @@
       "total_npt_hrs": 144.0,
       "mud_weight_ppg": 11.0,
       "bit_size": "8-1/2\"",
-      "casing_shoe_md": 2250.0
+      "casing_shoe_md": 2250.0,
+      "current_depth_md_m": 3600.0
     },
     {
       "id": "LK-245",
@@ -328,7 +341,8 @@
       "total_npt_hrs": 56.0,
       "mud_weight_ppg": 10.5,
       "bit_size": "8-1/2\"",
-      "casing_shoe_md": 2100.0
+      "casing_shoe_md": 2100.0,
+      "current_depth_md_m": 3150.0
     },
     {
       "id": "RDS-25",
@@ -350,7 +364,8 @@
       "total_npt_hrs": 192.0,
       "mud_weight_ppg": 10.6,
       "bit_size": "8-1/2\"",
-      "casing_shoe_md": 2050.0
+      "casing_shoe_md": 2050.0,
+      "current_depth_md_m": 3400.0
     },
     {
       "id": "RDS-147",
@@ -372,7 +387,8 @@
       "total_npt_hrs": 720.0,
       "mud_weight_ppg": 11.4,
       "bit_size": "8-1/2\"",
-      "casing_shoe_md": 2200.0
+      "casing_shoe_md": 2200.0,
+      "current_depth_md_m": 3350.0
     },
     {
       "id": "DGB-1001",
@@ -394,7 +410,8 @@
       "total_npt_hrs": 12.0,
       "mud_weight_ppg": 9.8,
       "bit_size": "12-1/4\"",
-      "casing_shoe_md": 800.0
+      "casing_shoe_md": 800.0,
+      "current_depth_md_m": 2200.0
     }
   ],
   "formations": [
@@ -1702,6 +1719,53 @@
       ],
       "id": "DOC-025",
       "uploaded_at": "2026-09-26T09:05:56.116198+00:00"
+    },
+    {
+      "filename": "Sample_WCR_Moran_7.pdf",
+      "doc_type": "Well Completion Report (WCR)",
+      "well_id": "MORAN-7",
+      "pages": 312,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.2,
+      "entities_count": 22,
+      "processing_time_s": 2.1,
+      "raw_excerpt": "HISTORICAL DRILLING INCIDENT EXCERPT (Sample_WCR_Moran_7.pdf \u00b7 Page 147):\nWell: MORAN-7 | Horizon: Tipam Sandstone | Depth: 1840.0m MD\nEvent: Lost Circulation encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed.",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-7",
+          "confidence": 99.0,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Tipam Sandstone",
+          "confidence": 98.0,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "1840.0m MD",
+          "confidence": 97.0,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Lost Circulation",
+          "confidence": 96.0,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "OISD-STD-174 well control protocol and barrier restoration",
+          "confidence": 94.0,
+          "verified": false
+        }
+      ],
+      "id": "DOC-026",
+      "uploaded_at": "2026-09-26T12:46:29.998663+00:00"
     }
   ],
   "alerts": [
@@ -1721,10 +1785,10 @@
       "hazard_horizon_md": 2450.0,
       "distance_to_hazard_m": 32.0,
       "acknowledged": true,
-      "acknowledged_by": "DR-8429",
-      "action_taken": "Executed DIFFERENTIAL PIPE STICKING SOP (GIRUJAN CLAY) on OIL-RIG-04 (Moran-29) at depth 2395.0m MD",
+      "acknowledged_by": "DR-8429 (OIL-RIG-04 Driller)",
+      "action_taken": "Prepared heavy drilling fluid in suction pit and tested emergency shut-off valves",
       "timestamp": "2026-09-18T18:00:00Z",
-      "acknowledged_at": "2026-09-26T09:06:34.621829+00:00"
+      "acknowledged_at": "2026-09-26T12:52:17.506097+00:00"
     },
     {
       "id": "ALT-102",
@@ -1797,10 +1861,11 @@
       "depth_md": 2418.0,
       "hazard_horizon_md": 2450.0,
       "distance_to_hazard_m": 32.0,
-      "acknowledged": false,
-      "acknowledged_by": null,
-      "action_taken": null,
-      "timestamp": "2026-09-18T17:00:00Z"
+      "acknowledged": true,
+      "acknowledged_by": "SYSTEM",
+      "action_taken": "done",
+      "timestamp": "2026-09-18T17:00:00Z",
+      "acknowledged_at": "2026-09-26T10:32:56.677355+00:00"
     },
     {
       "id": "ALT-106",
@@ -1822,6 +1887,69 @@
     }
   ],
   "audit_logs": [
+    {
+      "id": "AUD-029",
+      "timestamp": "2026-09-26T12:52:17.519471+00:00",
+      "actor": "DR-8429 (OIL-RIG-04 Driller)",
+      "action": "ALERT_ACKNOWLEDGED",
+      "entity_type": "ALERT",
+      "entity_id": "ALT-101",
+      "details": "Driller DR-8429 (OIL-RIG-04 Driller) acknowledged Approaching 2,450m \u2014 Barail Gas Precursor Horizon. Action recorded: Prepared heavy drilling fluid in suction pit and tested emergency shut-off valves."
+    },
+    {
+      "id": "AUD-028",
+      "timestamp": "2026-09-26T12:46:30.010452+00:00",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-026",
+      "details": "Uploaded and queued: Sample_WCR_Moran_7.pdf (312 pages)."
+    },
+    {
+      "id": "AUD-027",
+      "timestamp": "2026-09-26T11:17:26.576633+00:00",
+      "actor": "DR-8429",
+      "action": "ALERT_ACKNOWLEDGED",
+      "entity_type": "ALERT",
+      "entity_id": "ALT-101",
+      "details": "Driller DR-8429 acknowledged Approaching 2,450m \u2014 Barail Gas Precursor Horizon. Action recorded: Executed OISD-STD-174 EMERGENCY WELL CONTROL PROCEDURE on OIL-RIG-04 (Moran-29) at depth 2418.0m MD."
+    },
+    {
+      "id": "AUD-026",
+      "timestamp": "2026-09-26T11:03:29.064941+00:00",
+      "actor": "DR-8429 (OIL-RIG-04 Driller)",
+      "action": "ALERT_ACKNOWLEDGED",
+      "entity_type": "ALERT",
+      "entity_id": "ALT-101",
+      "details": "Driller DR-8429 (OIL-RIG-04 Driller) acknowledged Approaching 2,450m \u2014 Barail Gas Precursor Horizon. Action recorded: Prepared 12.8 ppg kill mud in pit and function-tested remote BOP chokes."
+    },
+    {
+      "id": "AUD-025",
+      "timestamp": "2026-09-26T11:00:18.741909+00:00",
+      "actor": "DR-8429 (OIL-RIG-04 Driller)",
+      "action": "ALERT_ACKNOWLEDGED",
+      "entity_type": "ALERT",
+      "entity_id": "ALT-101",
+      "details": "Driller DR-8429 (OIL-RIG-04 Driller) acknowledged Approaching 2,450m \u2014 Barail Gas Precursor Horizon. Action recorded: Hellllooo , doneee."
+    },
+    {
+      "id": "AUD-024",
+      "timestamp": "2026-09-26T10:54:20.812806+00:00",
+      "actor": "DR-8429 (OIL-RIG-04)",
+      "action": "ALERT_ACKNOWLEDGED",
+      "entity_type": "ALERT",
+      "entity_id": "ALT-101",
+      "details": "Driller DR-8429 (OIL-RIG-04) acknowledged Approaching 2,450m \u2014 Barail Gas Precursor Horizon. Action recorded: Prepared 12.8 ppg kill mud in suction pit and function-tested remote BOP chokes."
+    },
+    {
+      "id": "AUD-023",
+      "timestamp": "2026-09-26T10:32:56.683682+00:00",
+      "actor": "SYSTEM",
+      "action": "ALERT_ACKNOWLEDGED",
+      "entity_type": "ALERT",
+      "entity_id": "ALT-105",
+      "details": "Driller SYSTEM acknowledged Tipam Lost Circulation Risk \u2014 Approaching TS-3 Thief Zone. Action recorded: done."
+    },
     {
       "id": "AUD-022",
       "timestamp": "2026-09-26T09:06:34.628761+00:00",
