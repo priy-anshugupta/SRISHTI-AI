@@ -19,9 +19,10 @@
   --color-wellbore-light: #121F24;
   --color-wellbore-dark: #070D0F;
 
-  /* Typography — variables match layout.tsx: --font-inter & --font-mono */
+  /* Typography — Unified Executive Inter across all UI elements */
   --font-sans: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: var(--font-mono), 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  --font-mono: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  --font-code: var(--font-code), 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 }
 
 :root {
@@ -29,18 +30,23 @@
   --background-rgb: 12, 21, 24;
 }
 
-html, body {
-  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+html, body, button, input, select, textarea, div, span, p, h1, h2, h3, h4, h5, h6, a, label, li, td, th {
+  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
 }
 
-/* Precision tabular figures for telemetry numbers & codes */
-.font-mono, [class*="font-mono"] {
+code, pre, kbd, samp, .font-code {
+  font-family: var(--font-code), 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+}
+
+/* Precision tabular figures for telemetry numbers & codes on Inter */
+.font-mono, [class*="font-mono"], .tabular-nums, [class*="tabular-nums"] {
+  font-family: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif !important;
   font-feature-settings: "tnum" 1, "zero" 1;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.01em;
+  letter-spacing: normal;
 }
 
 /* Precision Scrollbars */
@@ -65,4 +71,408 @@ html, body {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   OFFICE DAY / LIGHT THEME OVERRIDES
+   Activates when html has class 'light' or data-theme='light'
+   Transforms DCS dark command center into a clean, modern, high-contrast daytime UI
+   ───────────────────────────────────────────────────────────────────────────── */
+html.light {
+  color-scheme: light;
+}
+
+html.light,
+html.light body {
+  background-color: #F1F5F9 !important;
+  color: #0F172A !important;
+}
+
+/* App Canvas & Main wrapper */
+html.light main,
+html.light #__next {
+  background-color: #F1F5F9 !important;
+  color: #0F172A !important;
+}
+
+/* 1. All Dark Hex Containers across the whole monorepo -> Crisp White Cards */
+html.light .bg-\[\#020507\],
+html.light .bg-\[\#020608\],
+html.light .bg-\[\#030608\],
+html.light .bg-\[\#030709\],
+html.light .bg-\[\#040809\],
+html.light .bg-\[\#04090C\],
+html.light .bg-\[\#04090C\]\/95,
+html.light .bg-\[\#050B0D\],
+html.light .bg-\[\#050C0E\],
+html.light .bg-\[\#050C10\],
+html.light .bg-\[\#060E12\],
+html.light .bg-\[\#070D0F\],
+html.light .bg-\[\#070D10\],
+html.light .bg-\[\#070E12\],
+html.light .bg-\[\#071014\],
+html.light .bg-\[\#071116\],
+html.light .bg-\[\#071317\],
+html.light .bg-\[\#080d0f\],
+html.light .bg-\[\#081216\],
+html.light .bg-\[\#081318\],
+html.light .bg-\[\#091012\],
+html.light .bg-\[\#091013\],
+html.light .bg-\[\#09151A\],
+html.light .bg-\[\#09171E\],
+html.light .bg-\[\#0A1013\],
+html.light .bg-\[\#0A1215\],
+html.light .bg-\[\#0A141A\],
+html.light .bg-\[\#0A151A\],
+html.light .bg-\[\#0A161C\],
+html.light .bg-\[\#0A1820\],
+html.light .bg-\[\#0A1A22\],
+html.light .bg-\[\#0B1316\],
+html.light .bg-\[\#0b1417\],
+html.light .bg-\[\#0B1519\],
+html.light .bg-\[\#0B171D\],
+html.light .bg-\[\#0C1518\],
+html.light .bg-\[\#0C171C\],
+html.light .bg-\[\#0C1B22\],
+html.light .bg-\[\#0D1518\],
+html.light .bg-\[\#0d1619\],
+html.light .bg-\[\#0D1C22\],
+html.light .bg-\[\#0D212A\],
+html.light .bg-\[\#0D2633\],
+html.light .bg-\[\#0e171a\],
+html.light .bg-\[\#0e191d\],
+html.light .bg-\[\#0E1A1E\],
+html.light .bg-\[\#0E1F27\],
+html.light .bg-\[\#0f1a1e\],
+html.light .bg-\[\#101b1f\],
+html.light .bg-\[\#111e23\],
+html.light .bg-\[\#121F24\],
+html.light .bg-\[\#132126\],
+html.light .bg-\[\#142227\],
+html.light .bg-\[\#142C37\],
+html.light .bg-\[\#162D38\],
+html.light .bg-\[\#182a32\],
+html.light .bg-\[\#1A0C0C\],
+html.light .bg-slate-950,
+html.light .bg-slate-900,
+html.light .bg-black {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+/* 2. Topbar & Header */
+html.light header {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
+}
+
+html.light header .bg-\[\#071014\] {
+  background-color: #F1F5F9 !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+html.light header button,
+html.light header a {
+  background-color: #F1F5F9 !important;
+  border-color: #E2E8F0 !important;
+  color: #334155 !important;
+}
+
+html.light header button:hover,
+html.light header a:hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+/* 3. Sidebar */
+html.light aside {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.04) !important;
+}
+
+html.light aside .border-b,
+html.light aside .border-t {
+  border-color: #E2E8F0 !important;
+}
+
+html.light aside .bg-\[\#050C10\],
+html.light aside .bg-\[\#030608\] {
+  background-color: #FFFFFF !important;
+}
+
+html.light aside .overflow-y-auto {
+  background-color: #FFFFFF !important;
+}
+
+html.light aside a {
+  color: #475569 !important;
+}
+
+html.light aside a:hover {
+  background-color: #F1F5F9 !important;
+  color: #0F172A !important;
+}
+
+html.light aside a.bg-\[\#0D5C75\]\/25,
+html.light aside a.border-\[\#0D5C75\] {
+  background-color: #F0F9FF !important;
+  border-color: #0284C7 !important;
+  color: #0369A1 !important;
+}
+
+html.light aside .bg-\[\#060E12\] {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+html.light aside .bg-\[\#060E12\]:hover {
+  background-color: #F1F5F9 !important;
+}
+
+/* 4. Chat Area (Ask SRISHTI) */
+html.light .flex-1.overflow-y-auto {
+  background-color: #F8FAFC !important;
+}
+
+html.light header .via-cyan-500\/40 {
+  display: none !important;
+}
+
+/* Chat Assistant Bubble */
+html.light .bg-\[\#0F1A1E\],
+html.light .bg-\[\#0f1a1e\] {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Chat User Bubble */
+html.light .bg-\[\#0D5C75\] {
+  background-color: #0D5C75 !important;
+  color: #FFFFFF !important;
+}
+
+/* Suggestions Buttons */
+html.light .bg-\[\#0E181C\],
+html.light .bg-\[\#0e181c\] {
+  background-color: #F1F5F9 !important;
+  border-color: #CBD5E1 !important;
+  color: #334155 !important;
+}
+
+html.light .bg-\[\#0E181C\]:hover,
+html.light .hover\:bg-\[\#15252C\]:hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+/* Chat Input Bar */
+html.light form.border-t {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+
+html.light input[type="text"],
+html.light input[type="number"],
+html.light input[type="search"],
+html.light textarea,
+html.light select {
+  background-color: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+html.light input:focus,
+html.light textarea:focus,
+html.light select:focus {
+  background-color: #FFFFFF !important;
+  border-color: #0284C7 !important;
+  box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.15) !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+/* 5. Right Grounded Evidence Panel & Cards */
+html.light .w-full.xl\:w-96 {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+}
+
+html.light .w-full.xl\:w-96 .bg-\[\#070D0F\] {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+html.light .w-full.xl\:w-96 .bg-\[\#070D0F\]:hover,
+html.light .w-full.xl\:w-96 .hover\:bg-\[\#0C171C\]:hover {
+  background-color: #FFFFFF !important;
+  border-color: #0284C7 !important;
+  box-shadow: 0 4px 12px rgba(2, 132, 199, 0.08) !important;
+}
+
+/* Applied Mitigation Box in Light Mode */
+html.light .bg-\[\#0D1A1F\],
+html.light .bg-\[\#0d1a1f\] {
+  background-color: #F0F9FF !important;
+  border-color: #BAE6FD !important;
+  color: #0369A1 !important;
+}
+
+/* 6. Typography High Contrast Overrides */
+html.light .text-white {
+  color: #0F172A !important;
+}
+
+html.light .text-slate-100,
+html.light .text-slate-200,
+html.light .text-slate-300 {
+  color: #1E293B !important;
+}
+
+html.light .text-slate-400 {
+  color: #475569 !important;
+}
+
+html.light .text-slate-500,
+html.light .text-slate-600 {
+  color: #64748B !important;
+}
+
+/* Make Cyan Text Deep Petroleum Blue on Light */
+html.light .text-\[\#38BDF8\],
+html.light .text-cyan-400,
+html.light .text-cyan-300,
+html.light .text-sky-400,
+html.light .text-sky-300 {
+  color: #0284C7 !important;
+}
+
+/* Make Amber Text Deep Warm Ochre on Light */
+html.light .text-\[\#D97706\],
+html.light .text-amber-400,
+html.light .text-amber-300,
+html.light .text-amber-200 {
+  color: #B45309 !important;
+}
+
+/* Make Emerald Green Text Forest Green on Light */
+html.light .text-\[\#10B981\],
+html.light .text-\[\#34d399\],
+html.light .text-emerald-400,
+html.light .text-emerald-300 {
+  color: #047857 !important;
+}
+
+/* Make Red Text Crimson on Light */
+html.light .text-red-400,
+html.light .text-red-300 {
+  color: #DC2626 !important;
+}
+
+/* 7. Borders & Dividers */
+html.light .border-\[\#162D38\],
+html.light .border-slate-800,
+html.light .border-slate-800\/80,
+html.light .border-slate-800\/60,
+html.light .border-slate-800\/50,
+html.light .border-slate-800\/40,
+html.light .border-slate-800\/30,
+html.light .border-slate-700 {
+  border-color: #E2E8F0 !important;
+}
+
+/* 8. Status Badges & Pills */
+html.light .bg-emerald-950\/40,
+html.light .bg-emerald-950\/50,
+html.light .bg-emerald-950\/60,
+html.light .bg-emerald-950\/70 {
+  background-color: #ECFDF5 !important;
+  border-color: #A7F3D0 !important;
+  color: #065F46 !important;
+}
+
+html.light .bg-amber-950\/40,
+html.light .bg-amber-950\/50,
+html.light .bg-amber-950\/60,
+html.light .bg-amber-950\/70 {
+  background-color: #FFFBEB !important;
+  border-color: #FDE68A !important;
+  color: #92400E !important;
+}
+
+html.light .bg-red-950\/40,
+html.light .bg-red-950\/50,
+html.light .bg-red-950\/60 {
+  background-color: #FEF2F2 !important;
+  border-color: #FECACA !important;
+  color: #991B1B !important;
+}
+
+html.light .bg-cyan-950\/40,
+html.light .bg-cyan-950\/50,
+html.light .bg-cyan-950\/60,
+html.light .bg-sky-950\/40 {
+  background-color: #F0F9FF !important;
+  border-color: #BAE6FD !important;
+  color: #0369A1 !important;
+}
+
+/* 9. Modals & Popups */
+html.light .fixed.inset-0.bg-black\/80 {
+  background-color: rgba(15, 23, 42, 0.45) !important;
+  backdrop-filter: blur(6px) !important;
+}
+
+html.light .bg-\[\#0e171a\],
+html.light .bg-\[\#091418\],
+html.light .bg-\[\#0B1519\] {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  color: #0F172A !important;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1) !important;
+}
+
+/* 10. Tables, Lists, & Dashboard Grids */
+html.light table {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+}
+
+html.light thead,
+html.light th {
+  background-color: #F1F5F9 !important;
+  color: #334155 !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.light tr {
+  border-color: #E2E8F0 !important;
+}
+
+html.light tr:hover {
+  background-color: #F8FAFC !important;
+}
+
+html.light td {
+  color: #0F172A !important;
+}
+
+/* 11. Custom Scrollbars in Light Mode */
+html.light ::-webkit-scrollbar-track {
+  background: #F1F5F9 !important;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #CBD5E1 !important;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8 !important;
 }
