@@ -27,7 +27,10 @@ def _enrich_event(e: dict) -> dict:
         "source_page": e.get("source_page"),
         "review_status": e.get("reviewer_status", "APPROVED"),
         "formations": {"canonical_name": e.get("formation", "Unknown")},
-        "source_documents": {"original_filename": e.get("source_doc", "Unknown")}
+        "source_documents": {"original_filename": e.get("source_doc", "Unknown")},
+        "npt_cost_inr": e.get("npt_cost_inr", 0),
+        "duration_hrs": e.get("duration_hrs", 0),
+        "verified_by": e.get("verified_by", "Oil India Drilling Team")
     }
 
 
