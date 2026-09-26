@@ -3,7 +3,9 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, useRouter } from 'next/navigation';
 import { 
-  FileSearch, MapPin, RefreshCw, Anchor, ArrowLeft, CheckCircle2, AlertTriangle, ShieldCheck
+  ArrowLeft, RefreshCw, Activity, Clock, Anchor, Layers, 
+  ShieldAlert, CheckCircle2, AlertTriangle, ExternalLink,
+  ChevronRight, Wrench, FileText, Check, Monitor
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import Link from 'next/link';
@@ -21,6 +23,9 @@ type Event = {
   review_status: string;
   formations: { canonical_name: string } | null;
   source_documents: { original_filename: string } | null;
+  npt_cost_inr?: number;
+  duration_hrs?: number;
+  verified_by?: string;
 };
 
 type Well = {
@@ -28,42 +33,111 @@ type Well = {
   name: string;
   field: string | null;
   block: string | null;
+  lat?: number;
+  lon?: number;
   status: string;
   well_type: string | null;
   current_depth_md_m: number | null;
   target_depth_md_m: number | null;
+  td_depth_md?: number;
   rig?: string;
   spud_date?: string;
   mud_weight_ppg?: number;
   bit_size?: string;
   casing_shoe_md?: number;
   primary_hazard?: string;
+  total_npt_hrs?: number;
+};
+
+type FormationTop = {
+  top_md_m: number;
+  base_md_m: number;
+  correlation_confidence: number | null;
+  formations: { canonical_name: string; color: string };
+  lithology?: string;
+  recommended_mw_ppg?: string;
+  primary_hazard?: string;
 };
 
 type Dossier = {
   well: Well;
   drilling_events: Event[];
-  formation_tops: {
-    top_md_m: number;
-    base_md_m: number;
-    correlation_confidence: number | null;
-    formations: { canonical_name: string; color: string };
-  }[];
+  formation_tops: FormationTop[];
   casing_strings?: {
-    size: string;
-    set_depth_m: number;
+    od?: string;
+    size?: string;
+    shoe_md?: number;
+    set_depth_m?: number;
     type: string;
+    weight?: string;
+    cement?: string;
   }[];
 };
 
-// Short, clear titles for common incidents
-function getShortTitle(raw: string): string {
+// Plain English title
+function getSimpleTitle(raw: string): string {
   const t = (raw || '').toLowerCase();
-  if (t.includes('differential') || t.includes('sticking')) return 'Pipe Sticking (Differential)';
-  if (t.includes('kick') || t.includes('gas')) return 'Gas Kick Alert';
-  if (t.includes('loss') || t.includes('circulation')) return 'Lost Circulation';
-  if (t.includes('breakout')) return 'Borehole Breakout';
+  if (t.includes('differential') || t.includes('sticking') || t.includes('stuck')) return 'Drill Pipe Got Stuck';
+  if (t.includes('blowout')) return 'Gas Blowout Incident';
+  if (t.includes('kick') || t.includes('influx') || t.includes('overpressure')) return 'High-Pressure Gas Influx';
+  if (t.includes('loss') || t.includes('circulation')) return 'Mud Leak (Lost Circulation)';
+  if (t.includes('breakout') || t.includes('collapse') || t.includes('caving')) return 'Borehole Wall Collapse';
+  if (t.includes('tight') || t.includes('pack-off')) return 'Hole Jammed with Rock Chips';
   return raw || 'Drilling Incident';
+}
+
+// Convert complex jargon into 2 simple sentences (Problem & Fix)
+function simplifyIncident(rawType: string, rawDesc: string, rawMitigation: string | null) {
+  const text = (rawType + ' ' + (rawDesc || '')).toLowerCase();
+
+  let problem = 'Encountered unexpected underground drilling difficulties during this interval.';
+  let solution = 'Drilling crew stabilized the borehole using standard fluid balancing procedures.';
+
+  if (text.includes('blowout')) {
+    problem = 'High-pressure gas surged up the wellbore during workover, triggering an emergency.';
+    solution = 'Specialized well control snubbing team pumped heavy kill mud to permanently seal the well.';
+  } else if (text.includes('differential') || text.includes('stuck') || text.includes('sticking')) {
+    problem = 'Drill pipe stuck against sticky clay walls after remaining stationary.';
+    solution = 'Pumped lubricating soak pill and kept the drill string rotating to pull free.';
+  } else if (text.includes('lost circulation') || text.includes('loss') || text.includes('leak')) {
+    problem = 'Drilling mud leaked into porous rock cracks, causing fluid levels to drop.';
+    solution = 'Pumped coarse sealing material (calcium carbonate & mica) to plug the cracks.';
+  } else if (text.includes('kick') || text.includes('influx') || text.includes('overpressure')) {
+    problem = 'High-pressure gas entered the wellbore, causing drilling pit fluid levels to rise.';
+    solution = 'Closed surface safety valves (BOP) and circulated heavier mud to control the gas.';
+  } else if (text.includes('breakout') || text.includes('collapse') || text.includes('caving')) {
+    problem = 'Wellbore walls collapsed under high underground rock pressure.';
+    solution = 'Pumped heavier mud to hold walls steady and cemented the damaged section.';
+  } else if (text.includes('tight') || text.includes('pack-off')) {
+    problem = 'Loose rock fragments packed around the drill bit, restricting movement.';
+    solution = 'Pumped a thick fluid sweep to flush out rock fragments and re-drilled smooth.';
+  } else if (rawDesc) {
+    problem = rawDesc.split('.')[0] + '.';
+  }
+
+  if (rawMitigation && !text.includes('blowout') && !text.includes('differential') && !text.includes('lost circulation') && !text.includes('kick') && !text.includes('breakout') && !text.includes('tight')) {
+    solution = rawMitigation.split('.')[0] + '.';
+  }
+
+  return { problem, solution };
+}
+
+function formatCostInr(inr?: number): string {
+  if (!inr || inr <= 0) return '';
+  if (inr >= 10000000) {
+    return `₹${(inr / 10000000).toLocaleString('en-IN', { maximumFractionDigits: 1 })} Cr`;
+  }
+  return `₹${(inr / 100000).toLocaleString('en-IN', { maximumFractionDigits: 1 })} L`;
+}
+
+function getConstructionYear(dateStr?: string): string {
+  if (!dateStr) return 'Historical Well';
+  try {
+    const d = new Date(dateStr);
+    return `${d.getFullYear()}`;
+  } catch {
+    return dateStr;
+  }
 }
 
 export default function WellPage() {
@@ -75,6 +149,7 @@ export default function WellPage() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [allWells, setAllWells] = useState<Well[]>([]);
+  const [activeTab, setActiveTab] = useState<'schematic' | 'timeline' | 'formations' | 'lessons'>('schematic');
 
   useEffect(() => {
     api<{ total: number; wells: Well[] }>('/api/wells')
@@ -102,102 +177,127 @@ export default function WellPage() {
 
   if (loading && !data) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] text-xs text-slate-400 space-y-2">
+      <div className="flex flex-col items-center justify-center min-h-[50vh] text-xs text-slate-400 space-y-3">
         <RefreshCw size={24} className="animate-spin text-cyan-400" />
-        <p>Loading {params.id}…</p>
+        <p className="text-slate-300">Loading well details ({params.id})…</p>
       </div>
     );
   }
 
   if (error || !data) {
     return (
-      <div className="p-5 bg-[#0B1316] border border-red-800 rounded-xl text-xs text-red-300 space-y-2">
+      <div className="p-5 bg-[#050C10] border border-red-800 rounded-xl text-xs text-red-300 space-y-3 max-w-lg mx-auto my-8">
         <div className="text-sm font-bold text-white flex items-center gap-2">
           <AlertTriangle className="text-red-400" size={16} />
-          Failed to load {params.id}
+          Could not load well details
         </div>
-        <p>{error || 'Well not found.'}</p>
-        <button
-          onClick={loadDossier}
-          className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded font-bold"
-        >
-          Retry
-        </button>
+        <p className="text-slate-400">{error || 'Well record not found.'}</p>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={loadDossier}
+            className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold"
+          >
+            Retry
+          </button>
+          <Link
+            href="/map"
+            className="px-3 py-1.5 bg-[#0D5C75] hover:bg-[#147695] text-white rounded-lg font-bold"
+          >
+            Back to Map
+          </Link>
+        </div>
       </div>
     );
   }
 
   const { well, drilling_events, formation_tops, casing_strings } = data;
-  const isActiveRigWell = well.id === 'MOR-29' || well.name?.toUpperCase().includes('MORAN-29') || (well.status || '').toUpperCase().includes('ACTIVE');
-  const currentWellDepth = isActiveRigWell ? depthMd : (well.current_depth_md_m ?? 2418.0);
-  const targetDepth = well.target_depth_md_m ?? 3500.0;
-  const progressPct = Math.min(100, Math.round((currentWellDepth / targetDepth) * 100));
+  const isActiveRigWell = well.id === 'MOR-29' || well.name?.toUpperCase().replace(/[^A-Z0-9]/g, '') === 'MORAN29';
+  const finalDrilledDepth = well.td_depth_md ?? well.target_depth_md_m ?? well.current_depth_md_m ?? 3500.0;
+  const currentWellDepth = isActiveRigWell ? depthMd : finalDrilledDepth;
+  const targetDepth = isActiveRigWell ? (well.target_depth_md_m ?? 3500.0) : finalDrilledDepth;
+  const progressPct = isActiveRigWell ? Math.min(100, Math.round((currentWellDepth / targetDepth) * 100)) : 100;
 
-  const defaultCasings = casing_strings || [
-    { size: '20"', set_depth_m: 300, type: 'Conductor' },
-    { size: '13-3/8"', set_depth_m: 1500, type: 'Surface' },
-    { size: '9-5/8"', set_depth_m: 2200, type: 'Intermediate' },
-    { size: '7"', set_depth_m: 3500, type: 'Target Liner' }
-  ];
+  // Casing shoe depths
+  const conductorShoe = casing_strings?.find(c => c.od === '20"' || c.type === 'Conductor')?.shoe_md ?? 50;
+  const surfaceShoe = casing_strings?.find(c => c.od === '13-3/8"' || c.type === 'Surface')?.shoe_md ?? Math.min(500, Math.round(targetDepth * 0.15));
+  const intermediateShoe = well.casing_shoe_md ?? casing_strings?.find(c => c.od === '9-5/8"' || c.type === 'Intermediate')?.shoe_md ?? Math.round(targetDepth * 0.6);
 
-  // SVG Scaled Depth Calculations (expanded to fill vertical card height)
-  const svgHeight = 520;
+  // Downtime & cost
+  const totalNptHours = well.total_npt_hrs ?? drilling_events.reduce((acc, ev) => acc + (ev.duration_hrs || 0), 0);
+  const totalFinancialCost = drilling_events.reduce((acc, ev) => acc + (ev.npt_cost_inr || 0), 0);
+
+  // SVG Scaled Depth Calculations
+  const svgHeight = 480;
   const svgTopY = 30;
-  const svgUsableHeight = 440;
+  const svgUsableHeight = 410;
   const getYForDepth = (d: number) => Math.min(svgHeight - 20, Math.max(svgTopY, svgTopY + (d / targetDepth) * svgUsableHeight));
 
+  const conductorY = getYForDepth(conductorShoe);
+  const surfaceY = getYForDepth(surfaceShoe);
+  const interY = getYForDepth(intermediateShoe);
+  const targetY = getYForDepth(targetDepth);
   const bitY = getYForDepth(currentWellDepth);
-  const hazardY = getYForDepth(2450);
+
+  // Hazard marker
+  let hazardDepth: number | null = null;
+  let hazardLabel: string = '';
+  if (isActiveRigWell) {
+    hazardDepth = 2450;
+    hazardLabel = 'Barail Gas Zone (2,450m)';
+  } else if (drilling_events.length > 0) {
+    hazardDepth = drilling_events[0].depth_from_md_m;
+    hazardLabel = `${getSimpleTitle(drilling_events[0].event_type)} (${Math.round(hazardDepth)}m)`;
+  } else if (well.primary_hazard) {
+    const match = well.primary_hazard.match(/(\d+[\d,]*)\s*m/i);
+    if (match) {
+      hazardDepth = parseFloat(match[1].replace(/,/g, ''));
+      hazardLabel = `${well.primary_hazard.split('(')[0].trim().slice(0, 24)} (${Math.round(hazardDepth)}m)`;
+    }
+  }
+  const hazardY = hazardDepth ? getYForDepth(hazardDepth) : null;
 
   return (
-    <div className="space-y-4 font-sans text-slate-100 min-h-full pb-8">
+    <div className="space-y-3 font-sans text-slate-100 min-h-full pb-8">
       
-      {/* 1. Header Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-[#050C10] border-2 border-[#162D38] rounded-xl shadow-lg">
+      {/* 1. Header Toolbar (Clean, Uncluttered) */}
+      <div className="flex flex-wrap items-center justify-between gap-2.5 p-3 bg-[#050C10] border-2 border-[#162D38] rounded-xl shadow-md">
         <div className="flex items-center gap-2.5">
           <Link
             href="/map"
-            className="p-2 rounded-lg bg-[#020507] border border-[#162D38] text-slate-300 hover:text-white transition-all shadow-sm"
-            title="Back to Map"
+            className="px-2.5 py-1.5 rounded-lg bg-[#020507] border border-[#162D38] text-slate-300 hover:text-white transition-all flex items-center gap-1 text-xs font-semibold"
+            title="Back to Nearby Well Map"
           >
-            <ArrowLeft size={14} />
+            <ArrowLeft size={13} />
+            <span>Map</span>
           </Link>
 
           <div>
-            <div className="flex items-center gap-2 mb-0.5">
-              <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
-              <h1 className="text-lg font-bold tracking-tight text-white">
+            <div className="flex items-center gap-2">
+              <span className={`w-2 h-2 rounded-full ${isActiveRigWell ? 'bg-cyan-400 animate-pulse' : 'bg-emerald-400'}`} />
+              <h1 className="text-base font-bold text-white tracking-wide">
                 {well.name}
               </h1>
               <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                isActiveRigWell ? 'bg-cyan-950 text-cyan-300 border border-cyan-700 animate-pulse' :
-                'bg-slate-800 text-slate-300 border border-slate-700'
+                isActiveRigWell 
+                  ? 'bg-cyan-950 text-cyan-300 border border-cyan-800' 
+                  : well.status === 'CRITICAL INCIDENT'
+                  ? 'bg-red-950 text-red-300 border border-red-800'
+                  : 'bg-emerald-950 text-emerald-300 border border-emerald-800'
               }`}>
-                {isActiveRigWell ? 'ACTIVE DRILLING' : (well.status || 'RECORD')}
+                {isActiveRigWell ? 'Active Drilling' : 'Completed Well'}
               </span>
             </div>
             
-            <p className="text-[11px] text-slate-400">
-              Field: <strong className="text-white">{well.field || 'Moran'}</strong> · Rig: <strong className="text-cyan-300">{well.rig || 'OIL-RIG-04'}</strong> · Target: <strong className="text-slate-200">{targetDepth}m</strong>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              {well.field || 'Upper Assam'} Field · {isActiveRigWell ? `Target: ${targetDepth}m` : `Total Depth: ${targetDepth}m`} · {getConstructionYear(well.spud_date)}
             </p>
           </div>
         </div>
 
-        {/* Right Controls: Switch Well & Refresh */}
+        {/* Right Controls */}
         <div className="flex items-center gap-2 text-xs">
-          <select
-            value={params.id}
-            onChange={(e) => router.push(`/well/${e.target.value}`)}
-            className="bg-[#020507] text-white text-xs font-semibold border border-[#162D38] rounded-lg px-2.5 py-1.5 outline-none cursor-pointer"
-          >
-            {allWells.map((w) => (
-              <option key={w.id} value={w.id}>
-                {w.name} {w.id === 'MOR-29' ? '★ (Active)' : ''}
-              </option>
-            ))}
-          </select>
-
-          <button
+          {isActiveRigWell ? (
+            <Link
             onClick={loadDossier}
             disabled={loading}
             className="flex items-center gap-1 px-3 py-1.5 bg-[#0D5C75] hover:bg-[#147695] text-white rounded-lg font-bold transition-all disabled:opacity-50"
