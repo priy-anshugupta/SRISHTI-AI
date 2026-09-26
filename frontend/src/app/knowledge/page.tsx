@@ -1545,5 +1545,3 @@ export default function KnowledgePage() {
     </div>
   );
 }
-
-/* commit-step-40: feat(knowledge) */
