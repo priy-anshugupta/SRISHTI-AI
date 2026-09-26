@@ -163,7 +163,7 @@ export default function SwarmTraceModal({ isOpen, onClose }: SwarmTraceModalProp
           </button>
         </div>
 
-        {/* 4 Scenario Selector Bar (1-Click Judge Sandbox) */}
+        {/* 4 Scenario Selector Bar (Operational Incident Presets) */}
         <div className="bg-[#0D1518] px-6 py-2.5 border-b border-slate-800 flex flex-wrap gap-2 items-center">
           <span className="text-xs text-amber-500 uppercase tracking-wider mr-2 font-semibold">
             Preset Scenarios:

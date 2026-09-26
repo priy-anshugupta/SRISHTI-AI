@@ -25,7 +25,7 @@ async def list_formations():
 async def roi_summary():
     """
     Computes fleet-wide NPT cost and quantified business ROI for Upper Assam operations.
-    Directly addresses SIH judge criteria for business impact and quantifiable savings.
+    Quantifies operational business impact and fleet-wide NPT avoidance savings.
     """
     events = db_service.get_events()
     total_events = len(events)

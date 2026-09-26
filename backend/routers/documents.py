@@ -197,7 +197,7 @@ async def parse_las_file(file: UploadFile = File(...)):
 @router.post("/load-sample")
 def load_sample_document(sample_name: str = Query("wcr_moran_7")):
     """
-    1-Click Judge Live Test: Loads authentic WCR or DDR sample files directly into the evidence pipeline.
+    Loads authentic WCR or DDR benchmark demonstration files directly into the evidence pipeline.
     """
     sample_files = {
         "wcr_moran_7": ("Sample_WCR_Moran_7.pdf", "MORAN-7", "Tipam Sandstone", 1840.0, "Lost Circulation"),
