@@ -12,7 +12,7 @@ import { useTelemetry } from '@/context/TelemetryContext';
 const routeLabels: Record<string, string> = {
   '/map': 'Nearby Well Map',
   '/ask': 'Ask SRISHTI (AI Copilot)',
-  '/well': 'Active Well Profile',
+  '/well': 'Well Profile & Dossier',
   '/compare': 'Compare Nearby Wells',
   '/knowledge': 'Past Incident Memory',
   '/alerts': 'Early Safety Alerts',
@@ -20,7 +20,6 @@ const routeLabels: Record<string, string> = {
   '/ingest': 'Upload & Read Reports',
   '/report': 'Pre-Drill Safety Brief',
   '/doghouse': 'Rig Floor View',
-  '/monitor': 'Rig Operations Monitor',
   '/plan': 'Well Planning',
   '/review': 'Review & Verification',
 };
@@ -41,7 +40,17 @@ export default function Topbar() {
   } = useTelemetry();
 
   const baseRoute = '/' + (pathname?.split('/')[1] || '');
-  const currentLabel = routeLabels[baseRoute] || 'Well Operations';
+  let currentLabel = routeLabels[baseRoute] || 'Well Operations';
+  if (baseRoute === '/well') {
+    const wellId = pathname?.split('/')[2];
+    if (wellId === 'MOR-29') {
+      currentLabel = 'Well Profile: MORAN-29 (Active Rig)';
+    } else if (wellId) {
+      currentLabel = `Well Dossier: ${wellId} (Archive)`;
+    } else {
+      currentLabel = 'Well Profile & Dossier';
+    }
+  }
 
   return (
     <>
