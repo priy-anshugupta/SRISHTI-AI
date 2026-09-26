@@ -350,6 +350,22 @@ flowchart LR
 
 ---
 
+### 🎤 Stage-Cued Presenter Script for Slide 3 (Time: 60 Seconds)
+
+> *(Presenter clicks to Slide 3, points to the Feasibility Shield matrix)*
+> 
+> *"Judges, feasibility in a software lab is easy; feasibility on a muddy, vibrating drilling rig in Assam is hard. We engineered SRISHTI·AI specifically for the harsh realities of the field:  
+> What happens when satellite internet drops in the jungle?  
+> *(Point to the Topbar Edge toggle)*  
+> We flip the Topbar switch to **Rig Air-Gap**, and our local Ollama model and rule engine keep running 100% offline.  
+> What if the scanned 1990 report has degraded text? Our **Human-In-The-Loop Review Hub** quarantines low-confidence extractions until the Chief Drilling Engineer stamps them.  
+> What about roughnecks on the rig floor? They don't use keyboards. Our **Doghouse Cockpit** gives them giant 7-segment readouts and 1-tap touch buttons.  
+> And what about data security? Not a single byte of Indian hydrocarbon telemetry ever leaves the rig or eRTMAC facility. It is 100% sovereign."*
+
+---
+
+---
+
 # 📑 SLIDE 4: Impact and Benefits
 
 ```
@@ -374,7 +390,7 @@ flowchart LR
     end
 
     subgraph SavingsEngine["SRISHTI·AI VALUE MULTIPLIER"]
-        T["32m Lookahead Hazard Radar"] --> S["35% NPT Avoidance"]
+        T["30m Lookahead Hazard Radar"] --> S["35% NPT Avoidance"]
         P["Eaton Physics & Pre-Spud Briefs"] --> S
     end
 
@@ -396,7 +412,7 @@ flowchart LR
 ### 📌 Slide Content (Bullet Points for PPT)
 
 #### 1. Potential Impact on Target Audience
-* **Rig Drillers & Toolpushers**: Shifts crew from panic-state to **32m lookahead prepared-state** with 1-tap OISD-174 space-out procedures.
+* **Rig Drillers & Toolpushers**: Shifts crew from panic-state to **30m lookahead prepared-state** with 1-tap OISD-174 space-out procedures.
 * **eRTMAC Telemetry Engineers (Duliajan)**: Replaces hours of manual PDF searches with unified 3D GIS spatial radar and live sensor analytics.
 * **Asset General Managers & Directors**: Provides fleet-wide NPT cost visibility, verified pre-spud briefing dossiers, and quantitative ROI tracking.
 
@@ -468,7 +484,7 @@ flowchart TD
         L3["Teale, R. (1965) · IJRMMS<br/>Mechanical Specific Energy (MSE) Model"]
     end
 
-    Standards & Inquiry & Literature ==> CORE["SRISHTI·AI VERIFIED CODEBASE<br/>• GitHub: https://github.com/priy-anshugupta/SRISHTI-AI.git<br/>• 7/7 Backend Integration Tests Passing<br/>• 17/17 Next.js Production Routes Compiled"]
+    Standards & Inquiry & Literature ==> CORE["SRISHTI·AI VERIFIED CODEBASE<br/>• GitHub: https://github.com/priy-anshugupta/SRISHTI-AI.git<br/>• 7/7 Backend Integration Tests Passing<br/>• Next.js Production Routes Compiled (0 Errors)"]
 
     style Standards fill:#e6f7ff,stroke:#1890ff,stroke-width:1.5px
     style Inquiry fill:#fff1f0,stroke:#f5222d,stroke-width:1.5px
@@ -508,7 +524,7 @@ flowchart TD
 #### 4. Project Repository & Verification Links
 * **GitHub Repository**: `https://github.com/priy-anshugupta/SRISHTI-AI.git`
 * **Test Verification**: 7/7 Backend Integration Tests Passing (`pytest backend/tests/test_judge_features.py`).
-* **Frontend Verification**: 17/17 Next.js Routes Compiled (Zero TypeScript Lints, Production Build Ready).
+* **Frontend Verification**: Next.js Production Build Ready (Zero TypeScript Lints, 200 OK across all routes).
 
 ---
 
@@ -520,7 +536,7 @@ flowchart TD
 > We did not invent arbitrary safety rules; we programmatically encoded **OISD-STD-174** and the **DGMS Oil Mines Regulations 2017** directly into our platform.  
 > We studied the official **Justice Katakey NGT Inquiry Report** and **CAG Report No. 42** on the Baghjan blowout to ensure that the exact operational blind spots identified by investigators are permanently sealed by our software.  
 > And our physics engine implements the foundational geomechanics work of Eaton, Jorden-Shirley, and Teale.  
-> Our entire codebase is open, verified with 7 automated integration tests, compiled across 17 Next.js production routes, and ready for deployment today.  
+> Our entire codebase is open, verified with 7 automated integration tests, compiled cleanly on Next.js, and ready for deployment today.  
 > We thank Oil India Limited and the Smart India Hackathon, and we are now ready for your live questions and demo. Thank you!"*
 
 ---
@@ -529,9 +545,11 @@ flowchart TD
 
 # 🎯 Rapid-Fire 30-Second Defense Script (Keep in Pocket!)
 
-| If the Judge Asks... | Deliver This Exact Answer: |
-|---|---|
-| **"What if the rig loses VSAT internet in the jungle?"** | *"Sir, that's why we have the **Topbar Rig Edge Switcher**. It flips to local Ollama (`qwen2.5:7b`) and runs 100% offline with zero external cloud dependencies."* |
-| **"AI hallucinates numbers. How can we trust it?"** | *"Our AI does not compute numbers. All pore pressures and mud weights are computed by deterministic Eaton physics equations. Furthermore, our **Clickable Evidence Modal** displays the scanned WCR excerpt with 98.4% OCR confidence and Chief Engineer stamp."* |
-| **"Will roughnecks actually use this on the rig?"** | *"Roughnecks don't type. Our **Doghouse HUD (`/doghouse`)** uses giant 7-segment readouts visible from 10 feet away, a 32m countdown, and 1-tap glove-friendly OISD shut-in buttons."* |
-| **"What is the actual bottom-line ROI for Oil India?"** | *"At ₹28 Lakh day rate across 18 rigs, avoiding just 35% of common stuck pipe and kick NPT saves **₹ 94.2 Crores every year** and recovers **336 rig days**."* |
+| # | If the Judge Asks... | Deliver This Exact Winning Answer: |
+|---|---|---|
+| **1** | **"What if the rig loses VSAT internet in the Assam jungle?"** | *"Sir, that's why we engineered the **Topbar Rig Edge Switcher**. It flips to local Ollama (`qwen2.5:7b`) and runs 100% offline with zero external cloud dependencies. No internet, no problem."* |
+| **2** | **"AI hallucinates numbers. How can drillers trust it?"** | *"Our AI does not compute numbers. All pore pressures, mud weights, and ECD values are computed by deterministic Eaton physics equations. Furthermore, our **Clickable Evidence Modal** displays the scanned WCR excerpt with 98.4% OCR confidence and the Chief Drilling Engineer's physical stamp."* |
+| **3** | **"Will roughnecks actually use this on a muddy rig floor?"** | *"Roughnecks don't type on keyboards. Our **Doghouse HUD (`/doghouse`)** uses giant 7-segment readouts visible from 10 feet away, a 30m countdown, and 1-tap glove-friendly OISD shut-in buttons."* |
+| **4** | **"How does this integrate with Oil India's existing eRTMAC facility?"** | *"eRTMAC in Duliajan streams live WITSML telemetry from all 18 rigs. SRISHTI ingests this 1 Hz stream over WebSockets, correlates the live bit depth against 60 years of offset records, and dispatches proactive lookahead alerts to both eRTMAC superintendents and the rig floor."* |
+| **5** | **"What is the actual bottom-line ROI for Oil India?"** | *"At ₹28 Lakh day rate across 18 rigs, avoiding just 35% of common stuck pipe and kick NPT saves **₹ 94.2 Crores every year** and recovers **336 rig operating days**."* |
+| **6** | **"Can it handle questions in local languages?"** | *"Yes. Our Bilingual Q&A engine supports natural English and Hindi/Hinglish (e.g. 'Moran ke paas Tipam mein kya problem aaya tha?'), citing the exact report page and verified solution."* |
