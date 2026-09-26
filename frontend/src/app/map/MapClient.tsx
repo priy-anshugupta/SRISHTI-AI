@@ -112,7 +112,7 @@ function getPlainHazardText(hazard?: string): string {
     return 'Severe gas blowout & rig fire disaster (May 2020) — high-pressure gas escaped deep reservoir.';
   }
   if (lower.includes('differential sticking') || lower.includes('stuck pipe')) {
-    return 'Drill pipe got stuck in sticky swelling clay. Required weeks of fishing operations.';
+    return 'Drill pipe got stuck in sticky swelling clay. Required weeks of pipe retrieval operations.';
   }
   if (lower.includes('lost circulation') || lower.includes('mud losses') || lower.includes('thief zone')) {
     return 'Drilling fluid leaked away into porous sandstone cracks. Needed special sealing mud.';
@@ -159,6 +159,63 @@ const FIELD_LOCATIONS: Record<string, { lat: string; lon: string; desc: string }
 
 const FIELDS_LIST = ['ALL', 'Moran', 'Naharkatiya', 'Baghjan', 'Duliajan', 'Hugrijan', 'Lakwa', 'Rudrasagar', 'Digboi'];
 
+function createMapTileLayer(L: any, mode: 'dark' | 'satellite' | 'street') {
+  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
+
+  // 1. If free Mapbox API token is provided, use ultra-HD 4K vector / satellite / outdoors
+  if (mapboxToken && mapboxToken.trim().length > 10) {
+    if (mode === 'satellite') {
+      return L.tileLayer(
+        `https://api.mapbox.com/styles/v1/mapbox/satellite-streets-v12/tiles/512/{z}/{x}/{y}@2x?access_token=${mapboxToken}`,
+        { attribution: '&copy; Mapbox &copy; Maxar', tileSize: 512, zoomOffset: -1, maxZoom: 20 }
+      );
+    }
+    if (mode === 'street') {
+      return L.tileLayer(
+        `https://api.mapbox.com/styles/v1/mapbox/outdoors-v12/tiles/512/{z}/{x}/{y}@2x?access_token=${mapboxToken}`,
+        { attribution: '&copy; Mapbox &copy; OpenStreetMap', tileSize: 512, zoomOffset: -1, maxZoom: 20 }
+      );
+    }
+    return L.tileLayer(
+      `https://api.mapbox.com/styles/v1/mapbox/dark-v11/tiles/512/{z}/{x}/{y}@2x?access_token=${mapboxToken}`,
+      { attribution: '&copy; Mapbox &copy; OpenStreetMap', tileSize: 512, zoomOffset: -1, maxZoom: 20 }
+    );
+  }
+
+  // 2. Best-in-Class 100% Free Providers (Zero API Key Required)
+  if (mode === 'satellite') {
+    // Ultra-crisp Esri World Imagery + Hybrid Boundaries & Highway/Town Labels
+    const sat = L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+      { attribution: 'Esri, Maxar, Earthstar Geographics', maxZoom: 19 }
+    );
+    const ref = L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}',
+      { maxZoom: 19 }
+    );
+    return L.layerGroup([sat, ref]);
+  }
+
+  if (mode === 'street') {
+    // Esri World Topographic Map (Elevation contours & rivers - 100% free, ZERO watermark, NO API key)
+    return L.tileLayer(
+      'https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}',
+      { attribution: '&copy; Esri, USGS, NOAA', maxZoom: 18 }
+    );
+  }
+
+  // Dark Ops: Esri World Dark Gray Base + Reference (High-contrast, 100% free, ZERO watermark, NO API key)
+  const baseDark = L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}',
+    { attribution: '&copy; Esri, HERE, Garmin, &copy; OpenStreetMap', maxZoom: 16 }
+  );
+  const refDark = L.tileLayer(
+    'https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}',
+    { maxZoom: 16 }
+  );
+  return L.layerGroup([baseDark, refDark]);
+}
+
 export default function MapClient() {
   const [latitude, setLatitude] = useState('27.4853');
   const [longitude, setLongitude] = useState('95.3456');
@@ -167,7 +224,7 @@ export default function MapClient() {
   const [allWells, setAllWells] = useState<AllWell[]>([]);
   const [selectedWell, setSelectedWell] = useState<AllWell | OffsetWell | null>(null);
   const [fieldFilter, setFieldFilter] = useState<string>('ALL');
-  const [tileLayer, setTileLayer] = useState<'dark' | 'satellite' | 'street'>('dark');
+  const [tileLayer, setTileLayer] = useState<'dark' | 'satellite' | 'street'>('satellite');
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [mapReady, setMapReady] = useState(false);
@@ -222,17 +279,10 @@ export default function MapClient() {
         scrollWheelZoom: false // Activated dynamically only when mouse is over map canvas
       });
 
-      // Default Dark Ops Layer
-      const baseDark = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-        attribution: '&copy; Esri, HERE, Garmin, &copy; OpenStreetMap',
-        maxZoom: 16
-      });
-      const refDark = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
-        maxZoom: 16
-      });
-      const initialDarkLayer = L.layerGroup([baseDark, refDark]);
-      initialDarkLayer.addTo(map);
-      tileLayerRef.current = initialDarkLayer;
+      // Default Satellite Layer (First in sequence)
+      const initialLayer = createMapTileLayer(L, 'satellite');
+      initialLayer.addTo(map);
+      tileLayerRef.current = initialLayer;
 
       // Layers group
       const markersLayer = L.layerGroup().addTo(map);
@@ -283,35 +333,7 @@ export default function MapClient() {
         map.removeLayer(tileLayerRef.current);
       }
 
-      let newTile: any;
-      if (tileLayer === 'satellite') {
-        // High-res Esri World Satellite
-        const sat = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', {
-          attribution: 'Esri, Maxar, Earthstar Geographics',
-          maxZoom: 18
-        });
-        const ref = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', {
-          maxZoom: 18
-        });
-        newTile = L.layerGroup([sat, ref]);
-      } else if (tileLayer === 'street') {
-        // Esri World Topographic Map (Elevation contours & rivers)
-        newTile = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Topo_Map/MapServer/tile/{z}/{y}/{x}', {
-          attribution: '&copy; Esri, USGS, NOAA',
-          maxZoom: 18
-        });
-      } else {
-        // Esri World Dark Gray Base + Reference (High-contrast Dark Ops)
-        const baseDark = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', {
-          attribution: '&copy; Esri, HERE, Garmin, &copy; OpenStreetMap',
-          maxZoom: 16
-        });
-        const refDark = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Reference/MapServer/tile/{z}/{y}/{x}', {
-          maxZoom: 16
-        });
-        newTile = L.layerGroup([baseDark, refDark]);
-      }
-
+      const newTile = createMapTileLayer(L, tileLayer);
       newTile.addTo(map);
       tileLayerRef.current = newTile;
     });
@@ -344,19 +366,22 @@ export default function MapClient() {
       });
       circleLayer.addLayer(circle);
 
-      // Center point beacon marker
-      const centerIcon = L.divIcon({
-        className: 'custom-center-marker',
-        html: `
-          <div style="position:relative; width:26px; height:26px;">
-            <div style="position:absolute; inset:0; border-radius:50%; background:#06b6d4; opacity:0.4; animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite;"></div>
-            <div style="position:absolute; inset:4px; border-radius:50%; background:#06b6d4; border:2.5px solid #ffffff; box-shadow:0 0 12px #06b6d4;"></div>
-          </div>
-        `,
-        iconSize: [26, 26],
-        iconAnchor: [13, 13]
-      });
-      circleLayer.addLayer(L.marker([centerLat, centerLon], { icon: centerIcon, zIndexOffset: 1000 }));
+      // Center search origin marker (rendered when user drops pin at custom location)
+      const isCustomSearch = Math.abs(centerLat - 27.4853) > 0.002 || Math.abs(centerLon - 95.3456) > 0.002;
+      if (isCustomSearch) {
+        const centerIcon = L.divIcon({
+          className: 'custom-center-marker',
+          html: `
+            <div style="position:relative; width:26px; height:26px;">
+              <div style="position:absolute; inset:0; border-radius:50%; background:#06b6d4; opacity:0.4; animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite;"></div>
+              <div style="position:absolute; inset:4px; border-radius:50%; background:#06b6d4; border:2.5px solid #ffffff; box-shadow:0 0 12px #06b6d4;"></div>
+            </div>
+          `,
+          iconSize: [26, 26],
+          iconAnchor: [13, 13]
+        });
+        circleLayer.addLayer(L.marker([centerLat, centerLon], { icon: centerIcon, zIndexOffset: 1000 }));
+      }
 
       // Wells to render: filtered by fieldFilter
       const wellsToRender = allWells.filter((w) => fieldFilter === 'ALL' || w.field?.toLowerCase() === fieldFilter.toLowerCase());
@@ -367,17 +392,38 @@ export default function MapClient() {
         const risk = getRiskDetails(w);
         const isActive = w.status === 'ACTIVE DRILLING';
 
-        const markerHtml = `
-          <div style="position:relative; width:30px; height:30px; cursor:pointer; display:flex; align-items:center; justify-content:center;">
-            ${isActive ? `<div style="position:absolute; inset:-4px; border-radius:50%; background:${risk.color}; opacity:0.4; animation:ping 2s cubic-bezier(0,0,0.2,1) infinite;"></div>` : ''}
+        const markerHtml = isActive
+          ? `
+          <div style="display:flex; flex-direction:column; align-items:center; cursor:pointer; width:120px; pointer-events:auto;">
+            <div style="position:relative; width:28px; height:28px; display:flex; align-items:center; justify-content:center;">
+              <div style="position:absolute; inset:-4px; border-radius:50%; background:#38BDF8; opacity:0.35; animation:ping 1.8s cubic-bezier(0,0,0.2,1) infinite;"></div>
+              <div style="width:24px; height:24px; border-radius:50%; background:#050C10; border:2px solid #38BDF8; box-shadow:0 0 16px #38BDF8; display:flex; align-items:center; justify-content:center;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M12 2v20M7 22l5-18 5 18M5 14h14M7 8h10"/>
+                </svg>
+              </div>
+            </div>
+            <div style="font-size:9.5px; font-weight:700; color:#38BDF8; background:#050C10; padding:1.5px 6px; border-radius:4px; border:1px solid #38BDF8; white-space:nowrap; margin-top:2px; box-shadow:0 2px 8px rgba(0,0,0,0.95); font-family:var(--font-inter),sans-serif; display:flex; align-items:center; gap:3px;">
+              <span style="width:5px; height:5px; border-radius:50%; background:#10B981; display:inline-block;"></span>
+              ${w.name} (RIG-04)
+            </div>
+          </div>
+          `
+          : `
+          <div style="display:flex; flex-direction:column; align-items:center; cursor:pointer; width:100px; pointer-events:auto;">
             <div style="
-              width:24px; height:24px; border-radius:50%; 
-              background:#050C10; border:2.5px solid ${risk.color}; 
-              box-shadow: 0 0 14px ${risk.color}; 
+              width:22px; height:22px; border-radius:50%; 
+              background:#050C10; border:2px solid ${risk.color}; 
+              box-shadow: 0 0 12px ${risk.color}; 
               display:flex; align-items:center; justify-content:center;
-              font-size:10px; font-weight:bold; color:#ffffff; font-family:monospace;
             ">
-              ${w.name.slice(0, 1)}
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="${risk.color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="9"/>
+                <circle cx="12" cy="12" r="3" fill="${risk.color}"/>
+              </svg>
+            </div>
+            <div style="font-size:9px; font-weight:700; color:#f1f5f9; background:rgba(5,12,16,0.92); padding:1px 5px; border-radius:3px; border:1px solid ${risk.color}99; white-space:nowrap; margin-top:2px; box-shadow:0 2px 6px rgba(0,0,0,0.9); font-family:var(--font-inter),sans-serif;">
+              ${w.id || w.name}
             </div>
           </div>
         `;
@@ -385,8 +431,8 @@ export default function MapClient() {
         const icon = L.divIcon({
           className: `well-marker-${w.id}`,
           html: markerHtml,
-          iconSize: [30, 30],
-          iconAnchor: [15, 15]
+          iconSize: [isActive ? 120 : 100, 44],
+          iconAnchor: [isActive ? 60 : 50, 12]
         });
 
         const marker = L.marker([w.lat, w.lon], { icon }).addTo(markersLayer);
@@ -496,28 +542,31 @@ export default function MapClient() {
               Geospatial Well Intelligence Map
             </h1>
           </div>
-          <span className="hidden md:inline text-xs font-mono px-2.5 py-1 rounded-full bg-cyan-950/60 text-cyan-300 border border-cyan-800/80 font-semibold">
+          <span className="hidden md:inline text-xs px-2.5 py-1 rounded-full bg-slate-800/60 text-slate-300 border border-slate-700/60 font-medium">
             Upper Assam Basin · 18 Wells Mapped
           </span>
         </div>
 
         {/* Layer Switcher & Re-Center View */}
-        <div className="flex items-center gap-2.5 text-xs">
-          <div className="flex items-center bg-[#020507] border border-[#162D38] rounded-xl p-1 shadow-inner">
-            <button
-              onClick={() => setTileLayer('dark')}
-              className={`px-3 py-1 rounded-lg transition-all ${tileLayer === 'dark' ? 'bg-[#0D5C75] text-white font-bold shadow-md' : 'text-slate-400 hover:text-white'}`}
-            >
-              Dark Ops
-            </button>
+        <div className="flex items-center gap-2 text-xs">
+          <div className="flex items-center bg-[#020507] border border-[#162D38] rounded-xl p-1 shadow-inner gap-0.5">
             <button
               onClick={() => setTileLayer('satellite')}
+              title="Real Surface View: Aerial photos of drill pads, tea gardens, forests, and villages"
               className={`px-3 py-1 rounded-lg transition-all ${tileLayer === 'satellite' ? 'bg-[#0D5C75] text-white font-bold shadow-md' : 'text-slate-400 hover:text-white'}`}
             >
               Satellite
             </button>
             <button
+              onClick={() => setTileLayer('dark')}
+              title="24/7 Control Room View: High contrast to clearly track well risks & radius circle"
+              className={`px-3 py-1 rounded-lg transition-all ${tileLayer === 'dark' ? 'bg-[#0D5C75] text-white font-bold shadow-md' : 'text-slate-400 hover:text-white'}`}
+            >
+              Dark Ops
+            </button>
+            <button
               onClick={() => setTileLayer('street')}
+              title="Flood & Elevation View: River drainage and contour heights for monsoon safety"
               className={`px-3 py-1 rounded-lg transition-all ${tileLayer === 'street' ? 'bg-[#0D5C75] text-white font-bold shadow-md' : 'text-slate-400 hover:text-white'}`}
             >
               Terrain / Topo
@@ -546,7 +595,7 @@ export default function MapClient() {
             <div className="flex items-center justify-between border-b border-[#13252E] pb-2.5">
               <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
                 <Navigation size={14} className="text-cyan-400" />
-                Spatial Proximity Search
+                Find Nearby Wells
               </span>
               <span className="text-[10px] text-slate-400 font-medium bg-[#020507] px-2 py-0.5 rounded border border-[#162D38]">Click map to set</span>
             </div>
@@ -560,7 +609,7 @@ export default function MapClient() {
                     value={latitude}
                     onChange={(e) => setLatitude(e.target.value)}
                     inputMode="decimal"
-                    className="w-full px-3 py-1.5 rounded-lg bg-[#020507] border border-[#1A3644] text-white font-mono tabular-nums focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 shadow-inner"
+                    className="w-full px-3 py-1.5 rounded-lg bg-[#020507] border border-[#1A3644] text-white tabular-nums focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 shadow-inner"
                   />
                 </div>
                 <div>
@@ -570,15 +619,15 @@ export default function MapClient() {
                     value={longitude}
                     onChange={(e) => setLongitude(e.target.value)}
                     inputMode="decimal"
-                    className="w-full px-3 py-1.5 rounded-lg bg-[#020507] border border-[#1A3644] text-white font-mono tabular-nums focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 shadow-inner"
+                    className="w-full px-3 py-1.5 rounded-lg bg-[#020507] border border-[#1A3644] text-white tabular-nums focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 shadow-inner"
                   />
                 </div>
               </div>
 
               <div>
                 <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
-                  <span>SEARCH RADIUS: <strong className="text-cyan-400 font-mono tabular-nums font-bold">{radius} km</strong></span>
-                  <span className="text-[10px] text-slate-500 font-mono">Max 50 km</span>
+                  <span>SEARCH RADIUS: <strong className="text-cyan-400 tabular-nums font-bold">{radius} km</strong></span>
+                  <span className="text-[10px] text-slate-500">Max 50 km</span>
                 </div>
                 <input
                   type="range"
@@ -594,10 +643,10 @@ export default function MapClient() {
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#0D5C75] to-[#12708E] hover:from-[#106D8A] hover:to-[#1683A5] text-white font-bold transition-all shadow-lg shadow-cyan-950/40 disabled:opacity-50 cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-[#0D5C75] hover:bg-[#116F8C] text-white text-sm font-medium transition-colors disabled:opacity-50 cursor-pointer"
               >
                 <Search size={14} />
-                <span>{loading ? 'Searching Coordinates…' : 'Find Nearby Offset Wells'}</span>
+                <span>{loading ? 'Searching Coordinates…' : 'Find Nearby Historical Wells'}</span>
               </button>
             </form>
           </div>
@@ -609,9 +658,9 @@ export default function MapClient() {
               <button
                 key={f}
                 onClick={() => handleSelectField(f)}
-                className={`px-3 py-1 rounded-lg whitespace-nowrap transition-all border font-medium cursor-pointer ${
+                className={`px-3 py-1 rounded-lg whitespace-nowrap transition-colors border font-medium cursor-pointer ${
                   fieldFilter === f
-                    ? 'bg-cyan-500/25 text-cyan-300 border-cyan-400 font-bold shadow-sm'
+                    ? 'bg-[#0D5C75]/30 text-white border-[#38BDF8]/50 font-semibold'
                     : 'bg-[#020507] text-slate-400 border-[#152B35] hover:border-slate-600 hover:text-white'
                 }`}
               >
@@ -621,13 +670,13 @@ export default function MapClient() {
           </div>
 
           {/* Detailed Nearby Wells List with Construction Year & Plain Issues */}
-          <div className="bg-[#050C10] border-2 border-[#162D38] rounded-2xl flex flex-col shadow-xl ring-1 ring-cyan-500/10 overflow-hidden">
+          <div className="bg-[#050C10] border-2 border-[#162D38] rounded-2xl flex flex-col shadow-xl overflow-hidden">
             <div className="p-3.5 border-b border-[#162D38] bg-[#071116] flex items-center justify-between">
               <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
-                {fieldFilter === 'ALL' ? `OFFSETS WITHIN ${radius} KM` : `${fieldFilter.toUpperCase()} WELLS`}
+                <span className="w-1.5 h-1.5 rounded-full bg-[#38BDF8]" />
+                {fieldFilter === 'ALL' ? `NEARBY WELLS (WITHIN ${radius} KM)` : `${fieldFilter.toUpperCase()} WELLS`}
               </span>
-              <span className="text-[10px] font-mono tabular-nums px-2.5 py-0.5 rounded-full bg-cyan-950/70 text-cyan-300 border border-cyan-700/60 font-bold">
+              <span className="text-[10px] tabular-nums px-2.5 py-0.5 rounded-full bg-slate-800/60 text-slate-300 border border-slate-700/60 font-semibold">
                 {displayedOffsets.length} {fieldFilter === 'ALL' ? 'Wells Found' : 'Wells in Field'}
               </span>
             </div>
@@ -677,7 +726,7 @@ export default function MapClient() {
                         <span className="font-bold text-white text-xs">{well.name}</span>
                         <span className="text-[10px] text-slate-400 font-medium">({well.field})</span>
                       </div>
-                      <span className="font-bold text-cyan-300 font-mono tabular-nums text-xs bg-[#050C10] px-2 py-0.5 rounded border border-[#162D38]">
+                      <span className="font-bold text-cyan-300 tabular-nums text-xs bg-[#050C10] px-2 py-0.5 rounded border border-[#162D38]">
                         {Number(well.distance_km).toFixed(1)} km away
                       </span>
                     </div>
@@ -688,7 +737,7 @@ export default function MapClient() {
                         <Calendar size={11} className="text-cyan-400" />
                         {getConstructionYear(well.spud_date)}
                       </span>
-                      <span className="font-mono tabular-nums text-slate-300">
+                      <span className="tabular-nums text-slate-300">
                         Depth: <strong className="text-white">{depth}m</strong>
                       </span>
                     </div>
@@ -813,7 +862,7 @@ export default function MapClient() {
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: getRiskDetails(selectedWell).color }} />
                   <div>
-                    <h3 className="font-bold text-white text-sm font-mono leading-none">{selectedWell.name}</h3>
+                    <h3 className="font-bold text-white text-sm leading-none">{selectedWell.name}</h3>
                     <span className="text-[10px] text-slate-400">{selectedWell.field} Field · {selectedWell.block || 'Block I'}</span>
                   </div>
                 </div>
@@ -833,7 +882,7 @@ export default function MapClient() {
                 </div>
                 <div className="p-2 bg-[#070D0F] rounded-lg border border-slate-800">
                   <div className="text-[10px] text-slate-400 font-medium">TOTAL DEPTH</div>
-                  <div className="text-cyan-300 font-bold font-mono tabular-nums">{selectedWell.current_depth_md_m ?? selectedWell.td_depth_md ?? '—'} m MD</div>
+                  <div className="text-cyan-300 font-bold tabular-nums">{selectedWell.current_depth_md_m ?? selectedWell.td_depth_md ?? '—'} m MD</div>
                 </div>
                 <div className="p-2 bg-[#070D0F] rounded-lg border border-slate-800">
                   <div className="text-[10px] text-slate-400 font-medium">RISK LEVEL</div>
@@ -841,7 +890,7 @@ export default function MapClient() {
                 </div>
                 <div className="p-2 bg-[#070D0F] rounded-lg border border-slate-800">
                   <div className="text-[10px] text-slate-400 font-medium">OPERATING RIG</div>
-                  <div className="text-slate-200 font-mono">{selectedWell.rig || 'OIL-RIG-01'}</div>
+                  <div className="text-slate-200 font-medium">{selectedWell.rig || 'OIL-RIG-01'}</div>
                 </div>
               </div>
 
@@ -855,15 +904,15 @@ export default function MapClient() {
                   {getPlainHazardText(selectedWell.primary_hazard)}
                 </p>
                 {selectedWell.total_npt_hrs ? (
-                  <div className="text-[10px] text-slate-400 font-mono mt-1">
-                    ⏱️ Lost Time (NPT): <strong className="text-amber-300">{selectedWell.total_npt_hrs} hours delayed</strong>
+                  <div className="text-[10px] text-slate-400 mt-1">
+                    ⏱️ Historical Drilling Delay: <strong className="text-amber-300 tabular-nums">{selectedWell.total_npt_hrs} hours delayed</strong>
                   </div>
                 ) : null}
               </div>
 
               {/* Coordinates & Link to Dossier */}
               <div className="pt-1 flex items-center justify-between border-t border-slate-800/80">
-                <span className="text-[10px] font-mono tabular-nums text-slate-400">
+                <span className="text-[10px] tabular-nums text-slate-400">
                   {selectedWell.lat.toFixed(4)}°N, {selectedWell.lon.toFixed(4)}°E
                 </span>
                 <Link
