@@ -100,7 +100,7 @@ export default function PlanAWellDashboard() {
             className="flex items-center gap-1.5 px-3 py-2 bg-[#0e191d] hover:bg-[#15252c] border border-slate-700 text-slate-200 text-xs font-semibold rounded-md transition-all"
           >
             <FileDown size={13} className="text-[#38BDF8]" />
-            <span>1-Click Shift Handover (PDF)</span>
+            <span>Pre-Drill Safety Brief (PDF)</span>
           </Link>
 
           <button
