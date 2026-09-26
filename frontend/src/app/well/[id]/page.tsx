@@ -298,156 +298,206 @@ export default function WellPage() {
         <div className="flex items-center gap-2 text-xs">
           {isActiveRigWell ? (
             <Link
-            onClick={loadDossier}
-            disabled={loading}
-            className="flex items-center gap-1 px-3 py-1.5 bg-[#0D5C75] hover:bg-[#147695] text-white rounded-lg font-bold transition-all disabled:opacity-50"
+              href="/doghouse"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#07241A] hover:bg-[#0C3B2B] text-emerald-300 border border-emerald-700/80 rounded-lg text-xs font-semibold transition-all shadow-sm"
+              title="Open Live Rig Floor Gauges & Doghouse"
+            >
+              <Monitor size={12} className="text-emerald-400 animate-pulse" />
+              <span>Rig Floor (Live)</span>
+            </Link>
+          ) : (
+            <Link
+              href="/well/MOR-29"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#09222E] hover:bg-[#0E364A] text-cyan-300 border border-cyan-700/80 rounded-lg text-xs font-semibold transition-all shadow-sm"
+              title="View Active Rig (MORAN-29)"
+            >
+              <Activity size={12} className="text-cyan-400 animate-pulse" />
+              <span>View Active Rig (MOR-29)</span>
+            </Link>
+          )}
+
+          <select
+            value={params.id}
+            onChange={(e) => router.push(`/well/${e.target.value}`)}
+            className="bg-[#020507] text-white text-xs font-medium border border-[#162D38] rounded-lg px-2.5 py-1.5 outline-none cursor-pointer"
           >
-            <RefreshCw size={12} className={loading ? 'animate-spin' : ''} />
-            <span>Refresh</span>
-          </button>
+            {allWells.map((w) => (
+              <option key={w.id} value={w.id} className="bg-[#050C10] text-white">
+                {w.name} {w.id === 'MOR-29' ? '★ (Active Rig)' : `· ${w.field}`}
+              </option>
+            ))}
+          </select>
         </div>
       </div>
 
-      {/* 2. Key Parameter Summary Cards */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-sans">
+      {/* 2. Key Parameter Cards (Clean & Simple) */}
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 font-sans">
         
         {/* Card 1: Depth */}
-        <div className="p-3 bg-[#050C10] border-2 border-[#162D38] border-t-2 border-t-cyan-400 rounded-xl space-y-1 shadow-md">
+        <div className={`p-3 bg-[#050C10] border-2 border-[#162D38] rounded-xl space-y-1 shadow-sm ${
+          isActiveRigWell ? 'border-t-2 border-t-cyan-400' : 'border-t-2 border-t-emerald-400'
+        }`}>
           <div className="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">
-            <span>DEPTH</span>
-            <span className="text-cyan-300 font-mono">{progressPct}%</span>
+            <span>{isActiveRigWell ? 'CURRENT DEPTH' : 'FINAL DRILLED DEPTH'}</span>
+            <span className={`font-mono ${isActiveRigWell ? 'text-cyan-300' : 'text-emerald-400'}`}>
+              {isActiveRigWell ? `${progressPct}%` : '✓ 100%'}
+            </span>
           </div>
-          <div className="text-xl font-bold font-mono tabular-nums text-cyan-300">
-            {currentWellDepth.toFixed(1)} <span className="text-xs text-slate-400 font-sans font-normal">m</span>
+          <div className={`text-xl font-bold font-mono ${isActiveRigWell ? 'text-cyan-300' : 'text-emerald-300'}`}>
+            {currentWellDepth.toFixed(0)} <span className="text-xs text-slate-400 font-sans font-normal">meters</span>
           </div>
-          <div className="w-full bg-slate-900 h-1 rounded-full overflow-hidden">
-            <div className="bg-cyan-400 h-full rounded-full" style={{ width: `${progressPct}%` }} />
+          <div className="text-[10px] text-slate-400">
+            {isActiveRigWell ? `Target: ${targetDepth}m` : 'Completed to target'}
           </div>
-          <div className="text-[10px] text-slate-400">Target: {targetDepth}m</div>
         </div>
 
-        {/* Card 2: Mud Weight */}
-        <div className="p-3 bg-[#050C10] border-2 border-[#162D38] border-t-2 border-t-amber-400 rounded-xl space-y-1 shadow-md">
-          <div className="text-[10px] font-bold text-slate-400 uppercase">MUD WEIGHT</div>
-          <div className="text-xl font-bold font-mono tabular-nums text-amber-300">
+        {/* Card 2: Delays / Downtime */}
+        <div className="p-3 bg-[#050C10] border-2 border-[#162D38] border-t-2 border-t-amber-400 rounded-xl space-y-1 shadow-sm">
+          <div className="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">
+            <span>TIME DELAYED</span>
+            {totalFinancialCost > 0 && (
+              <span className="text-amber-400 font-bold font-mono text-[10px]">
+                {formatCostInr(totalFinancialCost)}
+              </span>
+            )}
+          </div>
+          <div className="text-xl font-bold font-mono text-amber-300">
+            {totalNptHours > 24 ? `${Math.round(totalNptHours / 24)} days lost` : `${totalNptHours} hours`}
+          </div>
+          <div className="text-[10px] text-slate-400">
+            {drilling_events.length > 0 ? `${drilling_events.length} incident logged` : 'No major delays'}
+          </div>
+        </div>
+
+        {/* Card 3: Mud Weight */}
+        <div className="p-3 bg-[#050C10] border-2 border-[#162D38] border-t-2 border-t-purple-400 rounded-xl space-y-1 shadow-sm">
+          <div className="text-[10px] font-bold text-slate-400 uppercase">DRILLING MUD</div>
+          <div className="text-xl font-bold font-mono text-purple-300">
             {well.mud_weight_ppg ?? 10.8} <span className="text-xs text-slate-400 font-sans font-normal">ppg</span>
           </div>
-          <div className="text-[10px] text-slate-400">Drilling fluid density</div>
+          <div className="text-[10px] text-slate-400">
+            Casing shoe at {intermediateShoe}m
+          </div>
         </div>
 
-        {/* Card 3: Casing & Bit */}
-        <div className="p-3 bg-[#050C10] border-2 border-[#162D38] border-t-2 border-t-purple-400 rounded-xl space-y-1 shadow-md">
-          <div className="text-[10px] font-bold text-slate-400 uppercase">CASING PIPE</div>
-          <div className="text-xl font-bold font-mono tabular-nums text-purple-300">
-            {well.casing_shoe_md ?? 2200} <span className="text-xs text-slate-400 font-sans font-normal">m</span>
+        {/* Card 4: Safety / Hazard Summary */}
+        <div className="p-3 bg-[#050C10] border-2 border-[#162D38] border-t-2 border-t-red-500 rounded-xl space-y-1 shadow-sm">
+          <div className="text-[10px] font-bold text-slate-400 uppercase">PAST INCIDENT</div>
+          <div className="text-xl font-bold font-mono text-red-400">
+            {drilling_events.length || (well.primary_hazard ? 1 : 0)} <span className="text-xs text-slate-400 font-sans font-normal">recorded</span>
           </div>
-          <div className="text-[10px] text-slate-400">9-5/8" Pipe · Bit: {well.bit_size ?? '8-1/2"'}</div>
-        </div>
-
-        {/* Card 4: Offset Incidents */}
-        <div className="p-3 bg-[#050C10] border-2 border-[#162D38] border-t-2 border-t-red-500 rounded-xl space-y-1 shadow-md">
-          <div className="text-[10px] font-bold text-slate-400 uppercase">NEARBY INCIDENTS</div>
-          <div className="text-xl font-bold font-mono tabular-nums text-red-400">
-            {drilling_events.length} <span className="text-xs text-slate-400 font-sans font-normal">Recorded</span>
+          <div className="text-[10px] text-slate-400 truncate">
+            {drilling_events[0] ? getSimpleTitle(drilling_events[0].event_type) : (well.primary_hazard ? well.primary_hazard.split('(')[0] : 'Normal drilling')}
           </div>
-          <div className="text-[10px] text-slate-400">At similar offset depth</div>
         </div>
       </div>
 
-      {/* 3. Central Two-Column Split */}
-      <div className="grid grid-cols-12 gap-4 font-sans">
-        
-        {/* Left Column: Wellbore Schematic (5 cols) */}
-        <div className="col-span-12 lg:col-span-5 bg-[#050C10] border-2 border-[#162D38] rounded-xl p-3.5 flex flex-col shadow-xl">
-          <div className="flex items-center justify-between border-b border-[#162D38] pb-2 mb-2">
-            <span className="font-bold text-white uppercase text-[11px] flex items-center gap-1.5">
-              <Anchor size={13} className="text-cyan-400" />
-              Well Structure & Casings
-            </span>
-            <span className="text-[10px] text-slate-400 font-mono">0 – {targetDepth}m</span>
+      {/* 3. Simple Tab Navigation */}
+      <div className="flex items-center gap-1.5 border-b border-[#162D38] pb-1.5 text-xs">
+        <button
+          onClick={() => setActiveTab('schematic')}
+          className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
+            activeTab === 'schematic'
+              ? 'bg-[#0D5C75] text-white shadow-sm'
+              : 'bg-[#050C10] text-slate-400 hover:text-white border border-[#162D38]'
+          }`}
+        >
+          Well Schematic
+        </button>
+
+        <button
+          onClick={() => setActiveTab('timeline')}
+          className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
+            activeTab === 'timeline'
+              ? 'bg-[#0D5C75] text-white shadow-sm'
+              : 'bg-[#050C10] text-slate-400 hover:text-white border border-[#162D38]'
+          }`}
+        >
+          Timeline History
+        </button>
+
+        <button
+          onClick={() => setActiveTab('formations')}
+          className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
+            activeTab === 'formations'
+              ? 'bg-[#0D5C75] text-white shadow-sm'
+              : 'bg-[#050C10] text-slate-400 hover:text-white border border-[#162D38]'
+          }`}
+        >
+          Rock Layers ({formation_tops.length})
+        </button>
+
+        <button
+          onClick={() => setActiveTab('lessons')}
+          className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
+            activeTab === 'lessons'
+              ? 'bg-[#0D5C75] text-white shadow-sm'
+              : 'bg-[#050C10] text-slate-400 hover:text-white border border-[#162D38]'
+          }`}
+        >
+          Lessons for Live Rig
+        </button>
+      </div>
+
+      {/* 4. Tab 1: Simplified Historical Timeline */}
+      {activeTab === 'timeline' && (
+        <div className="bg-[#050C10] border-2 border-[#162D38] rounded-xl p-4 shadow-lg space-y-3.5">
+          <div className="border-b border-[#162D38] pb-2">
+            <h3 className="text-sm font-bold text-white">
+              Drilling Chronicle: What Happened at {well.name}
+            </h3>
+            <p className="text-[11px] text-slate-400 mt-0.5">
+              Step-by-step summary from initial drilling to completion.
+            </p>
           </div>
 
-          {/* SVG Diagram Canvas - Expands to fill available card height */}
-          <div className="relative w-full flex-1 min-h-[480px] bg-[#020507] border border-[#162D38] rounded-lg p-2 flex items-center justify-center overflow-hidden">
-            <svg viewBox="0 0 280 520" className="w-full h-full select-none max-h-[560px]">
-              <defs>
-                <linearGradient id="pipeConductor" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#334155" />
-                  <stop offset="50%" stopColor="#64748b" />
-                  <stop offset="100%" stopColor="#334155" />
-                </linearGradient>
-                <linearGradient id="pipeSurface" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#1e3a8a" />
-                  <stop offset="50%" stopColor="#3b82f6" />
-                  <stop offset="100%" stopColor="#1e3a8a" />
-                </linearGradient>
-                <linearGradient id="pipeInter" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stopColor="#854d0e" />
-                  <stop offset="50%" stopColor="#eab308" />
-                  <stop offset="100%" stopColor="#854d0e" />
-                </linearGradient>
-              </defs>
+          {/* Clean Vertical Timeline */}
+          <div className="relative pl-5 space-y-3 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-cyan-400 via-amber-400 to-emerald-400">
+            
+            {/* Step 1: Start */}
+            <div className="relative">
+              <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#020507] border-2 border-cyan-400" />
+              <div className="bg-[#020507] border border-[#162D38] rounded-lg p-2.5 text-xs space-y-1">
+                <div className="flex justify-between items-center text-[10px]">
+                  <span className="text-cyan-300 font-bold">1. DRILLING BEGAN</span>
+                  <span className="font-mono text-slate-500">Surface (0m)</span>
+                </div>
+                <p className="text-slate-300">
+                  Rig mobilized in {well.field || 'Moran'} field and started drilling the surface hole.
+                </p>
+              </div>
+            </div>
 
-              {/* Surface ground line */}
-              <line x1="20" y1="30" x2="260" y2="30" stroke="#475569" strokeWidth="2" />
-              <text x="140" y="20" textAnchor="middle" fill="#cbd5e1" fontSize="9" fontWeight="bold">Surface Ground (0m)</text>
+            {/* Step 2: Surface Pipe */}
+            <div className="relative">
+              <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#020507] border-2 border-blue-400" />
+              <div className="bg-[#020507] border border-[#162D38] rounded-lg p-2.5 text-xs space-y-1">
+                <div className="flex justify-between items-center text-[10px]">
+                  <span className="text-blue-300 font-bold">2. SURFACE PIPE INSTALLED</span>
+                  <span className="font-mono text-slate-500">{surfaceShoe}m depth</span>
+                </div>
+                <p className="text-slate-300">
+                  Installed steel pipe down to {surfaceShoe}m to protect groundwater and secure the wellhead.
+                </p>
+              </div>
+            </div>
 
-              {/* 20" Conductor (0 to 300m) */}
-              <rect x="110" y="30" width="60" height="38" fill="url(#pipeConductor)" stroke="#94a3b8" strokeWidth="1.5" />
-              <text x="95" y="52" textAnchor="end" fill="#94a3b8" fontSize="8">20" Conductor (300m)</text>
-
-              {/* 13-3/8" Surface Casing (0 to 1500m) */}
-              <rect x="118" y="68" width="44" height="150" fill="url(#pipeSurface)" stroke="#60a5fa" strokeWidth="1.5" />
-              <text x="95" y="214" textAnchor="end" fill="#60a5fa" fontSize="8">13-3/8" Pipe (1,500m)</text>
-
-              {/* 9-5/8" Intermediate (0 to 2200m) */}
-              <rect x="124" y="218" width="32" height="88" fill="url(#pipeInter)" stroke="#fbbf24" strokeWidth="1.5" />
-              <text x="95" y="302" textAnchor="end" fill="#fbbf24" fontSize="8">9-5/8" Shoe (2,200m)</text>
-
-              {/* Open Hole (2200m to 3500m) */}
-              <rect x="128" y="306" width="24" height="164" fill="#0f172a" stroke="#64748b" strokeWidth="1" strokeDasharray="3,3" />
-              <text x="95" y="468" textAnchor="end" fill="#94a3b8" fontSize="8">Target (3,500m)</text>
-
-              {/* Gas Hazard Horizon Line & Label (strictly on LEFT side) */}
-              <line x1="120" y1={hazardY} x2="160" y2={hazardY} stroke="#f97316" strokeWidth="2" strokeDasharray="3,3" />
-              <line x1="98" y1={hazardY} x2="120" y2={hazardY} stroke="#f97316" strokeWidth="1" strokeDasharray="2,2" />
-              <rect x="8" y={hazardY - 8} width="90" height="16" rx="3" fill="#451a03" stroke="#f97316" strokeWidth="1" />
-              <text x="53" y={hazardY + 4} textAnchor="middle" fill="#fed7aa" fontSize="7" fontWeight="bold">
-                ⚠️ Gas Zone (2,450m)
-              </text>
-
-              {/* Central Drillstring (down to bit) */}
-              <line x1="140" y1="30" x2="140" y2={bitY + 2} stroke="#38bdf8" strokeWidth="3" />
-
-              {/* Active Bit Head with gentle, calm downward drilling movement */}
-              <g>
-                <animateTransform
-                  attributeName="transform"
-                  type="translate"
-                  values="0 0; 0 3.5; 0 0"
-                  keyTimes="0; 0.5; 1"
-                  keySplines="0.4 0 0.2 1; 0.4 0 0.2 1"
-                  calcMode="spline"
-                  dur="2.4s"
-                  repeatCount="indefinite"
-                />
-                <polygon points={`134,${bitY} 146,${bitY} 140,${bitY + 8}`} fill="#38bdf8" />
-                <circle cx="140" cy={bitY + 8} r="2.5" fill="#22c55e" />
-              </g>
-
-              {/* Bit Depth Tag (strictly on RIGHT side with leader line - NEVER overlaps hazard) */}
-              <line x1="146" y1={bitY + 4} x2="162" y2={bitY + 4} stroke="#38bdf8" strokeWidth="1" strokeDasharray="2,2" />
-              <rect x="162" y={bitY - 8} width="92" height="18" rx="4" fill="#020617" stroke="#38bdf8" strokeWidth="1.2" />
-              <text x="208" y={bitY + 4} textAnchor="middle" fill="#38bdf8" fontSize="8" fontWeight="bold">
-                ⚡ Bit: {Math.round(currentWellDepth)}m
-              </text>
-            </svg>
-          </div>
-        </div>
-
-        {/* Right Column: Rock Layers + Past Incidents (7 cols) */}
-        <div className="col-span-12 lg:col-span-7 space-y-4 font-sans">
-          
+            {/* Step 3: Historical Incidents (Clean & Plain English) */}
+            {drilling_events.map((event) => {
+              const { problem, solution } = simplifyIncident(event.event_type, event.description, event.mitigation);
+              return (
+                <div key={event.id} className="relative">
+                  <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#020507] border-2 border-amber-400" />
+                  <div className="bg-[#020507] border-2 border-amber-800/80 rounded-lg p-3 text-xs space-y-2">
+                    <div className="flex justify-between items-center text-[10px]">
+                      <div className="flex items-center gap-1.5">
+                        <span className="px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-bold">
+                          ⚠️ {getSimpleTitle(event.event_type)}
+                        </span>
+                        <span className="font-mono text-cyan-300 font-semibold">{event.depth_from_md_m}m depth</span>
+                      </div>
+                      {event.duration_hrs ? (
+                        <span className="text-amber-400 font-semibold">
           {/* 1. Underground Rock Layers (Sleek List) */}
           <div className="bg-[#050C10] border-2 border-[#162D38] rounded-xl p-3.5 space-y-2.5 shadow-xl">
             <div className="flex items-center justify-between border-b border-[#162D38] pb-2">
