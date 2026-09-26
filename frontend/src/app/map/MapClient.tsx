@@ -919,7 +919,7 @@ export default function MapClient() {
                   href={`/well/${selectedWell.id}`}
                   className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0D5C75] hover:bg-[#147695] text-white text-xs font-semibold transition-colors shadow-md"
                 >
-                  <span>Open Well Dossier</span>
+                  <span>{selectedWell.id === 'MOR-29' ? 'Open Active Rig (MOR-29)' : `Open Dossier (${selectedWell.name})`}</span>
                   <ExternalLink size={12} />
                 </Link>
               </div>
