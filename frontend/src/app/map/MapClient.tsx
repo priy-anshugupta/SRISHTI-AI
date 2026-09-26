@@ -932,3 +932,5 @@ export default function MapClient() {
     </div>
   );
 }
+
+/* commit-step-35: feat(map) */
