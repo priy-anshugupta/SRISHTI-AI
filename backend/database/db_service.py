@@ -6,7 +6,7 @@ Directly integrates with Supabase / PostgreSQL with resilient local caching and 
 import math
 import os
 import json
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import List, Dict, Any, Optional
 import urllib.request
 import urllib.error
@@ -288,7 +288,7 @@ class DatabaseService:
     def add_drilling_event(self, event: Dict[str, Any]) -> Dict[str, Any]:
         if "id" not in event:
             event["id"] = f"EVT-{len(self.data['drilling_events']) + 1:02d}"
-        event["created_at"] = datetime.utcnow().isoformat() + "Z"
+        event["created_at"] = datetime.now(timezone.utc).isoformat()
         self.data["drilling_events"].append(event)
         self._save_local_store()
         self.log_audit(
@@ -307,7 +307,7 @@ class DatabaseService:
     def add_document(self, doc: Dict[str, Any]) -> Dict[str, Any]:
         if "id" not in doc:
             doc["id"] = f"DOC-{len(self.data['documents']) + 1:03d}"
-        doc["uploaded_at"] = datetime.utcnow().isoformat() + "Z"
+        doc["uploaded_at"] = datetime.now(timezone.utc).isoformat()
         self.data["documents"].append(doc)
         self._save_local_store()
         self.log_audit(
@@ -369,7 +369,7 @@ class DatabaseService:
                 a["acknowledged"] = True
                 a["acknowledged_by"] = driller_badge
                 a["action_taken"] = action_taken
-                a["acknowledged_at"] = datetime.utcnow().isoformat() + "Z"
+                a["acknowledged_at"] = datetime.now(timezone.utc).isoformat()
                 self._save_local_store()
                 self.log_audit(
                     actor=driller_badge,
@@ -385,7 +385,7 @@ class DatabaseService:
     def log_audit(self, actor: str, action: str, entity_type: str, entity_id: str, details: str):
         audit_entry = {
             "id": f"AUD-{len(self.data.get('audit_logs', [])) + 1:03d}",
-            "timestamp": datetime.utcnow().isoformat() + "Z",
+            "timestamp": datetime.now(timezone.utc).isoformat(),
             "actor": actor,
             "action": action,
             "entity_type": entity_type,
