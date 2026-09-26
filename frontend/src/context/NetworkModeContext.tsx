@@ -47,8 +47,8 @@ export function NetworkModeProvider({ children }: { children: ReactNode }) {
   const isAirGapped = networkMode === 'edge';
   const modelDisplayName = isAirGapped 
     ? 'Local Ollama (qwen2.5:7b) · Zero-Cloud Air-Gap' 
-    : 'OpenAI Cloud (gpt-4o-mini)';
-  const providerBadge = isAirGapped ? 'SOVEREIGN RIG EDGE' : 'CLOUD HYBRID';
+    : 'Groq Cloud (Qwen 3.8 27B)';
+  const providerBadge = isAirGapped ? 'SOVEREIGN RIG EDGE' : 'GROQ CLOUD';
 
   return (
     <NetworkModeContext.Provider
