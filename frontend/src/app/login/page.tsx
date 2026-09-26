@@ -23,11 +23,12 @@ function LoginForm() {
   const [isLoggingIn, setIsLoggingIn] = useState(false);
   const [loginSuccess, setLoginSuccess] = useState<string | null>(null);
 
-  const handlePersonaLogin = (persona: UserProfile) => {
+  const handlePersonaLogin = (persona: UserProfile, target?: string) => {
     setIsLoggingIn(true);
-    setLoginSuccess(`Authenticated as ${persona.name} (${persona.role})`);
+    const destination = target || redirectTarget;
+    setLoginSuccess(`Signed in as ${persona.name} (${persona.role})`);
     setTimeout(() => {
-      login(persona, redirectTarget);
+      login(persona, destination);
     }, 450);
   };
 
@@ -78,7 +79,7 @@ function LoginForm() {
         <div className="flex items-center gap-2 text-xs font-sans">
           <span className="hidden sm:inline-flex items-center gap-1.5 bg-[#0C1518] px-2.5 py-1 rounded-full border border-slate-800 text-[10px] font-semibold text-slate-400">
             <ShieldCheck size={12} className="text-emerald-400" />
-            <span>OISD-STD-174 SOVEREIGN CLEARANCE</span>
+            <span>Safety Compliant</span>
           </span>
           <Link
             href="/"
@@ -95,15 +96,15 @@ function LoginForm() {
           
           {/* Header Title */}
           <div className="text-center space-y-2 border-b border-slate-800 pb-5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#070D0F] border border-cyan-800/60 text-[11px] font-semibold text-cyan-300">
-              <Lock size={12} className="text-cyan-400" />
-              <span>SECURE OILFIELD GATEWAY · LEVEL 4 ACCESS</span>
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#070D0F] border border-slate-700/60 text-[11px] font-medium text-slate-300">
+              <Lock size={12} className="text-emerald-400" />
+              <span>Authorized Access</span>
             </div>
             <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
               Sign In to SRISHTI·AI
             </h1>
             <p className="text-slate-400 text-xs font-normal">
-              Subsurface Memory & Offset Well Intelligence Platform for Oil India Limited operations
+              AI Drilling Copilot &amp; Historical Well Memory for Oil India Limited
             </p>
           </div>
 
@@ -127,7 +128,7 @@ function LoginForm() {
               }`}
             >
               <Sparkles size={13} className={activeTab === 'persona' ? 'text-amber-300' : ''} />
-              <span>1-Click Persona Access</span>
+              <span>Demo Profiles (1-Click)</span>
             </button>
             <button
               type="button"
@@ -139,54 +140,80 @@ function LoginForm() {
               }`}
             >
               <KeyRound size={13} />
-              <span>Oil India SSO Login</span>
+              <span>Employee Login</span>
             </button>
           </div>
 
-          {/* TAB 1: 1-CLICK PERSONA SELECTION (RECOMMENDED FOR SIH JUDGES) */}
+          {/* TAB 1: 1-CLICK ROLE SELECTION (HEADQUARTERS VS RIG FLOOR) */}
           {activeTab === 'persona' && (
-            <div className="space-y-3">
+            <div className="space-y-4">
               <div className="flex items-center justify-between text-[11px] text-slate-400">
-                <span>SELECT AUTHORIZED ROLE TO PROCEED:</span>
-                <span className="text-cyan-400 font-bold">Hackathon Evaluation Mode</span>
+                <span>CHOOSE YOUR VIEW:</span>
+                <span className="text-[#38BDF8] font-medium">Instant Access</span>
               </div>
 
-              <div className="space-y-2.5">
-                {PRESET_PERSONAS.map((p) => (
-                  <div
-                    key={p.id}
-                    onClick={() => !isLoggingIn && handlePersonaLogin(p)}
-                    className="p-3.5 bg-[#070D0F] hover:bg-[#0E1A1E] border border-slate-800 hover:border-cyan-500 rounded-xl cursor-pointer transition-all flex items-center justify-between group shadow-sm"
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-9 h-9 rounded-xl flex items-center justify-center font-bold text-xs border shrink-0 ${p.avatarColor}`}>
-                        {p.initials}
-                      </div>
-                      <div className="space-y-0.5">
-                        <div className="text-white font-bold text-sm flex items-center gap-2">
-                          <span>{p.name}</span>
-                          <span className="text-[10px] text-slate-400 font-mono font-medium">({p.badge})</span>
-                        </div>
-                        <div className="text-cyan-300 text-[11px] font-medium">{p.role}</div>
-                        <div className="text-[10px] text-slate-400">{p.department}</div>
-                      </div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
+                {/* 1. Headquarters View */}
+                <div
+                  onClick={() => !isLoggingIn && handlePersonaLogin(PRESET_PERSONAS[0], '/map')}
+                  className="p-4 bg-[#070D0F] hover:bg-[#0E1A1E] border border-slate-800 hover:border-[#38BDF8]/60 rounded-xl cursor-pointer transition-all flex flex-col justify-between space-y-3 group shadow-md"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="w-10 h-10 rounded-xl bg-[#0D5C75]/25 border border-[#38BDF8]/40 flex items-center justify-center text-xl">
+                      🏢
                     </div>
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 text-slate-300">
+                      Office / HQ
+                    </span>
+                  </div>
 
-                    <div className="flex items-center gap-2 text-right">
-                      <span className="hidden sm:inline-block text-[9px] font-mono px-2 py-0.5 rounded bg-slate-900 border border-slate-700 text-slate-300">
-                        {p.clearanceLevel.split('·')[0]}
-                      </span>
-                      <div className="w-7 h-7 rounded-lg bg-slate-800 group-hover:bg-cyan-600 text-slate-400 group-hover:text-white flex items-center justify-center transition-colors">
-                        <ArrowRight size={13} />
-                      </div>
+                  <div className="space-y-1">
+                    <div className="text-white font-bold text-sm group-hover:text-[#38BDF8] transition-colors">
+                      Headquarters View
+                    </div>
+                    <div className="text-slate-400 text-xs leading-relaxed">
+                      Full analytics, offset well map, past incident memory &amp; well program planning.
                     </div>
                   </div>
-                ))}
+
+                  <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-[#38BDF8] font-medium">
+                    <span>Enter Headquarters</span>
+                    <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
+
+                {/* 2. Rig Floor View */}
+                <div
+                  onClick={() => !isLoggingIn && handlePersonaLogin(PRESET_PERSONAS[2], '/doghouse')}
+                  className="p-4 bg-[#070D0F] hover:bg-[#0E1A1E] border border-slate-800 hover:border-amber-500/60 rounded-xl cursor-pointer transition-all flex flex-col justify-between space-y-3 group shadow-md"
+                >
+                  <div className="flex items-start justify-between">
+                    <div className="w-10 h-10 rounded-xl bg-amber-950/30 border border-amber-600/40 flex items-center justify-center text-xl">
+                      🛢️
+                    </div>
+                    <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 text-amber-300">
+                      Rig Floor
+                    </span>
+                  </div>
+
+                  <div className="space-y-1">
+                    <div className="text-white font-bold text-sm group-hover:text-amber-300 transition-colors">
+                      Rig Floor View
+                    </div>
+                    <div className="text-slate-400 text-xs leading-relaxed">
+                      Active bit depth, lookahead safety radar &amp; high-contrast screen for the driller.
+                    </div>
+                  </div>
+
+                  <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-amber-400 font-medium">
+                    <span>Open Rig Terminal</span>
+                    <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
+                  </div>
+                </div>
               </div>
 
-              <div className="p-2.5 bg-amber-950/20 border border-amber-800/40 rounded-lg text-[10px] text-amber-200 leading-relaxed flex items-center gap-2 font-sans">
-                <AlertTriangle size={15} className="text-amber-400 shrink-0" />
-                <span>One-click role switching enables SIH evaluators to experience different operational clearances (Rig Floor vs Command Centre vs OISD Audit).</span>
+              <div className="p-2.5 bg-slate-900/60 border border-slate-800 rounded-lg text-[11px] text-slate-400 text-center">
+                <span>You can seamlessly switch between Headquarters and Rig Floor views at any time inside the app.</span>
               </div>
             </div>
           )}
@@ -196,21 +223,21 @@ function LoginForm() {
             <form onSubmit={handleCredentialsSubmit} className="space-y-4 font-sans">
               <div className="space-y-1.5">
                 <label className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">
-                  Employee ID / Official Email:
+                  Employee ID or Email:
                 </label>
                 <input
                   type="text"
                   required
                   value={badgeInput}
                   onChange={(e) => setBadgeInput(e.target.value)}
-                  placeholder="e.g. OIL-DE-104 or p.saikia@oilindia.in"
+                  placeholder="e.g. p.saikia@oilindia.in"
                   className="w-full px-3.5 py-2.5 rounded-lg bg-[#070D0F] border border-slate-700 text-white focus:outline-none focus:border-cyan-500 text-xs font-sans"
                 />
               </div>
 
               <div className="space-y-1.5">
                 <label className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">
-                  Domain Passkey / Password:
+                  Password:
                 </label>
                 <input
                   type="password"
@@ -224,36 +251,36 @@ function LoginForm() {
 
               <div className="space-y-1.5">
                 <label className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">
-                  Asset / Operational Base:
+                  Field / Operational Base:
                 </label>
                 <select
                   value={selectedField}
                   onChange={(e) => setSelectedField(e.target.value)}
                   className="w-full px-3.5 py-2.5 rounded-lg bg-[#070D0F] border border-slate-700 text-white focus:outline-none focus:border-cyan-500 text-xs font-sans"
                 >
-                  <option value="Moran Asset (Upper Assam)">Moran Asset (Upper Assam Shelf)</option>
-                  <option value="Naharkatiya Deep Asset">Naharkatiya Deep Asset</option>
-                  <option value="Duliajan Field Headquarters">Duliajan Field Headquarters (eRTMAC)</option>
-                  <option value="Baghjan Workover Command">Baghjan Workover Command</option>
-                  <option value="Digboi Historic Field">Digboi Historic Field</option>
+                  <option value="Moran Asset (Upper Assam)">Moran Field (Upper Assam)</option>
+                  <option value="Naharkatiya Deep Asset">Naharkatiya Field</option>
+                  <option value="Duliajan Field Headquarters">Duliajan Headquarters</option>
+                  <option value="Baghjan Workover Command">Baghjan Field</option>
+                  <option value="Digboi Historic Field">Digboi Field</option>
                 </select>
               </div>
 
               <button
                 type="submit"
                 disabled={isLoggingIn}
-                className="w-full py-3 bg-[#0D5C75] hover:bg-[#147695] text-white font-bold rounded-lg transition-colors flex items-center justify-center gap-2 text-xs shadow-lg disabled:opacity-50 font-sans"
+                className="w-full py-2.5 bg-[#0D5C75] hover:bg-[#116F8C] text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-xs shadow-md disabled:opacity-50 font-sans cursor-pointer"
               >
                 <ShieldCheck size={15} />
-                <span>Sign In via Oil India Sovereign SSO</span>
+                <span>Sign In to Platform</span>
               </button>
             </form>
           )}
 
           {/* Footer Security Badge */}
-          <div className="pt-3 border-t border-slate-800 text-[10px] text-slate-500 text-center space-y-1 font-sans">
-            <p>Protected by MoPNG Subsurface Data Sovereignty & OISD-STD-174 Audit Protocol.</p>
-            <p className="text-slate-600">Air-gapped local database persistence · Zero third-party telemetry export</p>
+          <div className="pt-3 border-t border-slate-800 text-[10px] text-slate-400 text-center space-y-0.5 font-sans">
+            <p>Protected by Oil India Internal Security Protocols</p>
+            <p className="text-slate-500">100% Private Network · Subsurface data stays securely on premises</p>
           </div>
 
         </div>
@@ -261,8 +288,8 @@ function LoginForm() {
 
       {/* Bottom Footer */}
       <footer className="relative z-10 w-full px-6 py-3 border-t border-slate-800/80 bg-[#0A1215]/80 text-[10px] font-sans text-slate-500 flex flex-wrap items-center justify-between">
-        <span>© 2026 Oil India Limited · Enhanced Real-Time Monitoring & Analysis Centre (eRTMAC)</span>
-        <span className="font-semibold text-slate-400">SRISHTI·AI Platform v2.4</span>
+        <span>© 2026 Oil India Limited · Operations Control Centre</span>
+        <span className="font-medium text-slate-400">SRISHTI·AI Platform</span>
       </footer>
 
     </div>
