@@ -22,8 +22,18 @@ from backend.agents.tools import (
 logger = logging.getLogger(__name__)
 
 
+import re
+
+
 class HybridAgentOrchestrator:
     def __init__(self):
+        self.settings = get_settings()
+
+    def is_drilling_query(self, query: str) -> bool:
+        q = query.lower().strip()
+        if any(c in q for c in ['joke', 'who are you', 'what can you do', 'hello', 'hi']):
+            return False
+        return True
         self.settings = get_settings()
 
     def _resolve_ai_client(self, mode_override: Optional[str] = None) -> Tuple[Optional[OpenAI], Optional[str], str]:
