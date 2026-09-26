@@ -331,3 +331,5 @@ export default function Sidebar() {
     </>
   );
 }
+
+/* commit-step-17: feat(sidebar) */
