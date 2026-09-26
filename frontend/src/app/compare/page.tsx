@@ -342,9 +342,13 @@ export default function ComparePage() {
               <div className="pt-2 border-t border-[#162D38]">
                 <Link
                   href={`/well/${well.id}`}
-                  className="flex items-center justify-center gap-1.5 w-full py-2.5 bg-[#0D5C75] hover:bg-[#147695] text-white font-semibold rounded-xl transition-colors text-xs shadow-md"
+                  className={`flex items-center justify-center gap-1.5 w-full py-2.5 font-semibold rounded-xl transition-colors text-xs shadow-md ${
+                    well.id === 'MOR-29'
+                      ? 'bg-[#0D5C75] hover:bg-[#147695] text-white border border-cyan-400/40'
+                      : 'bg-[#071922] hover:bg-[#0D2D3E] text-cyan-200 border border-[#162D38]'
+                  }`}
                 >
-                  <span>View Well Profile</span>
+                  <span>{well.id === 'MOR-29' ? 'View Active Rig (MOR-29)' : `View Dossier (${well.name})`}</span>
                   <ExternalLink size={12} />
                 </Link>
               </div>
