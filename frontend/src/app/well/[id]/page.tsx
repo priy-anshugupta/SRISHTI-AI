@@ -477,5 +477,3 @@ export default function WellPage() {
     </div>
   );
 }
-
-/* commit-step-25: feat(well) */
