@@ -904,6 +904,23 @@
       "source_page": 58,
       "reviewer_status": "APPROVED",
       "verified_by": "B. Borah (Lead Mud Eng., OIL)"
+    },
+    {
+      "well_id": "MOR-07",
+      "event_type": "Lost Circulation in Tipam Sandstone",
+      "formation": "Tipam Sandstone",
+      "depth_md": 1840.0,
+      "severity": "MEDIUM",
+      "npt_cost_inr": 15000000.0,
+      "duration_hrs": 48.0,
+      "description": null,
+      "mitigation": "Pump 25 bbl coarse calcium carbonate (CaCO3) + mica pill. Regulate MW < 10.8 ppg.",
+      "source_doc": "WCR_Moran_7_2018.pdf",
+      "source_page": 147,
+      "reviewer_status": "APPROVED",
+      "verified_by": "P. Saikia (Chief Drilling Eng.)",
+      "id": "EVT-16",
+      "created_at": "2026-09-26T09:06:13.076977+00:00"
     }
   ],
   "documents": [
@@ -1262,6 +1279,429 @@
       ],
       "id": "DOC-016",
       "uploaded_at": "2026-09-21T15:54:57.136476Z"
+    },
+    {
+      "filename": "Sample_WCR_Moran_7.pdf",
+      "doc_type": "Well Completion Report (WCR)",
+      "well_id": "MORAN-7",
+      "pages": 312,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.2,
+      "entities_count": 22,
+      "processing_time_s": 2.1,
+      "raw_excerpt": "HISTORICAL DRILLING INCIDENT EXCERPT (Sample_WCR_Moran_7.pdf \u00b7 Page 147):\nWell: MORAN-7 | Horizon: Tipam Sandstone | Depth: 1840.0m MD\nEvent: Lost Circulation encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed.",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-7",
+          "confidence": 99.0,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Tipam Sandstone",
+          "confidence": 98.0,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "1840.0m MD",
+          "confidence": 97.0,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Lost Circulation",
+          "confidence": 96.0,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "OISD-STD-174 well control protocol and barrier restoration",
+          "confidence": 94.0,
+          "verified": false
+        }
+      ],
+      "id": "DOC-017",
+      "uploaded_at": "2026-09-26T05:42:57.856748Z"
+    },
+    {
+      "filename": "Sample_DDR_Moran_29.pdf",
+      "doc_type": "Daily Drilling Report (DDR)",
+      "well_id": "MORAN-29",
+      "pages": 4,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.2,
+      "entities_count": 22,
+      "processing_time_s": 2.1,
+      "raw_excerpt": "HISTORICAL DRILLING INCIDENT EXCERPT (Sample_DDR_Moran_29.pdf \u00b7 Page 147):\nWell: MORAN-29 | Horizon: Barail Group | Depth: 2418.0m MD\nEvent: Gas Kick / Influx encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed.",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-29",
+          "confidence": 99.0,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Barail Group",
+          "confidence": 98.0,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "2418.0m MD",
+          "confidence": 97.0,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Gas Kick / Influx",
+          "confidence": 96.0,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "OISD-STD-174 well control protocol and barrier restoration",
+          "confidence": 94.0,
+          "verified": false
+        }
+      ],
+      "id": "DOC-018",
+      "uploaded_at": "2026-09-26T05:42:57.899261Z"
+    },
+    {
+      "filename": "Sample_WCR_Moran_7.pdf",
+      "doc_type": "Well Completion Report (WCR)",
+      "well_id": "MORAN-7",
+      "pages": 312,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.2,
+      "entities_count": 22,
+      "processing_time_s": 2.1,
+      "raw_excerpt": "HISTORICAL DRILLING INCIDENT EXCERPT (Sample_WCR_Moran_7.pdf \u00b7 Page 147):\nWell: MORAN-7 | Horizon: Tipam Sandstone | Depth: 1840.0m MD\nEvent: Lost Circulation encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed.",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-7",
+          "confidence": 99.0,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Tipam Sandstone",
+          "confidence": 98.0,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "1840.0m MD",
+          "confidence": 97.0,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Lost Circulation",
+          "confidence": 96.0,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "OISD-STD-174 well control protocol and barrier restoration",
+          "confidence": 94.0,
+          "verified": false
+        }
+      ],
+      "id": "DOC-019",
+      "uploaded_at": "2026-09-26T05:46:05.229654Z"
+    },
+    {
+      "filename": "Sample_DDR_Moran_29.pdf",
+      "doc_type": "Daily Drilling Report (DDR)",
+      "well_id": "MORAN-29",
+      "pages": 4,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.2,
+      "entities_count": 22,
+      "processing_time_s": 2.1,
+      "raw_excerpt": "HISTORICAL DRILLING INCIDENT EXCERPT (Sample_DDR_Moran_29.pdf \u00b7 Page 147):\nWell: MORAN-29 | Horizon: Barail Group | Depth: 2418.0m MD\nEvent: Gas Kick / Influx encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed.",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-29",
+          "confidence": 99.0,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Barail Group",
+          "confidence": 98.0,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "2418.0m MD",
+          "confidence": 97.0,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Gas Kick / Influx",
+          "confidence": 96.0,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "OISD-STD-174 well control protocol and barrier restoration",
+          "confidence": 94.0,
+          "verified": false
+        }
+      ],
+      "id": "DOC-020",
+      "uploaded_at": "2026-09-26T05:46:05.245667Z"
+    },
+    {
+      "filename": "Sample_WCR_Moran_7.pdf",
+      "doc_type": "Well Completion Report (WCR)",
+      "well_id": "MORAN-7",
+      "pages": 312,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.2,
+      "entities_count": 22,
+      "processing_time_s": 2.1,
+      "raw_excerpt": "HISTORICAL DRILLING INCIDENT EXCERPT (Sample_WCR_Moran_7.pdf \u00b7 Page 147):\nWell: MORAN-7 | Horizon: Tipam Sandstone | Depth: 1840.0m MD\nEvent: Lost Circulation encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed.",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-7",
+          "confidence": 99.0,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Tipam Sandstone",
+          "confidence": 98.0,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "1840.0m MD",
+          "confidence": 97.0,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Lost Circulation",
+          "confidence": 96.0,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "OISD-STD-174 well control protocol and barrier restoration",
+          "confidence": 94.0,
+          "verified": false
+        }
+      ],
+      "id": "DOC-021",
+      "uploaded_at": "2026-09-26T05:47:59.751456+00:00"
+    },
+    {
+      "filename": "Sample_DDR_Moran_29.pdf",
+      "doc_type": "Daily Drilling Report (DDR)",
+      "well_id": "MORAN-29",
+      "pages": 4,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.2,
+      "entities_count": 22,
+      "processing_time_s": 2.1,
+      "raw_excerpt": "HISTORICAL DRILLING INCIDENT EXCERPT (Sample_DDR_Moran_29.pdf \u00b7 Page 147):\nWell: MORAN-29 | Horizon: Barail Group | Depth: 2418.0m MD\nEvent: Gas Kick / Influx encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed.",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-29",
+          "confidence": 99.0,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Barail Group",
+          "confidence": 98.0,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "2418.0m MD",
+          "confidence": 97.0,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Gas Kick / Influx",
+          "confidence": 96.0,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "OISD-STD-174 well control protocol and barrier restoration",
+          "confidence": 94.0,
+          "verified": false
+        }
+      ],
+      "id": "DOC-022",
+      "uploaded_at": "2026-09-26T05:47:59.767518+00:00"
+    },
+    {
+      "filename": "Sample_WCR_Moran_7.pdf",
+      "doc_type": "Well Completion Report (WCR)",
+      "well_id": "MORAN-7",
+      "pages": 312,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.2,
+      "entities_count": 22,
+      "processing_time_s": 2.1,
+      "raw_excerpt": "HISTORICAL DRILLING INCIDENT EXCERPT (Sample_WCR_Moran_7.pdf \u00b7 Page 147):\nWell: MORAN-7 | Horizon: Tipam Sandstone | Depth: 1840.0m MD\nEvent: Lost Circulation encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed.",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-7",
+          "confidence": 99.0,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Tipam Sandstone",
+          "confidence": 98.0,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "1840.0m MD",
+          "confidence": 97.0,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Lost Circulation",
+          "confidence": 96.0,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "OISD-STD-174 well control protocol and barrier restoration",
+          "confidence": 94.0,
+          "verified": false
+        }
+      ],
+      "id": "DOC-023",
+      "uploaded_at": "2026-09-26T06:54:21.133002+00:00"
+    },
+    {
+      "filename": "Sample_DDR_Moran_29.pdf",
+      "doc_type": "Daily Drilling Report (DDR)",
+      "well_id": "MORAN-29",
+      "pages": 4,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.2,
+      "entities_count": 22,
+      "processing_time_s": 2.1,
+      "raw_excerpt": "HISTORICAL DRILLING INCIDENT EXCERPT (Sample_DDR_Moran_29.pdf \u00b7 Page 147):\nWell: MORAN-29 | Horizon: Barail Group | Depth: 2418.0m MD\nEvent: Gas Kick / Influx encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed.",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-29",
+          "confidence": 99.0,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Barail Group",
+          "confidence": 98.0,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "2418.0m MD",
+          "confidence": 97.0,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Gas Kick / Influx",
+          "confidence": 96.0,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "OISD-STD-174 well control protocol and barrier restoration",
+          "confidence": 94.0,
+          "verified": false
+        }
+      ],
+      "id": "DOC-024",
+      "uploaded_at": "2026-09-26T09:04:01.478359+00:00"
+    },
+    {
+      "filename": "Sample_DDR_Moran_29.pdf",
+      "doc_type": "Daily Drilling Report (DDR)",
+      "well_id": "MORAN-29",
+      "pages": 4,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.2,
+      "entities_count": 22,
+      "processing_time_s": 2.1,
+      "raw_excerpt": "HISTORICAL DRILLING INCIDENT EXCERPT (Sample_DDR_Moran_29.pdf \u00b7 Page 147):\nWell: MORAN-29 | Horizon: Barail Group | Depth: 2418.0m MD\nEvent: Gas Kick / Influx encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed.",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-29",
+          "confidence": 99.0,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Barail Group",
+          "confidence": 98.0,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "2418.0m MD",
+          "confidence": 97.0,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Gas Kick / Influx",
+          "confidence": 96.0,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "OISD-STD-174 well control protocol and barrier restoration",
+          "confidence": 94.0,
+          "verified": false
+        }
+      ],
+      "id": "DOC-025",
+      "uploaded_at": "2026-09-26T09:05:56.116198+00:00"
     }
   ],
   "alerts": [
@@ -1281,10 +1721,10 @@
       "hazard_horizon_md": 2450.0,
       "distance_to_hazard_m": 32.0,
       "acknowledged": true,
-      "acknowledged_by": "SYSTEM",
-      "action_taken": "Tested remotely verified choke manifold per OISD-174",
+      "acknowledged_by": "DR-8429",
+      "action_taken": "Executed DIFFERENTIAL PIPE STICKING SOP (GIRUJAN CLAY) on OIL-RIG-04 (Moran-29) at depth 2395.0m MD",
       "timestamp": "2026-09-18T18:00:00Z",
-      "acknowledged_at": "2026-09-18T18:49:02.947532Z"
+      "acknowledged_at": "2026-09-26T09:06:34.621829+00:00"
     },
     {
       "id": "ALT-102",
@@ -1382,6 +1822,114 @@
     }
   ],
   "audit_logs": [
+    {
+      "id": "AUD-022",
+      "timestamp": "2026-09-26T09:06:34.628761+00:00",
+      "actor": "DR-8429",
+      "action": "ALERT_ACKNOWLEDGED",
+      "entity_type": "ALERT",
+      "entity_id": "ALT-101",
+      "details": "Driller DR-8429 acknowledged Approaching 2,450m \u2014 Barail Gas Precursor Horizon. Action recorded: Executed DIFFERENTIAL PIPE STICKING SOP (GIRUJAN CLAY) on OIL-RIG-04 (Moran-29) at depth 2395.0m MD."
+    },
+    {
+      "id": "AUD-021",
+      "timestamp": "2026-09-26T09:06:13.093000+00:00",
+      "actor": "P. Saikia (Chief Drilling Eng.)",
+      "action": "EXTRACTION_APPROVED",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-001",
+      "details": "Engineer P. Saikia (Chief Drilling Eng.) verified and committed extracted facts into canonical database."
+    },
+    {
+      "id": "AUD-020",
+      "timestamp": "2026-09-26T09:06:13.082084+00:00",
+      "actor": "P. Saikia (Chief Drilling Eng.)",
+      "action": "COMMITTED_EVIDENCE",
+      "entity_type": "DRILLING_EVENT",
+      "entity_id": "EVT-16",
+      "details": "Committed approved event: Lost Circulation in Tipam Sandstone at 1840.0m in Tipam Sandstone."
+    },
+    {
+      "id": "AUD-019",
+      "timestamp": "2026-09-26T09:05:56.121457+00:00",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-025",
+      "details": "Uploaded and queued: Sample_DDR_Moran_29.pdf (4 pages)."
+    },
+    {
+      "id": "AUD-018",
+      "timestamp": "2026-09-26T09:04:01.486379+00:00",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-024",
+      "details": "Uploaded and queued: Sample_DDR_Moran_29.pdf (4 pages)."
+    },
+    {
+      "id": "AUD-017",
+      "timestamp": "2026-09-26T06:54:21.144681+00:00",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-023",
+      "details": "Uploaded and queued: Sample_WCR_Moran_7.pdf (312 pages)."
+    },
+    {
+      "id": "AUD-016",
+      "timestamp": "2026-09-26T05:47:59.770564+00:00",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-022",
+      "details": "Uploaded and queued: Sample_DDR_Moran_29.pdf (4 pages)."
+    },
+    {
+      "id": "AUD-015",
+      "timestamp": "2026-09-26T05:47:59.755741+00:00",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-021",
+      "details": "Uploaded and queued: Sample_WCR_Moran_7.pdf (312 pages)."
+    },
+    {
+      "id": "AUD-014",
+      "timestamp": "2026-09-26T05:46:05.249459Z",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-020",
+      "details": "Uploaded and queued: Sample_DDR_Moran_29.pdf (4 pages)."
+    },
+    {
+      "id": "AUD-013",
+      "timestamp": "2026-09-26T05:46:05.233502Z",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-019",
+      "details": "Uploaded and queued: Sample_WCR_Moran_7.pdf (312 pages)."
+    },
+    {
+      "id": "AUD-012",
+      "timestamp": "2026-09-26T05:42:57.904771Z",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-018",
+      "details": "Uploaded and queued: Sample_DDR_Moran_29.pdf (4 pages)."
+    },
+    {
+      "id": "AUD-011",
+      "timestamp": "2026-09-26T05:42:57.862990Z",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-017",
+      "details": "Uploaded and queued: Sample_WCR_Moran_7.pdf (312 pages)."
+    },
     {
       "id": "AUD-010",
       "timestamp": "2026-09-21T15:54:57.142107Z",
