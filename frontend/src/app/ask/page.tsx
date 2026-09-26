@@ -309,7 +309,7 @@ export default function AskSRISHTIPage() {
                       : 'bg-[#0F1A1E] border border-slate-800 text-slate-100 rounded-tl-none shadow-md'
                   }`}
                 >
-                  <p className="whitespace-pre-wrap">{msg.text}</p>
+                  {msg.sender === 'user' ? (<p className="whitespace-pre-wrap">{msg.text}</p>) : (<ReactMarkdown>{msg.text}</ReactMarkdown>)}
                 </div>
 
                 {/* Metadata & Evidence Indicator for Assistant */}
