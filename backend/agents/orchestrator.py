@@ -285,7 +285,8 @@ class HybridAgentOrchestrator:
                 messages=messages,
                 tools=AGENT_TOOLS_DEFINITIONS,
                 tool_choice="auto",
-                temperature=0.1,
+                temperature=0.0, # Zero-emoji deterministic tool calling
+
                 max_tokens=600
             )
 
