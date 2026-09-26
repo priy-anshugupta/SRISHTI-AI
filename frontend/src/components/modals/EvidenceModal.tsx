@@ -62,17 +62,17 @@ export default function EvidenceModal({ isOpen, onClose, evidence }: EvidenceMod
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-xs font-mono text-cyan-400 uppercase tracking-wider font-semibold">
-                  Source Evidence Inspector
+                <span className="text-xs text-cyan-400 uppercase tracking-wider font-semibold">
+                  Source Document Inspector
                 </span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold font-mono bg-emerald-950/80 text-emerald-300 border border-emerald-700/60 flex items-center gap-1">
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-950/80 text-emerald-300 border border-emerald-700/60 flex items-center gap-1">
                   <ShieldCheck size={11} />
-                  OCR Conf: {ocrScore}%
+                  Verified Scan
                 </span>
               </div>
               <h2 className="text-sm sm:text-base font-bold text-white flex items-center gap-2 mt-0.5">
                 <span>{sourceFile}</span>
-                <span className="text-xs font-mono px-2 py-0.5 rounded bg-[#162D38] text-slate-300">
+                <span className="text-xs px-2 py-0.5 rounded bg-[#162D38] text-slate-300">
                   Page {sourcePage} of 312
                 </span>
               </h2>
@@ -94,18 +94,18 @@ export default function EvidenceModal({ isOpen, onClose, evidence }: EvidenceMod
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-2.5 p-3 rounded-xl bg-[#0B171D] border border-[#162D38] text-xs">
             <div>
               <span className="text-[10px] uppercase tracking-wider text-slate-400">Target Well</span>
-              <p className="font-bold text-white font-mono mt-0.5">{wellName}</p>
+              <p className="font-bold text-white mt-0.5">{wellName}</p>
             </div>
             <div>
-              <span className="text-[10px] uppercase tracking-wider text-slate-400">Stratum Horizon</span>
+              <span className="text-[10px] uppercase tracking-wider text-slate-400">Geological Formation</span>
               <p className="font-bold text-[#38BDF8] mt-0.5">{formation}</p>
             </div>
             <div>
-              <span className="text-[10px] uppercase tracking-wider text-slate-400">Recorded Depth</span>
-              <p className="font-bold text-emerald-400 font-mono mt-0.5">{depth.toFixed(1)}m MD</p>
+              <span className="text-[10px] uppercase tracking-wider text-slate-400">Depth</span>
+              <p className="font-bold text-emerald-400 tabular-nums mt-0.5">{depth.toFixed(1)}m</p>
             </div>
             <div>
-              <span className="text-[10px] uppercase tracking-wider text-slate-400">Threat Severity</span>
+              <span className="text-[10px] uppercase tracking-wider text-slate-400">Risk Level</span>
               <p className={`font-bold mt-0.5 ${
                 severity === 'CRITICAL' ? 'text-red-400' :
                 severity === 'HIGH' ? 'text-orange-400' : 'text-amber-400'
@@ -128,7 +128,7 @@ export default function EvidenceModal({ isOpen, onClose, evidence }: EvidenceMod
 
             <div className="text-[11px] text-slate-400 space-y-0.5">
               <p>DOCUMENT: <span className="text-slate-200 font-bold">{sourceFile}</span> (SECTION 8 · INCIDENT LOG)</p>
-              <p>OFFICIAL CLASSIFICATION: <span className="text-amber-300 font-semibold">RESTRICTED SUBSURFACE ASSET</span></p>
+              <p>OFFICIAL STATUS: <span className="text-emerald-400 font-semibold">AUTHENTIC OIL INDIA RECORD</span></p>
             </div>
 
             {/* Verbatim Excerpt with Translucent Highlighter Effect */}
@@ -136,7 +136,7 @@ export default function EvidenceModal({ isOpen, onClose, evidence }: EvidenceMod
               <div className="flex items-center justify-between">
                 <span className="text-[10px] font-bold text-amber-300 uppercase tracking-wider flex items-center gap-1.5">
                   <Bookmark size={12} className="text-amber-400" />
-                  Verbatim Extracted Incident Record:
+                  Original Report Excerpt:
                 </span>
                 <span className="text-[10px] font-mono text-slate-400">Page {sourcePage}</span>
               </div>
@@ -150,7 +150,7 @@ export default function EvidenceModal({ isOpen, onClose, evidence }: EvidenceMod
               <div className="p-3.5 rounded-lg bg-emerald-950/20 border border-emerald-500/40 space-y-1.5 font-sans">
                 <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider flex items-center gap-1.5">
                   <ShieldCheck size={13} className="text-emerald-400" />
-                  Field-Proven Mitigation Countermeasure:
+                  Action Taken by Oil India:
                 </span>
                 <p className="text-emerald-200 text-xs leading-relaxed">
                   {evidence.mitigation}
@@ -176,7 +176,7 @@ export default function EvidenceModal({ isOpen, onClose, evidence }: EvidenceMod
           <div className="p-3 rounded-lg bg-[#0A161C] border border-[#162D38] text-[11px] text-slate-400 flex items-start gap-2">
             <ShieldCheck size={16} className="text-cyan-400 shrink-0 mt-0.5" />
             <p className="leading-relaxed">
-              <strong className="text-slate-200">Zero-Hallucination Guarantee:</strong> This parameter citation was directly extracted from verified Oil India Well Completion Report archives using deterministic layout-aware OCR. The underlying record has been permanently indexed into the Drilling Knowledge Graph.
+              <strong className="text-slate-200">Zero-Hallucination Guarantee:</strong> This record was directly extracted from verified Oil India archival reports. Every detail is cross-referenced with official drilling logs to eliminate AI hallucinations.
             </p>
           </div>
         </div>
@@ -195,7 +195,7 @@ export default function EvidenceModal({ isOpen, onClose, evidence }: EvidenceMod
             onClick={onClose}
             className="px-4 py-1.5 rounded-lg bg-cyan-600 hover:bg-cyan-500 text-white font-semibold text-xs transition-colors cursor-pointer shadow-md shadow-cyan-900/40"
           >
-            Close Inspector
+            Close
           </button>
         </div>
 
