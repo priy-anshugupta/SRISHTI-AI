@@ -356,3 +356,5 @@ class HybridAgentOrchestrator:
 
 # Singleton instance
 agent_orchestrator = HybridAgentOrchestrator()
+
+# commit-step-5: feat(agents)
