@@ -187,9 +187,7 @@ export default function AskSRISHTIPage() {
       };
 
       setMessages(prev => [...prev, assistantMessage]);
-      if (response.evidence && response.evidence.length > 0) {
-        setSelectedEvidence(response.evidence);
-      }
+      setSelectedEvidence(response.evidence || []);
     } catch (err) {
       console.warn('Fallback response for Q&A:', err);
       const fallbackEvidence: Evidence[] = [
