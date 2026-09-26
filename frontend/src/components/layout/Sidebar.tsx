@@ -19,11 +19,10 @@ import {
   ShieldCheck,
   ChevronLeft,
   Menu,
-  Sparkles,
   Flame
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { useAuth, PRESET_PERSONAS, UserProfile } from '@/context/AuthContext';
+import { useAuth, PRESET_PERSONAS } from '@/context/AuthContext';
 
 interface NavItem {
   name: string;
@@ -34,17 +33,45 @@ interface NavItem {
   badgeColor?: string;
 }
 
-const navItems: NavItem[] = [
-  { name: 'Geospatial Well Map', href: '/map', icon: Globe, shortcut: 'Alt+1', badge: '3D GIS', badgeColor: 'bg-[#0D5C75] text-[#38BDF8]' },
-  { name: 'Ask SRISHTI (AI Chat)', href: '/ask', icon: MessageSquare, shortcut: 'Alt+2', badge: 'AI CHAT', badgeColor: 'bg-[#D97706] text-black font-bold' },
-  { name: 'Well Dossier (MOR-29)', href: '/well/MOR-29', icon: FileText, shortcut: 'Alt+3' },
-  { name: 'Offset Comparison', href: '/compare', icon: GitCompare, shortcut: 'Alt+4' },
-  { name: 'Drilling Knowledge Graph', href: '/knowledge', icon: Share2, shortcut: 'Alt+5' },
-  { name: 'Proactive Hazard Alerts', href: '/alerts', icon: AlertTriangle, shortcut: 'Alt+6', badge: 'LIVE', badgeColor: 'bg-red-500/20 text-red-400 border border-red-500/40' },
-  { name: 'Formation Analytics', href: '/analytics', icon: BarChart3, shortcut: 'Alt+7' },
-  { name: 'Document Ingestion (OCR)', href: '/ingest', icon: Upload, shortcut: 'Alt+8' },
-  { name: 'Well Program Generator', href: '/report', icon: ClipboardList, shortcut: 'Alt+9' },
-  { name: 'Doghouse Touch Cockpit', href: '/doghouse', icon: Monitor, shortcut: 'Alt+0', badge: 'RIG', badgeColor: 'bg-emerald-500/20 text-emerald-400' },
+interface NavGroup {
+  title: string;
+  subtitle: string;
+  dotColor: string;
+  items: NavItem[];
+}
+
+const navGroups: NavGroup[] = [
+  {
+    title: 'RIG OPERATIONS',
+    subtitle: 'Live',
+    dotColor: '#ef4444', // Red
+    items: [
+      { name: 'Active Well (MOR-29)', href: '/well/MOR-29', icon: FileText, shortcut: 'Alt+1' },
+      { name: 'Early Safety Alerts', href: '/alerts', icon: AlertTriangle, shortcut: 'Alt+2', badge: 'LIVE', badgeColor: 'bg-red-950 text-red-300 border border-red-800/80 font-bold' },
+      { name: 'Rig Floor View', href: '/doghouse', icon: Monitor, shortcut: 'Alt+3', badge: 'Rig', badgeColor: 'bg-emerald-950 text-emerald-300 border border-emerald-800/80 font-bold' },
+    ],
+  },
+  {
+    title: 'OFFSET INTELLIGENCE',
+    subtitle: 'Historical Memory',
+    dotColor: '#38bdf8', // Blue/Cyan
+    items: [
+      { name: 'Nearby Well Map', href: '/map', icon: Globe, shortcut: 'Alt+4' },
+      { name: 'Compare Nearby Wells', href: '/compare', icon: GitCompare, shortcut: 'Alt+5' },
+      { name: 'Past Incident Memory', href: '/knowledge', icon: Share2, shortcut: 'Alt+6' },
+      { name: 'Ask SRISHTI', href: '/ask', icon: MessageSquare, shortcut: 'Alt+7', badge: 'AI Chat', badgeColor: 'bg-amber-950 text-amber-300 border border-amber-800/80 font-bold' },
+    ],
+  },
+  {
+    title: 'ENGINEERING & DATA',
+    subtitle: 'Planning',
+    dotColor: '#10b981', // Green
+    items: [
+      { name: 'Rock Layer Analysis', href: '/analytics', icon: BarChart3, shortcut: 'Alt+8' },
+      { name: 'Pre-Drill Safety Brief', href: '/report', icon: ClipboardList, shortcut: 'Alt+9' },
+      { name: 'Upload & Read Reports', href: '/ingest', icon: Upload, shortcut: 'Alt+0' },
+    ],
+  },
 ];
 
 export default function Sidebar() {
@@ -61,15 +88,18 @@ export default function Sidebar() {
     <>
       <aside
         className={cn(
-          "print:hidden h-full bg-[#030709] border-r-2 border-[#162D38] shadow-[8px_0_30px_rgba(0,0,0,0.85)] flex flex-col transition-all duration-300 relative z-30 shrink-0 select-none",
+          "print:hidden h-full bg-[#020507] border-r border-[#153240] shadow-[8px_0_30px_rgba(0,0,0,0.85)] flex flex-col transition-all duration-300 relative z-30 shrink-0 select-none",
           expanded ? "w-64" : "w-18"
         )}
       >
+        {/* Subtle razor-sharp 1px vertical gradient seam */}
+        <div className="absolute right-0 top-0 bottom-0 w-[1px] bg-gradient-to-b from-cyan-400/50 via-[#0D5C75] to-emerald-400/30 shadow-[0_0_8px_rgba(56,189,248,0.25)] pointer-events-none z-30" />
+
         {/* Brand Top Header */}
         <div className="h-16 flex items-center justify-between px-4 border-b border-[#162D38] bg-[#050C10] shadow-sm">
           {expanded ? (
             <Link href="/" className="flex items-center gap-3 overflow-hidden">
-              <div className="w-8 h-8 rounded-lg bg-[#0D5C75]/30 border border-cyan-500/50 flex items-center justify-center text-[#D97706] shrink-0 shadow-[0_0_12px_rgba(13,92,117,0.4)]">
+              <div className="w-8 h-8 rounded-lg bg-[#0D5C75]/30 border border-slate-700/60 flex items-center justify-center text-[#D97706] shrink-0">
                 <Flame size={18} />
               </div>
               <div className="flex flex-col">
@@ -77,96 +107,126 @@ export default function Sidebar() {
                   SRISHTI <span className="text-[#D97706]">· AI</span>
                 </span>
                 <span className="text-[10px] text-amber-500/90 font-semibold tracking-wider mt-0.5">
-                  OIL INDIA · eRTMAC
+                  OIL INDIA LIMITED
                 </span>
               </div>
             </Link>
           ) : (
-            <div className="w-8 h-8 rounded-lg bg-[#0D5C75]/30 border border-cyan-500/50 flex items-center justify-center text-[#D97706] mx-auto shadow-[0_0_12px_rgba(13,92,117,0.4)]">
+            <div className="w-8 h-8 rounded-lg bg-[#0D5C75]/30 border border-slate-700/60 flex items-center justify-center text-[#D97706] mx-auto">
               <Flame size={18} />
             </div>
           )}
 
           <button
             onClick={() => setExpanded(!expanded)}
-            className="text-slate-400 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-slate-800/60"
+            className="text-slate-400 hover:text-white transition-colors p-1.5 rounded-lg hover:bg-slate-800/60 cursor-pointer"
             title={expanded ? "Collapse Sidebar" : "Expand Sidebar"}
           >
             {expanded ? <ChevronLeft size={16} /> : <Menu size={16} />}
           </button>
         </div>
 
-        {/* Category Header */}
-        {expanded && (
-          <div className="px-4 pt-4 pb-2 flex items-center justify-between border-b border-[#112028]/80 mx-2">
-            <span className="text-[10px] uppercase tracking-wider text-slate-400 font-bold">
-              DRILLING INTELLIGENCE
-            </span>
-            <span className="text-[9px] font-mono px-2 py-0.5 rounded-full bg-[#0D5C75]/30 text-[#38BDF8] border border-cyan-500/40 font-semibold">
-              10 AGENTS
-            </span>
-          </div>
-        )}
+        {/* Grouped Navigation Items */}
+        <div className="flex-1 overflow-y-auto px-2.5 py-3 space-y-2 no-scrollbar">
+          {navGroups.map((group, groupIdx) => (
+            <div key={group.title} className="space-y-1">
+              
+              {/* Subtle architectural separator before groups 2 & 3 */}
+              {groupIdx > 0 && (
+                <div className="pt-2 border-t border-[#13242E] my-1" />
+              )}
 
-        {/* Navigation Items */}
-        <div className="flex-1 overflow-y-auto px-2.5 py-3 space-y-1">
-          {navItems.map((item) => {
-            const Icon = item.icon;
-            const active = pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href));
+              {/* Group Header with Sleek Colored Gradient Line */}
+              {expanded ? (
+                <div className="px-2.5 pt-1 pb-1.5 flex items-center gap-2">
+                  <span 
+                    className="w-2 h-2 rounded-full shrink-0 shadow-sm" 
+                    style={{ backgroundColor: group.dotColor }}
+                  />
+                  <span className="text-[10px] uppercase tracking-wider font-extrabold text-slate-300 whitespace-nowrap">
+                    {group.title}
+                  </span>
+                  <div 
+                    className="flex-1 h-[1px] ml-1.5 opacity-40" 
+                    style={{ background: `linear-gradient(to right, ${group.dotColor}, transparent)` }}
+                  />
+                </div>
+              ) : (
+                groupIdx > 0 && <div className="border-t border-[#13242E] my-2" />
+              )}
 
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-medium transition-all group relative",
-                  active
-                    ? "bg-gradient-to-r from-[#0D5C75]/40 via-[#0D5C75]/15 to-transparent text-white border-l-[3px] border-cyan-400 font-semibold shadow-[inset_0_0_12px_rgba(14,165,233,0.15)]"
-                    : "text-slate-400 hover:text-white hover:bg-[#081216] border-l-[3px] border-transparent"
-                )}
-              >
-                <Icon size={16} className={cn("shrink-0 transition-colors", active ? "text-cyan-300" : "text-slate-400 group-hover:text-cyan-300")} />
-                
-                {expanded && (
-                  <div className="flex items-center justify-between flex-1 overflow-hidden">
-                    <span className="truncate">{item.name}</span>
-                    <div className="flex items-center gap-1.5 shrink-0">
-                      {item.badge && (
-                        <span className={cn("text-[9px] font-mono px-1.5 py-0.5 rounded font-bold", item.badgeColor)}>
-                          {item.badge}
-                        </span>
+              {/* Items in this Group */}
+              <div className="space-y-0.5">
+                {group.items.map((item) => {
+                  const Icon = item.icon;
+                  const active = pathname === item.href || (item.href !== '/' && pathname?.startsWith(item.href));
+
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={cn(
+                        "flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs font-medium transition-all group relative cursor-pointer",
+                        active
+                          ? "bg-[#0D5C75]/25 text-white border-l-[3px] font-bold shadow-md shadow-cyan-950/20"
+                          : "text-slate-400 hover:text-white hover:bg-[#071318] border-l-[3px] border-transparent"
                       )}
-                      <span className="text-[9px] font-mono text-slate-600 hidden group-hover:inline">
-                        {item.shortcut}
-                      </span>
-                    </div>
-                  </div>
-                )}
+                      style={active ? { borderLeftColor: group.dotColor } : undefined}
+                    >
+                      <Icon
+                        size={16}
+                        className={cn(
+                          "shrink-0 transition-colors",
+                          active ? "text-white" : "text-slate-400 group-hover:text-cyan-300"
+                        )}
+                        style={active ? { color: group.dotColor } : undefined}
+                      />
+                      
+                      {expanded && (
+                        <div className="flex items-center justify-between flex-1 overflow-hidden">
+                          <span className="truncate">{item.name}</span>
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            {item.badge && (
+                              <span className={cn("text-[9px] px-1.5 py-0.5 rounded", item.badgeColor)}>
+                                {item.badge}
+                              </span>
+                            )}
+                            <span className="text-[9px] text-slate-500 font-mono hidden group-hover:inline">
+                              {item.shortcut}
+                            </span>
+                          </div>
+                        </div>
+                      )}
 
-                {/* Collapsed Tooltip */}
-                {!expanded && (
-                  <div className="absolute left-full ml-2 px-2 py-1 bg-[#09151A] border border-cyan-800/80 text-white text-xs rounded shadow-xl opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
-                    {item.name} <span className="text-slate-400 text-[10px] font-mono ml-1">({item.shortcut})</span>
-                  </div>
-                )}
-              </Link>
-            );
-          })}
+                      {/* Collapsed Tooltip */}
+                      {!expanded && (
+                        <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-[#09151A] border border-cyan-800/80 text-white text-xs rounded-lg shadow-2xl opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
+                          <div className="font-bold">{item.name}</div>
+                          <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
+                            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: group.dotColor }} />
+                            <span>{group.title}</span> · <span>{item.shortcut}</span>
+                          </div>
+                        </div>
+                      )}
+                    </Link>
+                  );
+                })}
+              </div>
+
+            </div>
+          ))}
         </div>
 
         {/* Footer Area */}
         <div className="p-3 border-t border-[#162D38] bg-[#030608] space-y-2">
           {expanded && (
-            <>
-              {/* Air-gap / Model Indicator Pill */}
-              <div className="flex items-center justify-between text-[10px] bg-[#060E12] px-2.5 py-1.5 rounded-lg border border-[#162D38]">
-                <span className="text-slate-400 flex items-center gap-1.5 font-medium">
-                  <ShieldCheck size={12} className="text-[#10B981]" />
-                  AIR-GAP SOVEREIGN
-                </span>
-                <span className="text-[#38BDF8] font-bold font-mono">100% Zero-Cloud</span>
-              </div>
-            </>
+            <div className="flex items-center justify-between text-[10px] bg-[#060E12] px-2.5 py-1.5 rounded-lg border border-[#162D38]">
+              <span className="text-slate-400 flex items-center gap-1.5 font-medium">
+                <ShieldCheck size={12} className="text-[#10B981]" />
+                PRIVATE NETWORK
+              </span>
+              <span className="text-[#38BDF8] font-medium">Local &amp; Secure</span>
+            </div>
           )}
 
           {/* User Profile Card */}
@@ -199,7 +259,7 @@ export default function Sidebar() {
                   e.stopPropagation();
                   logout();
                 }}
-                className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-950/30 transition-colors"
+                className="p-1.5 rounded-lg text-slate-400 hover:text-red-400 hover:bg-red-950/30 transition-colors cursor-pointer"
                 title="Sign Out / Lock Console"
               >
                 <LogOut size={14} />
@@ -218,7 +278,7 @@ export default function Sidebar() {
                 <User size={16} className="text-[#38BDF8]" />
                 <h3 className="text-sm font-bold text-white">OIL INDIA PERSONA SELECTOR</h3>
               </div>
-              <button onClick={() => setShowUserModal(false)} className="text-slate-400 hover:text-white text-xs">✕</button>
+              <button onClick={() => setShowUserModal(false)} className="text-slate-400 hover:text-white text-xs cursor-pointer">✕</button>
             </div>
 
             <div className="space-y-2 text-xs">
@@ -253,14 +313,14 @@ export default function Sidebar() {
                   setShowUserModal(false);
                   logout();
                 }}
-                className="flex-1 py-2 bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-semibold rounded transition-colors flex items-center justify-center gap-1.5"
+                className="flex-1 py-2 bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-semibold rounded transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <LogOut size={12} />
                 <span>Log Out</span>
               </button>
               <button
                 onClick={() => setShowUserModal(false)}
-                className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded transition-colors"
+                className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded transition-colors cursor-pointer"
               >
                 Close
               </button>
