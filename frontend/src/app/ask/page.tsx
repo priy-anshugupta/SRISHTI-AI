@@ -448,16 +448,54 @@ export default function AskSRISHTIPage() {
             className={`px-3.5 py-2.5 rounded-lg border text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
               isListening
                 ? 'bg-red-600 border-red-500 text-white animate-pulse shadow-lg'
-          <span className="text-sm">📄</span>
-          <span>Click any record below to view original scanned pages.</span>
+                : 'bg-[#060D10] border-[#162D38] hover:border-cyan-500 text-slate-300 hover:text-cyan-300'
+            }`}
+          >
+            {isListening ? <MicOff size={15} /> : <Mic size={15} />}
+            <span className="hidden sm:inline">{isListening ? 'Listening…' : 'Voice'}</span>
+          </button>
+
+          <button
+            type="submit"
+            disabled={loading || !inputQuery.trim()}
+            className="px-5 py-2.5 bg-[#0D5C75] hover:bg-[#116F8C] active:bg-[#0A4A5E] disabled:opacity-40 text-white text-xs font-bold rounded-lg border border-[#38BDF8]/40 hover:border-[#38BDF8]/80 transition-all flex items-center gap-2 shadow-sm cursor-pointer"
+          >
+            <span>Ask</span>
+            <Send size={14} />
+          </button>
+        </form>
+
+      </div>
+
+      {/* RIGHT: Compact Verified Historical Evidence Panel */}
+      <div className="w-full xl:w-[350px] shrink-0 bg-[#060D10] border border-[#162D38] rounded-xl p-4 flex flex-col shadow-xl space-y-3">
+        
+        {/* Panel Header */}
+        <div className="flex items-center justify-between border-b border-[#162D38] pb-3">
+          <div className="flex items-center gap-2 text-cyan-400">
+            <BookOpenCheck size={16} />
+            <h2 className="text-xs font-bold text-white uppercase tracking-wider">
+              Historical Records
+            </h2>
+          </div>
+          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#0D2430] text-cyan-300 border border-[#163847]">
+            {selectedEvidence.length} {selectedEvidence.length === 1 ? 'Record' : 'Records'}
+          </span>
         </div>
 
         {/* Citations List */}
-        <div className="flex-1 overflow-y-auto space-y-3.5 pr-1">
+        <div className="flex-1 overflow-y-auto space-y-3 pr-1">
           {selectedEvidence.length === 0 ? (
-            <div className="h-48 flex flex-col items-center justify-center text-center text-slate-500 text-xs space-y-2 font-sans">
-              <Database size={24} className="text-slate-600" />
-              <p>Ask a question to load matching historical documents.</p>
+            <div className="h-56 flex flex-col items-center justify-center text-center text-slate-500 text-xs space-y-2.5 font-sans px-4">
+              <div className="w-10 h-10 rounded-full bg-[#08151B] border border-[#162D38] flex items-center justify-center text-slate-500">
+                <Database size={18} className="text-slate-400" />
+              </div>
+              <div>
+                <p className="text-slate-300 font-medium">No Offset Records Required</p>
+                <p className="text-[11px] text-slate-500 mt-1 max-w-[210px] leading-relaxed">
+                  Historical well logs & OISD guidelines are cited automatically whenever you ask drilling or geological questions.
+                </p>
+              </div>
             </div>
           ) : (
             selectedEvidence.map((ev, idx) => (
@@ -478,78 +516,54 @@ export default function AskSRISHTIPage() {
                   ocr_confidence: 96.8,
                   reviewed_by: 'P. Saikia (Chief Drilling Specialist, Oil India Ltd.)'
                 })}
-                className="p-4 bg-[#0A1820] hover:bg-[#0E222D] border border-[#163D4E] hover:border-cyan-400/70 rounded-xl space-y-3 text-xs transition-all cursor-pointer group shadow-md"
-                title="Click to inspect original scanned report excerpt"
+                className="p-3.5 bg-[#081216] hover:bg-[#0D1D24] border border-[#162D38] hover:border-cyan-500/50 rounded-lg space-y-2 text-xs transition-all cursor-pointer group shadow-sm"
+                title="Click to view original scanned report excerpt"
               >
-                {/* Top Row: Well Identifier + Incident Pill */}
+                {/* Top Row: Well Name + Depth + Hazard Tag */}
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400" />
-                    <span className="font-bold text-white text-sm group-hover:text-cyan-300 transition-colors">
-                      Well: {ev.well}
-                    </span>
+                  <div className="flex items-center gap-1.5 font-bold text-white text-xs">
+                    <MapPin size={13} className="text-amber-400" />
+                    <span>{ev.well}</span>
+                    <span className="text-[11px] text-slate-400 font-normal">· {ev.depth_from_md_m}m</span>
                   </div>
                   <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
-                    ev.severity === 'CRITICAL' 
-                      ? 'bg-red-950/60 text-red-300 border border-red-700/60' 
-                      : 'bg-amber-950/60 text-amber-300 border border-amber-700/60'
+                    ev.severity === 'CRITICAL' || ev.event_type.toLowerCase().includes('kick')
+                      ? 'bg-red-950/60 text-red-300 border border-red-800/60'
+                      : 'bg-amber-950/60 text-amber-300 border border-amber-800/60'
                   }`}>
                     {ev.event_type}
                   </span>
                 </div>
 
-                {/* Subsurface Context Badge */}
-                <div className="flex items-center gap-2 text-[11px] text-slate-300 bg-[#061015] px-2.5 py-1.5 rounded border border-[#112935]">
-                  <span>Formation: <strong className="text-cyan-300">{ev.formation || 'Barail Group'}</strong></span>
-                  <span>·</span>
-                  <span>Depth: <strong className="text-white tabular-nums">{ev.depth_from_md_m}m</strong></span>
+                {/* Formation Name */}
+                <div className="text-[11px] text-cyan-300 font-medium">
+                  {ev.formation || 'Barail Group'}
                 </div>
 
-                {/* What Happened Section */}
-                <div className="space-y-1">
-                  <span className="text-[10px] uppercase font-bold text-slate-400 tracking-wider block">
-                    Recorded Incident:
-                  </span>
-                  <p className="text-slate-200 text-xs leading-relaxed">
-                    {ev.description}
-                  </p>
-                </div>
+                {/* Clean Plain Summary */}
+                <p className="text-slate-300 text-[11px] leading-relaxed line-clamp-3">
+                  {ev.description}
+                </p>
 
-                {/* Applied Solution Box */}
+                {/* Solution Box */}
                 {ev.mitigation && (
-                  <div className="p-3 rounded-lg bg-[#061217] border border-[#15465A] text-cyan-200 text-[11px] space-y-1">
-                    <strong className="text-amber-400 block text-[10px] uppercase tracking-wider font-bold">
-                      Action Taken By Oil India:
-                    </strong>
-                    <p className="leading-relaxed">{ev.mitigation}</p>
+                  <div className="text-[11px] text-slate-300 border-l-2 border-emerald-500 pl-2 py-0.5 leading-relaxed bg-[#061814]/40 rounded-r">
+                    <span className="text-emerald-400 font-semibold">Solution: </span>
+                    {ev.mitigation}
                   </div>
                 )}
 
-                {/* Document Footer Bar with Inspect Button */}
-                <div className="flex items-center justify-between pt-2 border-t border-[#13323F] text-[11px]">
-                  <span className="flex items-center gap-1.5 text-cyan-300 font-medium truncate max-w-[170px]">
-                    <FileText size={12} className="text-cyan-400 shrink-0" />
-                    <span className="truncate">{ev.source_file || 'WCR Archive'}</span>
-                  </span>
-                  <span className="px-2.5 py-1 rounded bg-[#0D2633] group-hover:bg-cyan-600 border border-cyan-700/40 text-cyan-200 group-hover:text-white font-medium text-[10px] flex items-center gap-1 transition-all">
-                    <span>Page {ev.source_page || '—'} · View Scan</span>
+                {/* Document Footer Bar with Scan Link */}
+                <div className="flex items-center justify-between pt-1.5 border-t border-[#162D38] text-[10px] text-slate-400">
+                  <span className="truncate max-w-[170px]">{ev.source_file || 'WCR Archive'}</span>
+                  <span className="text-cyan-400 group-hover:underline flex items-center gap-1 font-semibold">
+                    <span>Page {ev.source_page || '—'} Scan</span>
                     <ChevronRight size={11} />
                   </span>
                 </div>
               </div>
             ))
           )}
-        </div>
-
-        {/* Verification Guarantee Footer */}
-        <div className="p-3.5 bg-[#061217] border border-[#133847] rounded-xl text-[11px] text-slate-300 leading-relaxed flex items-start gap-2.5 shadow-sm">
-          <ShieldCheck size={16} className="text-emerald-400 shrink-0 mt-0.5" />
-          <div>
-            <span className="font-semibold text-white block mb-0.5">Zero-Hallucination Guarantee</span>
-            <p className="text-slate-400 text-[10px] leading-relaxed">
-              Every answer is cross-checked against original scanned Oil India PDF reports to ensure 100% engineering accuracy.
-            </p>
-          </div>
         </div>
 
       </div>
