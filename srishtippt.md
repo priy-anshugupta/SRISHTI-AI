@@ -148,7 +148,12 @@ flowchart LR
 
 > *(Presenter stands tall, clicks to Slide 1, points to the Baghjan image and Idea Napkin sketch)*
 > 
-> SRISHTI acts as an automated lookahead radar for Oil India's eRTMAC. It ingests 70 years of historical completion reports, links directly to real-time rig sensors, and sounds an early warning **32 meters before the bit enters a hazard horizon**.  
+> *"Respected Jury Members and Senior Engineers from Oil India Limited:  
+> On May 27, 2020, Baghjan Well-5 blew out in Upper Assam. Two brave Oil India personnel gave their lives, and the inferno raged for nearly six months next to Dibru-Saikhowa National Park.  
+> When the National Green Tribunal investigated, they uncovered a tragic truth: **the dangerous gas behavior of the Barail formation was already known from older offset wells!** But that memory was buried in paper archives in Duliajan, while the rig crew drilled blind into the past.  
+> *(Point to the 'SRISHTI WAY' diagram)*  
+> We built **SRISHTI·AI** so that no Indian driller ever enters a hazardous formation blind again.  
+> SRISHTI acts as an automated lookahead radar for Oil India's eRTMAC. It ingests 60 years of historical completion reports, links directly to real-time rig sensors streaming at 1 Hertz, and sounds an early warning **30 meters before the bit enters a hazard horizon**.  
 > And unlike generic cloud AI that hallucinates and dies without internet, SRISHTI runs **100% offline in Sovereign Rig Air-Gap mode**, calculates rock pressures with deterministic physics, and provides a 1-click clickable audit trail back to the stamped paper record."*
 
 ---
@@ -174,13 +179,13 @@ flowchart LR
 ```mermaid
 flowchart TD
     subgraph Layer1["1. MULTI-SOURCE DATA & TELEMETRY INGESTION"]
-        D1["70 Yrs Historical WCRs / DDRs<br/>(PDF Text & Scanned Tables)"] --> P1["Automated OCR & Regex Entity Parser"]
+        D1["60 Yrs Historical WCRs / DDRs<br/>(PDF Text & Scanned Tables)"] --> P1["Automated OCR & Regex Entity Parser"]
         D2["Wireline Well Logs<br/>(LAS 2.0 Curves: GR, ILD, DT)"] --> P2["LAS Log Interpolation Engine"]
-        D3["Live Rig Sensors (1 Hz WITSML Stream)<br/>(ROP, WOB, RPM, SPP, Torque, MW)"] --> P3["WebSocket Channel: ws://.../ws/ertmac"]
+        D3["eRTMAC Duliajan Live Telemetry (1 Hz WITSML)<br/>(Depth, ROP, WOB, RPM, SPP, Torque, MW)"] --> P3["WebSocket Bridge: ws://.../ws/ertmac"]
     end
 
     subgraph Layer2["2. CORE HYBRID REASONING ENGINE (FastAPI / Python 3.12)"]
-        P1 & P2 --> S1[("Sovereign Evidence Store<br/>PostGIS Spatial Database")]
+        P1 & P2 --> S1[("Sovereign Evidence Store<br/>Spatial Vector & Relational DB")]
         P3 --> PHY["DETERMINISTIC DRILLING PHYSICS ENGINE"]
         PHY -->|Formula 1| F1["Corrected d-Exponent (dcs Undercompaction)"]
         PHY -->|Formula 2| F2["Eaton Pore Pressure Gradient (Pp ppg)"]
@@ -193,16 +198,17 @@ flowchart TD
 
     subgraph Layer3["3. SOVEREIGN EXECUTION & NETWORK ADAPTATION"]
         SWARM --> SW{"Topbar Mode Switcher"}
-        SW -->|Online eRTMAC| CLOUD["Cloud Mode: OpenAI gpt-4o-mini / Groq"]
-        SW -->|Rig Jungle Air-Gap| EDGE["🟡 Sovereign Rig Edge: Local Ollama (qwen2.5:7b)"]
+        SW -->|Online eRTMAC Duliajan| CLOUD["Cloud Mode: OpenAI gpt-4o-mini / Groq Llama-3.3"]
+        SW -->|Remote Jungle Rig Air-Gap| EDGE["🟡 Sovereign Rig Edge: Local Ollama (qwen2.5:7b)"]
         SW -->|Network Outage| DET["Deterministic Offline Rule Engine (Zero-Downtime)"]
     end
 
-    subgraph Layer4["4. TOUCH-OPTIMIZED PRESENTATION SUITE (Next.js 16 / React 19)"]
-        CLOUD & EDGE & DET --> UI1["/doghouse: Touch HUD (7-Segment Display & 32m Countdown)"]
-        CLOUD & EDGE & DET --> UI2["/monitor: DCS Control Room Live Telemetry Wall"]
-        CLOUD & EDGE & DET --> UI3["/map: 3D GIS Well Offset Radar (5-50km Proximity)"]
-        CLOUD & EDGE & DET --> UI4["/report: Statutory Pre-Spud Print Dossier (3-Way Sign-Off)"]
+    subgraph Layer4["4. OPERATIONAL WORKSPACE SUITE (Next.js / React 19)"]
+        CLOUD & EDGE & DET --> UI1["/doghouse: Rig Floor Touch HUD (7-Segment & 30m Countdown)"]
+        CLOUD & EDGE & DET --> UI2["/map: 3D Geospatial Well Offset Radar (1-25km Proximity)"]
+        CLOUD & EDGE & DET --> UI3["/ask: Bilingual Copilot (English & Hindi with Page Citations)"]
+        CLOUD & EDGE & DET --> UI4["/plan: Statutory Pre-Spud Print Dossier (3-Way Sign-Off)"]
+        CLOUD & EDGE & DET --> UI5["/analytics: Pressure Corridors & Safe Drilling Limits"]
     end
 
     style Layer1 fill:#e6f7ff,stroke:#1890ff,stroke-width:1.5px
@@ -222,7 +228,7 @@ flowchart TD
   * **Edge / Sovereign Air-Gap**: Local **Ollama (`qwen2.5:7b` / quantized)** for 100% offline, zero-internet rig deployments.
   * **Cloud Mode**: OpenAI `gpt-4o-mini` / Groq Llama-3.3-70B for centralized eRTMAC operations.
   * **Automated Fallback**: Instant, zero-downtime deterministic rule engine if API/network drops.
-* **Geospatial & Graph Engines**: **PostGIS / Haversine** (Spatial radius proximity 5–50km) | **NetworkX** (5-Layer Bow-Tie causal safety graphs).
+* **Geospatial & Graph Engines**: **PostGIS / Haversine** (Spatial radius proximity 1–25km) | **NetworkX** (5-Layer Bow-Tie causal safety graphs).
 * **Frontend Mission Control**: **Next.js 16 (Turbopack)** | **React 19** | **TailwindCSS** | **Leaflet GIS 3D Mapping** | **Lucide Icons**.
 * **Industrial Protocols**: **WITSML 1.4.1** (Wellsite Information Transfer Standard XML) over continuous WebSockets (`ws://localhost:8000/ws/ertmac`) at 1 Hz.
 * **Target Hardware**: Runs on standard rig-site Industrial Fanless Edge PCs (Intel i7, 32GB RAM, optional NVIDIA RTX 4060 or CPU-only quantized) + eRTMAC Server Racks.
@@ -241,8 +247,18 @@ flowchart TD
    $$ECD = MW + \frac{\Delta P_{annular}}{0.052 \times TVD}$$
    *Ensures bottom-hole circulating pressure never exceeds the rock fracture gradient.*
 
-#### 3. 10-Agent LangGraph Swarm Execution Latency
-* **Ingestor & OCR Agents**: 12ms–85ms | **Entity & Structurer Agents**: 18ms–24ms | **Physics & Correlator Agents**: 8ms–42ms | **Graph, Alert & Report Agents**: 16ms–35ms $\rightarrow$ **Total pipeline response <100ms!**
+#### 3. The 10-Agent Autonomous LangGraph Swarm
+1. **Document Reader Agent**: Extracts facts from PDF completion reports and daily logs.
+2. **Nearby Well Finder Agent**: Calculates Haversine distances and ranks neighbors within 1–25 km.
+3. **Incident Memory Agent**: Connects hazards to field-proven solutions (`Layer → Hazard → Fix → Result`).
+4. **Log Correlation Agent**: Correlates subsurface depth logs between adjacent wells.
+5. **Risk Forecaster Agent**: Predicts pore pressures and safe mud weight limits.
+6. **Early Warning Agent**: Triggers radar alerts 30–50m before entering danger zones.
+7. **Bilingual Q&A Agent**: Answers queries in plain English or Hindi with report citations.
+8. **Well Plan Generator Agent**: Synthesizes 1-click safety briefs and shift handover packs.
+9. **Safety Compliance Agent**: Verifies operations against OISD-STD-174 petroleum rules.
+10. **Rig Floor Dispatch Agent**: Streams priority alerts directly to the Doghouse HUD.
+* **Execution Latency**: Agents execute asynchronously in parallel with end-to-end pipeline response in **< 100ms**!
 
 ---
 
@@ -252,10 +268,10 @@ flowchart TD
 > 
 > *"Our technical approach is built on a fundamental principle: **safety-critical oilfield software must never rely on black-box AI guessing.**  
 > As you can see in our architecture:  
-> On Layer 1, we ingest historical WCRs, LAS well logs, and live WITSML telemetry streaming at 1 Hertz over WebSockets.  
+> On Layer 1, we ingest historical WCRs, LAS well logs, and live telemetry from Oil India's eRTMAC facility at Duliajan streaming at 1 Hertz over WebSockets.  
 > On Layer 2, our Python engine evaluates **real deterministic drilling physics** on every single telemetry packet. We calculate Eaton's pore pressure and the corrected d-exponent mathematically. When the d-exponent suddenly drops, we detect overpressured gas before it enters the well.  
 > On Layer 3, our Topbar switcher allows the rig to run either on the cloud or **100% offline via local Ollama**, backed by an automated deterministic rule engine.  
-> And on Layer 4, the data feeds 15 specialized Next.js cockpits—from the glove-friendly Doghouse HUD on the rig floor to the DCS control room wall in Duliajan."*
+> And on Layer 4, the data feeds our specialized Next.js operational suite—from the glove-friendly Doghouse HUD on the rig floor to the pre-drill advisory desk."*
 
 ---
 
@@ -312,7 +328,7 @@ flowchart LR
 
 #### 1. Analysis of Feasibility of the Idea
 * **Technical Feasibility (100% Verified Working Prototype)**:
-  * **Fully functional code**: 7/7 automated backend `pytest` tests passing (`backend/tests/test_judge_features.py`); 0 TypeScript errors; 17/17 Next.js production routes compiled.
+  * **Fully functional code**: 7/7 automated backend `pytest` tests passing (`backend/tests/test_judge_features.py`); 0 TypeScript errors; all Next.js production routes operational.
   * Ingests industry-standard WITSML 1.4.1 and LAS 2.0 wireline logs.
   * Requires **no exotic supercomputers**: Runs on standard rig-site fanless industrial PCs ($1,000–$2,000 unit cost) or existing eRTMAC server racks.
 * **Operational Feasibility (Built for Roughnecks, Not Data Scientists)**:
@@ -329,24 +345,8 @@ flowchart LR
 | **1** | **VSAT Connection Blackout** in remote Upper Assam jungles or Arunachal foothills. | 🔴 HIGH | **Sovereign Rig Edge Switcher**: Instant fallback to local Ollama (`qwen2.5:7b`) and deterministic rule engine. 100% offline functionality with zero external internet required. |
 | **2** | **OCR Degradation & Noise** in 40-year-old scanned paper reports and handwriting. | 🟡 MED | **Human-in-the-Loop Review Hub (`/review`)**: Extractions below 90% confidence are quarantined. Chief Drilling Engineer verifies and approves facts before database commitment. |
 | **3** | **Hallucination Risk in Critical Operations**: AI inventing wrong mud weights or depths. | 🔴 HIGH | **Dual Guardrail**: (1) Physics engine calculates numbers deterministically; LLM is barred from guessing values. (2) Clickable Evidence Inspector provides verbatim page proof. |
-| **4** | **Driller Cognitive Overload** & resistance on the high-stress rig floor. | 🟡 MED | **The Doghouse Cockpit (`/doghouse`)**: Eliminates busy dashboards. Displays only a massive 32m countdown, traffic-light alerts, and 1-tap OISD-174 shut-in buttons. |
+| **4** | **Driller Cognitive Overload** & resistance on the high-stress rig floor. | 🟡 MED | **The Doghouse Cockpit (`/doghouse`)**: Eliminates busy dashboards. Displays only a massive 30m countdown, traffic-light alerts, and 1-tap OISD-174 shut-in buttons. |
 | **5** | **National Hydrocarbon Data Sovereignty & Cybersecurity**. | 🔴 HIGH | **Zero Cloud Data Egress**: Indian energy data never touches foreign servers. Complies with Ministry of Petroleum & Natural Gas cybersecurity policies and CERT-In guidelines. |
-
----
-
-### 🎤 Stage-Cued Presenter Script for Slide 3 (Time: 60 Seconds)
-
-> *(Presenter clicks to Slide 3, points to the Feasibility Shield matrix)*
-> 
-> *"Judges, feasibility in a software lab is easy; feasibility on a muddy, vibrating drilling rig in Assam is hard. We engineered SRISHTI·AI specifically for the harsh realities of the field:  
-> What happens when satellite internet drops in the jungle?  
-> *(Point to the Topbar Edge toggle)*  
-> We flip the Topbar switch to **Rig Air-Gap**, and our local Ollama model and rule engine keep running 100% offline.  
-> What if the scanned 1990 report has degraded text? Our **Human-In-The-Loop Review Hub** quarantines low-confidence extractions until the Chief Drilling Engineer stamps them.  
-> What about roughnecks on the rig floor? They don't use keyboards. Our **Doghouse Cockpit** gives them giant 7-segment readouts and 1-tap touch buttons.  
-> And what about data security? Not a single byte of Indian hydrocarbon telemetry ever leaves the rig or eRTMAC facility. It is 100% sovereign."*
-
----
 
 ---
 
