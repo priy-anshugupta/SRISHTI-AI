@@ -131,6 +131,9 @@ class HybridAgentOrchestrator:
         q = query.lower()
         events = db_service.get_events()
 
+        if not self.is_drilling_query(query):
+            return {'answer': 'Hello! I am SRISHTI.', 'evidence': [], 'model': 'SRISHTI Offline', 'evidence_sources': [], 'verification_status': 'GENERAL', 'matched_offset_records': 0, 'oisd_standard': 'N/A', 'abstained': False}
+
         # Keyword semantic matching across Upper Assam formations & events
         if "loss" in q or "mud" in q or "chori" in q or "tipam" in q:
             matched_events = [e for e in events if "tipam" in e["formation"].lower() or "loss" in e["event_type"].lower()]
