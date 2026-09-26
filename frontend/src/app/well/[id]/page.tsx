@@ -678,31 +678,141 @@ export default function WellPage() {
               Steel Casing Installed in this Well
             </h3>
 
-                    <span className="text-emerald-400 font-medium">✓ Verified</span>
-                  </div>
+            <div className="space-y-2 text-xs">
+              <div className="p-2.5 rounded-lg bg-[#020507] border border-[#162D38] flex justify-between items-center">
+                <div>
+                  <div className="font-bold text-slate-200">20" Conductor Pipe</div>
+                  <div className="text-[11px] text-slate-400">Protects surface ground from washouts</div>
                 </div>
-              ))}
+                <span className="text-cyan-300 font-mono font-bold">0 – {conductorShoe}m</span>
+              </div>
 
-              {drilling_events.length === 0 && (
-                <div className="p-4 text-center text-slate-500 text-xs">
-                  No offset drilling incidents recorded at this depth. Corridor is clear.
+              <div className="p-2.5 rounded-lg bg-[#020507] border border-[#162D38] flex justify-between items-center">
+                <div>
+                  <div className="font-bold text-slate-200">13-3/8" Surface Pipe</div>
+                  <div className="text-[11px] text-slate-400">Protects drinking water aquifers</div>
                 </div>
-              )}
+                <span className="text-cyan-300 font-mono font-bold">0 – {surfaceShoe}m</span>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-[#020507] border border-[#162D38] flex justify-between items-center">
+                <div>
+                  <div className="font-bold text-slate-200">9-5/8" Intermediate Pipe</div>
+                  <div className="text-[11px] text-slate-400">Seals sticky clay and leak zones</div>
+                </div>
+                <span className="text-amber-300 font-mono font-bold">0 – {intermediateShoe}m</span>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-[#020507] border border-[#162D38] flex justify-between items-center">
+                <div>
+                  <div className="font-bold text-slate-200">7" Production Liner</div>
+                  <div className="text-[11px] text-slate-400">Protects deep target oil and gas zone</div>
+                </div>
+                <span className="text-emerald-300 font-mono font-bold">{intermediateShoe} – {targetDepth}m</span>
+              </div>
             </div>
           </div>
-
-          {/* 3. Minimal Verified Banner */}
-          <div className="p-2.5 bg-[#050C10] border border-emerald-900/50 rounded-lg flex items-center justify-between text-xs text-emerald-400">
-            <div className="flex items-center gap-1.5">
-              <CheckCircle2 size={14} className="text-emerald-400 shrink-0" />
-              <span>Cross-verified with official Oil India archival reports</span>
-            </div>
-            <span className="text-[10px] text-slate-500">OISD-174</span>
-          </div>
-
         </div>
+      )}
 
-      </div>
+      {/* 6. Tab 3: Rock Layers (Simple & Compact) */}
+      {activeTab === 'formations' && (
+        <div className="bg-[#050C10] border-2 border-[#162D38] rounded-xl p-4 shadow-md space-y-3">
+          <div className="border-b border-[#162D38] pb-1.5 flex justify-between items-center">
+            <h3 className="text-xs font-bold text-white">
+              Underground Rock Layers at {well.name}
+            </h3>
+            <span className="text-[11px] text-slate-400 font-mono">{formation_tops.length} Layers</span>
+          </div>
+
+          <div className="space-y-1.5 max-h-80 overflow-y-auto pr-1">
+            {formation_tops.map((item, index) => {
+              const isCurrent = isActiveRigWell && currentWellDepth >= item.top_md_m && currentWellDepth < item.base_md_m;
+              const isPenetrated = !isActiveRigWell || currentWellDepth >= item.base_md_m;
+
+              return (
+                <div
+                  key={index}
+                  className={`p-2.5 rounded-lg border text-xs flex justify-between items-center transition-all ${
+                    isCurrent
+                      ? 'bg-cyan-950/40 border-cyan-400 shadow-sm'
+                      : isPenetrated
+                      ? 'bg-[#020507] border-[#162D38]'
+                      : 'bg-[#020507]/40 border-[#101C24] opacity-50'
+                  }`}
+                >
+                  <div className="flex items-center gap-2">
+                    <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ background: item.formations.color }} />
+                    <span className={`font-semibold ${isCurrent ? 'text-white font-bold' : 'text-slate-200'}`}>
+                      {item.formations.canonical_name}
+                    </span>
+                    {isCurrent && (
+                      <span className="px-1.5 py-0.5 rounded bg-cyan-400 text-black text-[9px] font-bold">
+                        Drilling Now
+                      </span>
+                    )}
+                  </div>
+
+                  <span className="text-slate-400 font-mono text-[11px]">
+                    {item.top_md_m} – {item.base_md_m}m
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* 7. Tab 4: Direct Lessons / Active Rig Safeguards */}
+      {activeTab === 'lessons' && (
+        <div className="bg-[#050C10] border-2 border-[#162D38] rounded-xl p-4 shadow-md space-y-3">
+          <div className="border-b border-[#162D38] pb-1.5 flex justify-between items-center">
+            <h3 className="text-xs font-bold text-white">
+              {isActiveRigWell
+                ? 'Active Drilling Safeguards & Advisory (MORAN-29)'
+                : `Lessons from ${well.name} for Active Rig (MORAN-29)`}
+            </h3>
+            {isActiveRigWell ? (
+              <Link
+                href="/doghouse"
+                className="flex items-center gap-1.5 text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold px-2 py-1 rounded bg-[#07241A] border border-emerald-700/80"
+              >
+                <Monitor size={11} className="animate-pulse" />
+                <span>Open Rig Floor View</span>
+                <ExternalLink size={11} />
+              </Link>
+            ) : (
+              <Link
+                href="/well/MOR-29"
+                className="flex items-center gap-1 text-[11px] text-cyan-400 hover:text-cyan-300 font-semibold px-2 py-1 rounded bg-[#09222E] border border-cyan-700/80"
+              >
+                <span>Switch to Active Rig (MOR-29)</span>
+                <ExternalLink size={11} />
+              </Link>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div className="p-3 rounded-lg bg-[#020507] border border-[#162D38] space-y-1">
+              <div className="font-bold text-amber-300">
+                1. Gas Pressure Warning
+              </div>
+              <p className="text-slate-300 text-[11px] leading-relaxed">
+                When penetrating deep rock layers, sudden high pressure can occur. Keep heavy kill mud ready in reserve pits before drilling below 2,450m.
+              </p>
+            </div>
+
+            <div className="p-3 rounded-lg bg-[#020507] border border-[#162D38] space-y-1">
+              <div className="font-bold text-cyan-300">
+                2. Avoid Pipe Sticking
+              </div>
+              <p className="text-slate-300 text-[11px] leading-relaxed">
+                Sticky clay layers can trap the drill pipe. Keep drill pipe continuously rotating and never leave it resting stationary for more than 5 minutes.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
 
     </div>
   );
