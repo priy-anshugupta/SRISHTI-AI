@@ -23,10 +23,10 @@ export default function RoiCalculator() {
   const totalSavingsCr = avoidedNptSavingsCr + foreignLicensingAvoidedCr + engineeringHoursSavedCr;
 
   return (
-    <div className="p-5 sm:p-6 rounded-2xl bg-[#061014] border-2 border-cyan-500/30 shadow-[0_10px_40px_rgba(0,0,0,0.7)] text-slate-100 font-sans space-y-5">
+    <div className="p-5 sm:p-6 rounded-xl bg-[#061014] border border-cyan-500/30 text-slate-100 font-sans space-y-5">
       
       {/* Header */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#162D38] pb-4">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#1C2C35] pb-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
@@ -35,7 +35,7 @@ export default function RoiCalculator() {
             </span>
           </div>
           <h2 className="text-lg sm:text-xl font-bold text-white flex items-center gap-2">
-            <TrendingUp className="text-cyan-400" size={20} />
+            <TrendingUp className="text-[#38BDF8]" size={20} />
             Estimated Rig Downtime & Cost Savings
           </h2>
           <p className="text-xs text-slate-400 mt-0.5">
@@ -53,7 +53,7 @@ export default function RoiCalculator() {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
 
         {/* Left Column: Interactive Sliders (5 cols) */}
-        <div className="lg:col-span-5 space-y-4 bg-[#03090C] p-4 sm:p-5 rounded-xl border border-[#162D38]">
+        <div className="lg:col-span-5 space-y-4 bg-[#03090C] p-4 sm:p-5 rounded-xl border border-[#1C2C35]">
           <span className="text-xs font-bold text-white uppercase tracking-wider block mb-1">
             Fleet Parameters
           </span>
@@ -62,7 +62,7 @@ export default function RoiCalculator() {
           <div className="space-y-1.5">
             <div className="flex justify-between text-xs">
               <span className="text-slate-300 font-medium">Active Drilling Rigs:</span>
-              <span className="font-mono font-bold text-cyan-300 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/60">
+              <span className="font-mono font-bold text-[#38BDF8] bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/60">
                 {activeRigs} Rigs
               </span>
             </div>
@@ -72,17 +72,17 @@ export default function RoiCalculator() {
               max="40"
               value={activeRigs}
               onChange={(e) => setActiveRigs(Number(e.target.value))}
-              className="w-full accent-cyan-400 cursor-pointer h-2 bg-slate-800 rounded-lg"
+              className="w-full accent-cyan-400 cursor-pointer h-2 bg-[#111B21] rounded-lg"
             />
             <div className="flex justify-between text-[11px] text-slate-400">
               <span>1 Rig</span>
-              <span className="text-cyan-400/90 font-medium">18 Rigs (OIL Assam)</span>
+              <span className="text-[#38BDF8]/90 font-medium">18 Rigs (OIL Assam)</span>
               <span>40 Rigs</span>
             </div>
           </div>
 
           {/* Slider 2: Rig Day Rate */}
-          <div className="space-y-1.5 pt-2.5 border-t border-[#162D38]">
+          <div className="space-y-1.5 pt-2.5 border-t border-[#1C2C35]">
             <div className="flex justify-between text-xs">
               <span className="text-slate-300 font-medium">Rig Operating Cost / Day:</span>
               <span className="font-mono font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800/60">
@@ -95,7 +95,7 @@ export default function RoiCalculator() {
               max="35"
               value={rigDayRateLakhs}
               onChange={(e) => setRigDayRateLakhs(Number(e.target.value))}
-              className="w-full accent-emerald-400 cursor-pointer h-2 bg-slate-800 rounded-lg"
+              className="w-full accent-emerald-400 cursor-pointer h-2 bg-[#111B21] rounded-lg"
             />
             <div className="flex justify-between text-[11px] text-slate-400">
               <span>₹10L (Small Rig)</span>
@@ -105,7 +105,7 @@ export default function RoiCalculator() {
           </div>
 
           {/* Slider 3: Historical NPT Rate */}
-          <div className="space-y-1.5 pt-2.5 border-t border-[#162D38]">
+          <div className="space-y-1.5 pt-2.5 border-t border-[#1C2C35]">
             <div className="flex justify-between text-xs">
               <span className="text-slate-300 font-medium">Current Fleet Downtime (NPT):</span>
               <span className="font-mono font-bold text-amber-300 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-800/60">
@@ -118,7 +118,7 @@ export default function RoiCalculator() {
               max="45"
               value={nptPercent}
               onChange={(e) => setNptPercent(Number(e.target.value))}
-              className="w-full accent-amber-400 cursor-pointer h-2 bg-slate-800 rounded-lg"
+              className="w-full accent-amber-400 cursor-pointer h-2 bg-[#111B21] rounded-lg"
             />
             <div className="flex justify-between text-[11px] text-slate-400">
               <span>15% (Low)</span>
@@ -128,7 +128,7 @@ export default function RoiCalculator() {
           </div>
 
           {/* Slider 4: Mitigation Efficiency */}
-          <div className="space-y-1.5 pt-2.5 border-t border-[#162D38]">
+          <div className="space-y-1.5 pt-2.5 border-t border-[#1C2C35]">
             <div className="flex justify-between text-xs">
               <span className="text-slate-300 font-medium">AI Downtime Reduction:</span>
               <span className="font-mono font-bold text-purple-300 bg-purple-950/60 px-2 py-0.5 rounded border border-purple-800/60">
@@ -141,7 +141,7 @@ export default function RoiCalculator() {
               max="60"
               value={avoidanceEfficiency}
               onChange={(e) => setAvoidanceEfficiency(Number(e.target.value))}
-              className="w-full accent-purple-400 cursor-pointer h-2 bg-slate-800 rounded-lg"
+              className="w-full accent-purple-400 cursor-pointer h-2 bg-[#111B21] rounded-lg"
             />
             <div className="flex justify-between text-[11px] text-slate-400">
               <span>20% (Modest)</span>
@@ -156,10 +156,10 @@ export default function RoiCalculator() {
         <div className="lg:col-span-7 flex flex-col justify-between space-y-4">
           
           {/* Hero Headline Card */}
-          <div className="p-5 rounded-xl bg-gradient-to-br from-[#09222E] via-[#06161F] to-[#030B0F] border-2 border-cyan-400/40 shadow-xl relative overflow-hidden">
+          <div className="p-5 rounded-xl bg-gradient-to-br from-[#09222E] via-[#06161F] to-[#030B0F] border border-cyan-400/40 shadow-sm relative overflow-hidden">
             <div className="absolute top-0 right-0 -mt-6 -mr-6 w-32 h-32 bg-cyan-500/10 rounded-full blur-2xl pointer-events-none" />
-            <span className="text-xs uppercase tracking-wider text-cyan-300 font-bold flex items-center gap-1.5">
-              <Sparkles size={14} className="text-cyan-400" />
+            <span className="text-xs uppercase tracking-wider text-[#38BDF8] font-bold flex items-center gap-1.5">
+              <Sparkles size={14} className="text-[#38BDF8]" />
               TOTAL ESTIMATED ANNUAL SAVINGS
             </span>
             <div className="mt-2 flex items-baseline gap-2">
@@ -177,9 +177,9 @@ export default function RoiCalculator() {
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             
             {/* Card 1 */}
-            <div className="p-3.5 rounded-xl bg-[#03090C] border border-[#162D38] space-y-1">
+            <div className="p-3.5 rounded-xl bg-[#03090C] border border-[#1C2C35] space-y-1">
               <span className="text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">
-                <Clock size={13} className="text-cyan-400" />
+                <Clock size={13} className="text-[#38BDF8]" />
                 Rig Downtime Saved
               </span>
               <div className="text-xl font-bold text-white font-mono tabular-nums">
@@ -191,7 +191,7 @@ export default function RoiCalculator() {
             </div>
 
             {/* Card 2 */}
-            <div className="p-3.5 rounded-xl bg-[#03090C] border border-[#162D38] space-y-1">
+            <div className="p-3.5 rounded-xl bg-[#03090C] border border-[#1C2C35] space-y-1">
               <span className="text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">
                 <Laptop size={13} className="text-purple-400" />
                 Software Licenses Saved
@@ -205,7 +205,7 @@ export default function RoiCalculator() {
             </div>
 
             {/* Card 3 */}
-            <div className="p-3.5 rounded-xl bg-[#03090C] border border-[#162D38] space-y-1">
+            <div className="p-3.5 rounded-xl bg-[#03090C] border border-[#1C2C35] space-y-1">
               <span className="text-[11px] font-semibold text-slate-300 flex items-center gap-1.5">
                 <ShieldCheck size={13} className="text-emerald-400" />
                 Engineering Time Saved
@@ -221,9 +221,9 @@ export default function RoiCalculator() {
           </div>
 
           {/* Simple Takeaway Strip */}
-          <div className="p-3 rounded-lg bg-[#071317] border border-[#162D38] text-xs text-slate-300 flex items-center justify-between gap-3">
+          <div className="p-3 rounded-lg bg-[#071317] border border-[#1C2C35] text-xs text-slate-300 flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <AlertCircle size={15} className="text-cyan-400 shrink-0" />
+              <AlertCircle size={15} className="text-[#38BDF8] shrink-0" />
               <span>
                 <strong>Cost Rule of Thumb:</strong> Every 24 hours of avoided rig downtime saves approximately ₹18 Lakhs.
               </span>
