@@ -231,12 +231,12 @@ export default function AskSRISHTIPage() {
     <div className="h-[calc(100vh-6.5rem)] flex flex-col xl:flex-row gap-4 font-sans overflow-hidden">
       
       {/* LEFT: Main Chat Stream Area (Primary Interactive Workspace) */}
-      <div className="flex-1 flex flex-col bg-[#060D10] border border-[#162D38] rounded-xl overflow-hidden shadow-xl">
+      <div className="flex-1 flex flex-col bg-[#0D1419] border border-[#1C2C35] rounded-xl overflow-hidden shadow-sm">
         
         {/* Simple & Clean Header */}
-        <div className="px-5 py-3.5 bg-[#081216] border-b border-[#162D38] flex items-center justify-between">
+        <div className="px-5 py-3.5 bg-[#0D1419] border-b border-[#1C2C35] flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#0D2430] border border-[#163847] flex items-center justify-center text-cyan-400">
+            <div className="w-8 h-8 rounded-lg bg-[#0D2430] border border-[#163847] flex items-center justify-center text-[#38BDF8]">
               <Bot size={18} />
             </div>
             <div>
@@ -244,23 +244,23 @@ export default function AskSRISHTIPage() {
                 <span className="text-sm font-bold text-white tracking-wide">Drilling Intelligence Copilot</span>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 {isAirGapped && (
-                  <span className="text-[10px] px-2 py-0.5 rounded bg-amber-950/70 text-amber-300 border border-amber-600/70 font-semibold">
+                  <span className="text-xs px-2 py-0.5 rounded bg-amber-950/70 text-amber-300 border border-amber-600/70 font-semibold">
                     OFFLINE EDGE
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-xs text-slate-400">
                 Grounded in 60 years of official Oil India well records
               </p>
             </div>
           </div>
 
           {/* Simple Language Switcher */}
-          <div className="flex items-center gap-1 bg-[#060D10] border border-[#162D38] p-1 rounded-lg text-xs">
+          <div className="flex items-center gap-1 bg-[#0D1419] border border-[#1C2C35] p-1 rounded-lg text-xs">
             <button
               onClick={() => setLanguage('en')}
               className={`px-3 py-1 rounded text-xs font-semibold transition-all ${
-                language === 'en' ? 'bg-[#0D2430] text-cyan-300 border border-[#163847]' : 'text-slate-400 hover:text-white'
+                language === 'en' ? 'bg-[#0D2430] text-[#38BDF8] border border-[#163847]' : 'text-slate-400 hover:text-white'
               }`}
             >
               English
@@ -268,7 +268,7 @@ export default function AskSRISHTIPage() {
             <button
               onClick={() => setLanguage('hi')}
               className={`px-3 py-1 rounded text-xs font-semibold transition-all ${
-                language === 'hi' ? 'bg-[#0D2430] text-cyan-300 border border-[#163847]' : 'text-slate-400 hover:text-white'
+                language === 'hi' ? 'bg-[#0D2430] text-[#38BDF8] border border-[#163847]' : 'text-slate-400 hover:text-white'
               }`}
             >
               हिंदी
@@ -276,7 +276,7 @@ export default function AskSRISHTIPage() {
             <button
               onClick={() => setLanguage('as')}
               className={`px-3 py-1 rounded text-xs font-semibold transition-all ${
-                language === 'as' ? 'bg-[#0D2430] text-cyan-300 border border-[#163847]' : 'text-slate-400 hover:text-white'
+                language === 'as' ? 'bg-[#0D2430] text-[#38BDF8] border border-[#163847]' : 'text-slate-400 hover:text-white'
               }`}
             >
               অসমীয়া
@@ -292,7 +292,7 @@ export default function AskSRISHTIPage() {
               className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {msg.sender === 'assistant' && (
-                <div className="w-8 h-8 rounded-lg bg-[#0D2430] border border-[#163847] flex items-center justify-center text-cyan-400 shrink-0 mt-0.5">
+                <div className="w-8 h-8 rounded-lg bg-[#0D2430] border border-[#163847] flex items-center justify-center text-[#38BDF8] shrink-0 mt-0.5">
                   <Bot size={16} />
                 </div>
               )}
@@ -302,7 +302,7 @@ export default function AskSRISHTIPage() {
                   className={`p-4 rounded-xl text-xs sm:text-sm leading-relaxed shadow-md ${
                     msg.sender === 'user'
                       ? 'bg-[#0D2430] border border-[#163847] text-white rounded-tr-none'
-                      : 'bg-[#081216] border border-[#162D38] text-slate-200 rounded-tl-none'
+                      : 'bg-[#0D1419] border border-[#1C2C35] text-slate-200 rounded-tl-none'
                   }`}
                 >
                   {msg.sender === 'user' ? (
@@ -311,10 +311,10 @@ export default function AskSRISHTIPage() {
                     <div className="space-y-2 text-slate-200 leading-relaxed font-sans text-xs sm:text-sm">
                       <ReactMarkdown
                         components={{
-                          h1: ({ ...props }) => <h1 className="text-sm sm:text-base font-bold text-cyan-200 mt-2 mb-1.5 pb-1 border-b border-[#162D38]" {...props} />,
-                          h2: ({ ...props }) => <h2 className="text-xs sm:text-sm font-bold text-cyan-300 mt-2 mb-1" {...props} />,
-                          h3: ({ ...props }) => <h3 className="text-xs sm:text-sm font-semibold text-cyan-400 mt-2 mb-1" {...props} />,
-                          h4: ({ ...props }) => <h4 className="text-xs font-semibold text-cyan-400 mt-1 mb-0.5" {...props} />,
+                          h1: ({ ...props }) => <h1 className="text-sm sm:text-base font-bold text-cyan-200 mt-2 mb-1.5 pb-1 border-b border-[#1C2C35]" {...props} />,
+                          h2: ({ ...props }) => <h2 className="text-xs sm:text-sm font-bold text-[#38BDF8] mt-2 mb-1" {...props} />,
+                          h3: ({ ...props }) => <h3 className="text-xs sm:text-sm font-semibold text-[#38BDF8] mt-2 mb-1" {...props} />,
+                          h4: ({ ...props }) => <h4 className="text-xs font-semibold text-[#38BDF8] mt-1 mb-0.5" {...props} />,
                           p: ({ ...props }) => <p className="mb-2 last:mb-0 leading-relaxed text-slate-200" {...props} />,
                           strong: ({ ...props }) => <strong className="font-semibold text-cyan-100" {...props} />,
                           em: ({ ...props }) => <em className="italic text-slate-300" {...props} />,
@@ -328,11 +328,11 @@ export default function AskSRISHTIPage() {
                             const match = /language-(\w+)/.exec(className || '');
                             const isInline = !match && !String(children).includes('\n');
                             return isInline ? (
-                              <code className="px-1.5 py-0.5 rounded bg-[#03090C] border border-[#163847] text-cyan-300 font-mono text-[11px]" {...props}>
+                              <code className="px-1.5 py-0.5 rounded bg-[#03090C] border border-[#163847] text-[#38BDF8] font-mono text-xs" {...props}>
                                 {children}
                               </code>
                             ) : (
-                              <div className="my-2 rounded-lg bg-[#020507] border border-[#162D38] p-3 overflow-x-auto text-[11px] font-mono text-cyan-300 shadow-inner">
+                              <div className="my-2 rounded-lg bg-[#0A1115] border border-[#1C2C35] p-3 overflow-x-auto text-xs font-mono text-[#38BDF8] shadow-inner">
                                 <code className={className} {...props}>
                                   {children}
                                 </code>
@@ -340,14 +340,14 @@ export default function AskSRISHTIPage() {
                             );
                           },
                           table: ({ ...props }) => (
-                            <div className="overflow-x-auto my-2 border border-[#162D38] rounded-lg">
+                            <div className="overflow-x-auto my-2 border border-[#1C2C35] rounded-lg">
                               <table className="min-w-full text-xs text-left text-slate-300 border-collapse" {...props} />
                             </div>
                           ),
-                          thead: ({ ...props }) => <thead className="bg-[#0D2430] text-cyan-300 border-b border-[#162D38]" {...props} />,
+                          thead: ({ ...props }) => <thead className="bg-[#0D2430] text-[#38BDF8] border-b border-[#1C2C35]" {...props} />,
                           th: ({ ...props }) => <th className="px-3 py-1.5 font-semibold text-[11px] uppercase tracking-wider" {...props} />,
                           td: ({ ...props }) => <td className="px-3 py-1.5 border-t border-[#12242E] text-slate-300" {...props} />,
-                          hr: ({ ...props }) => <hr className="my-2.5 border-[#162D38]" {...props} />,
+                          hr: ({ ...props }) => <hr className="my-2.5 border-[#1C2C35]" {...props} />,
                         }}
                       >
                         {msg.text}
@@ -357,12 +357,12 @@ export default function AskSRISHTIPage() {
                 </div>
 
                 {/* Minimal Metadata for Assistant */}
-                <div className="flex items-center gap-3 text-[10px] text-slate-400 px-1 font-sans">
+                <div className="flex items-center gap-3 text-xs text-slate-400 px-1 font-sans">
                   <span>{msg.timestamp}</span>
                   {msg.model && (
                     <>
                       <span>·</span>
-                      <span className="text-cyan-400 font-medium">{msg.model}</span>
+                      <span className="text-[#38BDF8] font-medium">{msg.model}</span>
                     </>
                   )}
                   {msg.evidence && msg.evidence.length > 0 && (
@@ -381,7 +381,7 @@ export default function AskSRISHTIPage() {
               </div>
 
               {msg.sender === 'user' && (
-                <div className="w-8 h-8 rounded-lg bg-[#0D2430] border border-[#163847] flex items-center justify-center text-cyan-300 shrink-0 mt-0.5 font-bold text-xs">
+                <div className="w-8 h-8 rounded-lg bg-[#0D2430] border border-[#163847] flex items-center justify-center text-[#38BDF8] shrink-0 mt-0.5 font-bold text-xs">
                   PS
                 </div>
               )}
@@ -390,10 +390,10 @@ export default function AskSRISHTIPage() {
 
           {loading && (
             <div className="flex gap-3 justify-start items-center">
-              <div className="w-8 h-8 rounded-lg bg-[#0D2430] border border-[#163847] flex items-center justify-center text-cyan-400 shrink-0">
-                <RefreshCw size={14} className="animate-spin text-cyan-400" />
+              <div className="w-8 h-8 rounded-lg bg-[#0D2430] border border-[#163847] flex items-center justify-center text-[#38BDF8] shrink-0">
+                <RefreshCw size={14} className="animate-spin text-[#38BDF8]" />
               </div>
-              <div className="px-4 py-3 bg-[#081216] border border-[#162D38] rounded-xl text-xs text-slate-400 flex items-center gap-2 font-sans">
+              <div className="px-4 py-3 bg-[#0D1419] border border-[#1C2C35] rounded-xl text-xs text-slate-400 flex items-center gap-2 font-sans">
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
                 <span>Checking historical logs and preparing answer...</span>
               </div>
@@ -404,15 +404,15 @@ export default function AskSRISHTIPage() {
         </div>
 
         {/* Suggested Starter Prompt Chips */}
-        <div className="px-4 py-2.5 bg-[#081216] border-t border-[#162D38] flex items-center gap-2 overflow-x-auto text-[11px] font-sans">
-          <span className="text-slate-500 uppercase tracking-wider shrink-0 text-[10px] font-bold">SUGGESTIONS:</span>
+        <div className="px-4 py-2.5 bg-[#0D1419] border-t border-[#1C2C35] flex items-center gap-2 overflow-x-auto text-xs font-sans">
+          <span className="text-slate-500 uppercase tracking-wider shrink-0 text-xs font-bold">SUGGESTIONS:</span>
           {starterQuestions.map((q, idx) => {
             const promptText = language === 'as' ? (q.as || q.en) : language === 'hi' ? q.hi : q.en;
             return (
               <button
                 key={idx}
                 onClick={() => handleSend(promptText)}
-                className="px-3 py-1 rounded-full bg-[#060D10] hover:bg-[#0D2430] border border-[#162D38] hover:border-cyan-500/50 text-slate-300 hover:text-cyan-300 whitespace-nowrap transition-colors shrink-0 text-xs font-medium cursor-pointer"
+                className="px-3 py-1 rounded-full bg-[#0D1419] hover:bg-[#0D2430] border border-[#1C2C35] hover:border-cyan-500/50 text-slate-300 hover:text-[#38BDF8] whitespace-nowrap transition-colors shrink-0 text-xs font-medium cursor-pointer"
               >
                 {promptText}
               </button>
@@ -421,7 +421,7 @@ export default function AskSRISHTIPage() {
         </div>
 
         {/* Input Bar with Push-to-Talk */}
-        <form onSubmit={onFormSubmit} className="p-3 sm:p-4 bg-[#081216] border-t border-[#162D38] flex items-center gap-2.5">
+        <form onSubmit={onFormSubmit} className="p-3 sm:p-4 bg-[#0D1419] border-t border-[#1C2C35] flex items-center gap-2.5">
           <input
             type="text"
             value={inputQuery}
@@ -435,8 +435,8 @@ export default function AskSRISHTIPage() {
                 ? 'মৰাণ বা ড্ৰিলিং সম্পৰ্কীয় প্ৰশ্ন সোধক...'
                 : 'Ask a question (e.g. mud weight for Moran, gas kicks, stuck pipe)...'
             }
-            className={`flex-1 bg-[#060D10] border text-white text-xs sm:text-sm rounded-lg px-4 py-2.5 outline-none transition-colors ${
-              isListening ? 'border-red-500 shadow-md shadow-red-950/30' : 'border-[#162D38] focus:border-cyan-500'
+            className={`flex-1 bg-[#0D1419] border text-white text-xs sm:text-sm rounded-lg px-4 py-2.5 outline-none transition-colors ${
+              isListening ? 'border-red-500 shadow-md shadow-red-950/30' : 'border-[#1C2C35] focus:border-cyan-500'
             }`}
           />
 
@@ -447,8 +447,8 @@ export default function AskSRISHTIPage() {
             title={isListening ? 'Stop listening' : 'Push-to-Talk Voice Input'}
             className={`px-3.5 py-2.5 rounded-lg border text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
               isListening
-                ? 'bg-red-600 border-red-500 text-white animate-pulse shadow-lg'
-                : 'bg-[#060D10] border-[#162D38] hover:border-cyan-500 text-slate-300 hover:text-cyan-300'
+                ? 'bg-red-600 border-red-500 text-white  shadow-lg'
+                : 'bg-[#0D1419] border-[#1C2C35] hover:border-cyan-500 text-slate-300 hover:text-[#38BDF8]'
             }`}
           >
             {isListening ? <MicOff size={15} /> : <Mic size={15} />}
@@ -468,17 +468,17 @@ export default function AskSRISHTIPage() {
       </div>
 
       {/* RIGHT: Compact Verified Historical Evidence Panel */}
-      <div className="w-full xl:w-[350px] shrink-0 bg-[#060D10] border border-[#162D38] rounded-xl p-4 flex flex-col shadow-xl space-y-3">
+      <div className="w-full xl:w-[350px] shrink-0 bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 flex flex-col shadow-sm space-y-3">
         
         {/* Panel Header */}
-        <div className="flex items-center justify-between border-b border-[#162D38] pb-3">
-          <div className="flex items-center gap-2 text-cyan-400">
+        <div className="flex items-center justify-between border-b border-[#1C2C35] pb-3">
+          <div className="flex items-center gap-2 text-[#38BDF8]">
             <BookOpenCheck size={16} />
             <h2 className="text-xs font-bold text-white uppercase tracking-wider">
               Historical Records
             </h2>
           </div>
-          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-[#0D2430] text-cyan-300 border border-[#163847]">
+          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[#0D2430] text-[#38BDF8] border border-[#163847]">
             {selectedEvidence.length} {selectedEvidence.length === 1 ? 'Record' : 'Records'}
           </span>
         </div>
@@ -487,12 +487,12 @@ export default function AskSRISHTIPage() {
         <div className="flex-1 overflow-y-auto space-y-3 pr-1">
           {selectedEvidence.length === 0 ? (
             <div className="h-56 flex flex-col items-center justify-center text-center text-slate-500 text-xs space-y-2.5 font-sans px-4">
-              <div className="w-10 h-10 rounded-full bg-[#08151B] border border-[#162D38] flex items-center justify-center text-slate-500">
+              <div className="w-10 h-10 rounded-full bg-[#08151B] border border-[#1C2C35] flex items-center justify-center text-slate-500">
                 <Database size={18} className="text-slate-400" />
               </div>
               <div>
                 <p className="text-slate-300 font-medium">No Offset Records Required</p>
-                <p className="text-[11px] text-slate-500 mt-1 max-w-[210px] leading-relaxed">
+                <p className="text-xs text-slate-500 mt-1 max-w-[210px] leading-relaxed">
                   Historical well logs & OISD guidelines are cited automatically whenever you ask drilling or geological questions.
                 </p>
               </div>
@@ -516,7 +516,7 @@ export default function AskSRISHTIPage() {
                   ocr_confidence: 96.8,
                   reviewed_by: 'P. Saikia (Chief Drilling Specialist, Oil India Ltd.)'
                 })}
-                className="p-3.5 bg-[#081216] hover:bg-[#0D1D24] border border-[#162D38] hover:border-cyan-500/50 rounded-lg space-y-2 text-xs transition-all cursor-pointer group shadow-sm"
+                className="p-3.5 bg-[#0D1419] hover:bg-[#0D1D24] border border-[#1C2C35] hover:border-cyan-500/50 rounded-lg space-y-2 text-xs transition-all cursor-pointer group shadow-sm"
                 title="Click to view original scanned report excerpt"
               >
                 {/* Top Row: Well Name + Depth + Hazard Tag */}
@@ -524,9 +524,9 @@ export default function AskSRISHTIPage() {
                   <div className="flex items-center gap-1.5 font-bold text-white text-xs">
                     <MapPin size={13} className="text-amber-400" />
                     <span>{ev.well}</span>
-                    <span className="text-[11px] text-slate-400 font-normal">· {ev.depth_from_md_m}m</span>
+                    <span className="text-xs text-slate-400 font-normal">· {ev.depth_from_md_m}m</span>
                   </div>
-                  <span className={`px-2 py-0.5 rounded text-[9px] font-bold ${
+                  <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${
                     ev.severity === 'CRITICAL' || ev.event_type.toLowerCase().includes('kick')
                       ? 'bg-red-950/60 text-red-300 border border-red-800/60'
                       : 'bg-amber-950/60 text-amber-300 border border-amber-800/60'
@@ -536,27 +536,27 @@ export default function AskSRISHTIPage() {
                 </div>
 
                 {/* Formation Name */}
-                <div className="text-[11px] text-cyan-300 font-medium">
+                <div className="text-xs text-[#38BDF8] font-medium">
                   {ev.formation || 'Barail Group'}
                 </div>
 
                 {/* Clean Plain Summary */}
-                <p className="text-slate-300 text-[11px] leading-relaxed line-clamp-3">
+                <p className="text-slate-300 text-xs leading-relaxed line-clamp-3">
                   {ev.description}
                 </p>
 
                 {/* Solution Box */}
                 {ev.mitigation && (
-                  <div className="text-[11px] text-slate-300 border-l-2 border-emerald-500 pl-2 py-0.5 leading-relaxed bg-[#061814]/40 rounded-r">
+                  <div className="text-xs text-slate-300 border-l-2 border-emerald-500 pl-2 py-0.5 leading-relaxed bg-[#061814]/40 rounded-r">
                     <span className="text-emerald-400 font-semibold">Solution: </span>
                     {ev.mitigation}
                   </div>
                 )}
 
                 {/* Document Footer Bar with Scan Link */}
-                <div className="flex items-center justify-between pt-1.5 border-t border-[#162D38] text-[10px] text-slate-400">
+                <div className="flex items-center justify-between pt-1.5 border-t border-[#1C2C35] text-xs text-slate-400">
                   <span className="truncate max-w-[170px]">{ev.source_file || 'WCR Archive'}</span>
-                  <span className="text-cyan-400 group-hover:underline flex items-center gap-1 font-semibold">
+                  <span className="text-[#38BDF8] group-hover:underline flex items-center gap-1 font-semibold">
                     <span>Page {ev.source_page || '—'} Scan</span>
                     <ChevronRight size={11} />
                   </span>
