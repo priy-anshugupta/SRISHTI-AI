@@ -17,36 +17,54 @@ const STORAGE_KEY = 'srishti_theme';
 
 export function ThemeProvider({ children }: { children: ReactNode }) {
   const [theme, setThemeState] = useState<Theme>('dark');
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    applyTheme('dark');
+    setMounted(true);
     try {
-      localStorage.removeItem(STORAGE_KEY);
+      const saved = localStorage.getItem(STORAGE_KEY) as Theme | null;
+      if (saved === 'light' || saved === 'dark') {
+        setThemeState(saved);
+        applyTheme(saved);
+      } else {
+        applyTheme('dark');
+      }
     } catch {
-      // Ignore
+      applyTheme('dark');
     }
   }, []);
 
   const applyTheme = (t: Theme) => {
     const root = document.documentElement;
-    root.classList.remove('light');
-    root.classList.add('dark');
-    root.setAttribute('data-theme', 'dark');
+    if (t === 'light') {
+      root.classList.remove('dark');
+      root.classList.add('light');
+      root.setAttribute('data-theme', 'light');
+    } else {
+      root.classList.remove('light');
+      root.classList.add('dark');
+      root.setAttribute('data-theme', 'dark');
+    }
   };
 
   const setTheme = (newTheme: Theme) => {
-    applyTheme('dark');
+    setThemeState(newTheme);
+    applyTheme(newTheme);
+    try {
+      localStorage.setItem(STORAGE_KEY, newTheme);
+    } catch {}
   };
 
   const toggleTheme = () => {
-    applyTheme('dark');
+    const next = theme === 'dark' ? 'light' : 'dark';
+    setTheme(next);
   };
 
   return (
     <ThemeContext.Provider
       value={{
-        theme: 'dark',
-        isDark: true,
+        theme,
+        isDark: theme === 'dark',
         toggleTheme,
         setTheme,
       }}
