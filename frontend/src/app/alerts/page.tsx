@@ -163,12 +163,12 @@ function formatActionLogDetail(raw: string | undefined): string {
     if (note.toLowerCase() === 'done' || note.toLowerCase() === 'done.') {
       return 'Completed required safety and barrier checks per standard operating procedure.';
     }
-    return `Recorded Action: "${note}"`;
+    return `Recorded Action:"${note}"`;
   }
   if (raw.includes('Action taken:')) {
     const parts = raw.split('Action taken:');
     const note = parts[1].trim();
-    return `Recorded Action: "${note}"`;
+    return `Recorded Action:"${note}"`;
   }
   return raw;
 }
@@ -340,11 +340,11 @@ export default function AlertsPage() {
     <div className="space-y-4 font-sans text-slate-100 min-h-full pb-8">
       
       {/* 1. Header Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#050C10] border-2 border-[#162D38] rounded-2xl shadow-xl">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#0D1419] border border-[#1C2C35] rounded-xl shadow-sm">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse" />
-            <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
+            <h1 className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
               <BellRing className="text-amber-400" size={20} />
               Early Safety Alerts
             </h1>
@@ -355,12 +355,12 @@ export default function AlertsPage() {
         </div>
 
         {/* Tab Toggle */}
-        <div className="flex items-center gap-1.5 bg-[#020507] p-1 rounded-xl border border-[#162D38] text-xs">
+        <div className="flex items-center gap-1.5 bg-[#0A1115] p-1 rounded-xl border border-[#1C2C35] text-xs">
           <button
             onClick={() => setActiveTab('alerts')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
               activeTab === 'alerts'
-                ? 'bg-amber-500/20 text-amber-300 border border-amber-500/50 shadow-sm'
+                ? 'bg-[#0D5C75] text-white font-semibold shadow-sm'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -369,9 +369,9 @@ export default function AlertsPage() {
           </button>
           <button
             onClick={() => setActiveTab('audit')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
               activeTab === 'audit'
-                ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/50 shadow-sm'
+                ? 'bg-[#0D5C75] text-white font-semibold shadow-sm'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -382,19 +382,19 @@ export default function AlertsPage() {
       </div>
 
       {/* 2. Controls Toolbar (Well Picker & Filter) */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#050C10] border-2 border-[#162D38] rounded-xl text-xs">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#0D1419] border border-[#1C2C35] rounded-xl text-xs">
         <div className="flex items-center gap-2.5">
           <span className="text-slate-400 font-bold text-xs">Well:</span>
           <select
             value={selectedWellId}
             onChange={(e) => setSelectedWellId(e.target.value)}
-            className="px-3 py-1.5 rounded-xl bg-[#020507] border border-[#162D38] text-cyan-300 font-bold outline-none cursor-pointer text-xs"
+            className="px-3 py-1.5 rounded-xl bg-[#0A1115] border border-[#1C2C35] text-[#38BDF8] font-bold outline-none cursor-pointer text-xs"
           >
             <optgroup label="🟢 Active Drilling Rig (Live Telemetry & Alerts)">
               {wells
                 .filter(w => w.id === 'MOR-29')
                 .map(w => (
-                  <option key={w.id} value={w.id} className="bg-[#050C10] text-emerald-300 font-semibold">
+                  <option key={w.id} value={w.id} className="bg-[#0D1419] text-emerald-300 font-semibold">
                     {w.name} ★ (OIL-RIG-04 Active Demo)
                   </option>
                 ))}
@@ -403,7 +403,7 @@ export default function AlertsPage() {
               {wells
                 .filter(w => w.id !== 'MOR-29')
                 .map(w => (
-                  <option key={w.id} value={w.id} className="bg-[#050C10] text-slate-400">
+                  <option key={w.id} value={w.id} className="bg-[#0D1419] text-slate-400">
                     {w.name} ({w.field} · {w.status.toLowerCase()})
                   </option>
                 ))}
@@ -427,10 +427,10 @@ export default function AlertsPage() {
               <button
                 key={s}
                 onClick={() => setSeverityFilter(s)}
-                className={`px-2.5 py-1 rounded-full border text-[11px] transition-all cursor-pointer ${
+                className={`px-2.5 py-1 rounded-lg border text-[11px] font-semibold transition-all cursor-pointer ${
                   severityFilter === s
-                    ? 'bg-amber-500/20 text-amber-300 border-amber-500/60 font-bold'
-                    : 'bg-[#020507] text-slate-400 border-[#162D38] hover:border-slate-600'
+                    ? 'bg-[#0D5C75] text-white border-[#0D5C75] shadow-sm'
+                    : 'bg-[#0A1115] text-slate-400 border-[#1C2C35] hover:border-slate-500'
                 }`}
               >
                 {s}
@@ -450,10 +450,10 @@ export default function AlertsPage() {
       {activeTab === 'alerts' ? (
         <div className="space-y-3">
           {/* Plain-Language Explainer Banner */}
-          <div className="px-3.5 py-2.5 bg-[#06131A] border border-cyan-900/60 rounded-xl flex items-center gap-2.5 text-xs text-slate-300 shadow-sm">
-            <Info size={15} className="text-cyan-400 shrink-0" />
+          <div className="px-3.5 py-2.5 bg-[#0D1419] border border-cyan-900/60 rounded-xl flex items-center gap-2.5 text-xs text-slate-300 shadow-sm">
+            <Info size={15} className="text-[#38BDF8] shrink-0" />
             <div>
-              <strong className="text-cyan-300">How Early Alerts Work:</strong> SRISHTI tracks the drill bit in real time and warns the crew <strong className="text-white">before</strong> reaching danger zones found in past nearby wells.
+              <strong className="text-[#38BDF8]">How Early Alerts Work:</strong> SRISHTI tracks the drill bit in real time and warns the crew <strong className="text-white">before</strong> reaching danger zones found in past nearby wells.
             </div>
           </div>
 
@@ -464,8 +464,8 @@ export default function AlertsPage() {
 
               if (isHistorical) {
                 return (
-                  <div className="p-8 bg-[#050C10] border-2 border-[#162D38] rounded-2xl text-center space-y-4 max-w-2xl mx-auto my-4 shadow-xl">
-                    <div className="w-12 h-12 rounded-full bg-cyan-950/60 border border-cyan-800/80 flex items-center justify-center text-cyan-400 mx-auto">
+                  <div className="p-8 bg-[#0D1419] border border-[#1C2C35] rounded-xl text-center space-y-4 max-w-2xl mx-auto my-4 shadow-sm">
+                    <div className="w-12 h-12 rounded-full bg-cyan-950/60 border border-cyan-800/80 flex items-center justify-center text-[#38BDF8] mx-auto">
                       <FileText size={24} />
                     </div>
                     <div className="space-y-1.5">
@@ -490,7 +490,7 @@ export default function AlertsPage() {
                       </Link>
                       <Link
                         href="/compare"
-                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#020507] hover:bg-[#071318] border border-cyan-500/40 text-cyan-300 text-xs font-semibold transition-all cursor-pointer"
+                        className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#0A1115] hover:bg-[#111B21] border border-cyan-500/40 text-[#38BDF8] text-xs font-semibold transition-all cursor-pointer"
                       >
                         <span>Compare in Stratigraphy</span>
                         <ChevronRight size={13} />
@@ -508,7 +508,7 @@ export default function AlertsPage() {
               }
 
               return (
-                <div className="p-8 bg-[#050C10] border-2 border-[#162D38] rounded-xl text-center text-slate-400 text-xs">
+                <div className="p-8 bg-[#0D1419] border border-[#1C2C35] rounded-xl text-center text-slate-400 text-xs">
                   <CheckCircle2 size={32} className="text-emerald-400 mx-auto mb-2" />
                   No open alerts for this well. All drilling parameters are currently safe.
                 </div>
@@ -543,16 +543,16 @@ export default function AlertsPage() {
             return (
               <div
                 key={alert.id}
-                className={`p-4 bg-[#050C10] border-2 rounded-xl space-y-3 shadow-md transition-all ${
+                className={`p-4 bg-[#0D1419] border rounded-xl space-y-3 shadow-md transition-all ${
                   isCriticalGasAlert && isMitigationConfirmed
                     ? 'border-emerald-600/80 shadow-[0_0_20px_rgba(16,185,129,0.2)] bg-emerald-950/10'
                     : alert.severity === 'CRITICAL' ? 'border-red-900/80 hover:border-red-500' :
                     alert.severity === 'HIGH' ? 'border-orange-900/80 hover:border-orange-500' :
-                    'border-[#162D38] hover:border-slate-600'
+                    'border-[#1C2C35] hover:border-slate-600'
                 }`}
               >
                 {/* Alert Header */}
-                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#162D38] pb-2.5">
+                <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#1C2C35] pb-2.5">
                   <div className="flex items-center gap-2">
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                       isCriticalGasAlert && isMitigationConfirmed ? 'bg-emerald-950 text-emerald-300 border border-emerald-800' :
@@ -569,13 +569,13 @@ export default function AlertsPage() {
 
                   <div className="flex items-center gap-3 text-xs">
                     <span className="text-slate-400">
-                      Depth: <strong className="text-cyan-300 font-mono tabular-nums">{depthDisplay}</strong>
+                      Depth: <strong className="text-[#38BDF8] font-mono tabular-nums">{depthDisplay}</strong>
                     </span>
                     <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
                       (isCriticalGasAlert ? isMitigationConfirmed : alert.status === 'ACKNOWLEDGED')
                         ? 'bg-emerald-950 text-emerald-300 border border-emerald-800'
                         : isCriticalGasAlert
-                          ? 'bg-rose-950 text-rose-300 border border-rose-800 animate-pulse'
+                          ? 'bg-rose-950 text-rose-300 border border-rose-800 '
                           : 'bg-amber-950 text-amber-300 border border-amber-800'
                     }`}>
                       {(isCriticalGasAlert ? isMitigationConfirmed : alert.status === 'ACKNOWLEDGED')
@@ -623,39 +623,37 @@ export default function AlertsPage() {
                       </div>
                     </div>
                   ) : (
-                    <div className="bg-[#020507] border border-[#162D38] rounded-xl p-3 space-y-2">
+                    <div className="bg-[#0A1115] border border-[#1C2C35] rounded-xl p-3 space-y-2">
                       <div className="flex flex-wrap items-center justify-between text-xs font-mono gap-1">
-                        <span className={`font-bold flex items-center gap-1.5 ${currentDistance <= 15 ? 'text-rose-400' : 'text-amber-300'}`}>
-                          <AlertTriangle size={14} className={currentDistance <= 15 ? 'text-rose-400 animate-pulse' : 'text-amber-400'} />
+                        <span className={`font-semibold flex items-center gap-1.5 ${currentDistance <= 15 ? 'text-red-400' : 'text-amber-400'}`}>
+                          <AlertTriangle size={14} className={currentDistance <= 15 ? 'text-red-400' : 'text-amber-400'} />
                           <span>
                             Distance to Hazard: <strong className="text-white text-sm">{currentDistance.toFixed(1)}m</strong> remaining
                           </span>
                         </span>
                         <span className="text-slate-400 text-[11px]">
-                          Bit: <strong className="text-cyan-300">{currentSimulatedDepth.toFixed(0)}m</strong> · Target Gas Zone: <strong className="text-slate-200">2,450m</strong>
+                          Bit: <strong className="text-[#38BDF8]">{currentSimulatedDepth.toFixed(0)}m</strong> · Target Gas Zone: <strong className="text-slate-200">2,450m</strong>
                         </span>
                       </div>
 
-                      {/* Visual Progress Bar - Slow and Smooth */}
-                      <div className="w-full bg-slate-800/80 rounded-full h-2.5 overflow-hidden flex shadow-inner">
+                      {/* Visual Progress Bar - Clean Industrial */}
+                      <div className="w-full bg-[#111B21] rounded-full h-2 overflow-hidden flex border border-[#1C2C35]">
                         <div 
                           className={`h-full transition-all duration-500 ease-linear ${
-                            currentDistance <= 15 
-                              ? 'bg-gradient-to-r from-amber-500 to-rose-500 animate-pulse' 
-                              : 'bg-gradient-to-r from-cyan-500 to-amber-400'
+                            currentDistance <= 15 ? 'bg-red-500' : 'bg-[#0D5C75]'
                           }`}
                           style={{ width: `${Math.min(100, Math.max(10, 100 - (currentDistance / 35) * 100))}%` }}
                         />
                       </div>
 
-                      <div className="flex justify-between items-center text-[10px] text-slate-500 font-sans">
+                      <div className="flex justify-between items-center text-[11px] text-slate-400 font-sans">
                         <span>Current Drill Depth ({currentSimulatedDepth.toFixed(0)}m)</span>
-                        <span className={`font-semibold px-2 py-0.5 rounded text-[9px] ${
+                        <span className={`font-semibold px-2 py-0.5 rounded text-[11px] ${
                           currentDistance <= 15 
-                            ? 'bg-rose-950/80 text-rose-300 border border-rose-800' 
-                            : 'bg-amber-950/60 text-amber-300 border border-amber-900/60'
+                            ? 'bg-red-500/10 text-red-400 border border-red-500/25' 
+                            : 'bg-amber-500/10 text-amber-400 border border-amber-500/25'
                         }`}>
-                          {currentDistance <= 15 ? '🚨 IMMINENT DANGER ZONE (<15m)' : '⚠️ APPROACHING GAS POCKET'}
+                          {currentDistance <= 15 ? 'Imminent Danger Zone (<15m)' : 'Approaching Gas Pocket'}
                         </span>
                         <span>Gas Hazard (2,450m)</span>
                       </div>
@@ -665,18 +663,18 @@ export default function AlertsPage() {
 
                 {/* 2. MEDIUM RISK: DRILLING SPEED BENCHMARK (NO DISTANCE BAR) */}
                 {isRopAlert && (
-                  <div className="p-3 bg-[#060B0E] border border-amber-900/40 rounded-xl grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono">
-                    <div className="p-2.5 rounded-lg bg-[#0A1216] border border-slate-800 space-y-0.5">
+                  <div className="p-3 bg-[#0D1419] border border-amber-900/40 rounded-xl grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono">
+                    <div className="p-2.5 rounded-lg bg-[#0D1419] border border-slate-800 space-y-0.5">
                       <span className="text-[10px] text-slate-400 uppercase block font-sans">Current Speed</span>
                       <div className="text-base font-bold text-amber-400 font-mono">6.8 m/hour</div>
                       <span className="text-[10px] text-slate-500 block">Our Active Rig (OIL-RIG-04)</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-[#0A1216] border border-slate-800 space-y-0.5">
+                    <div className="p-2.5 rounded-lg bg-[#0D1419] border border-slate-800 space-y-0.5">
                       <span className="text-[10px] text-slate-400 uppercase block font-sans">Target Speed</span>
                       <div className="text-base font-bold text-emerald-400 font-mono">8.3 m/hour</div>
                       <span className="text-[10px] text-slate-500 block">Nearby Well (Nahorkatiya-162)</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-[#0A1216] border border-slate-800 space-y-0.5">
+                    <div className="p-2.5 rounded-lg bg-[#0D1419] border border-slate-800 space-y-0.5">
                       <span className="text-[10px] text-slate-400 uppercase block font-sans">Speed Difference</span>
                       <div className="text-base font-bold text-rose-400 font-mono">18% Slower</div>
                       <span className="text-[10px] text-slate-400 block font-sans">Action: Press bit harder</span>
@@ -686,7 +684,7 @@ export default function AlertsPage() {
 
                 {/* 3. LOW RISK: SUCCESSFUL SAFETY RECORD (NO DISTANCE BAR) */}
                 {isTransitAlert && (
-                  <div className="p-3 bg-[#060B0E] border border-emerald-900/40 rounded-xl flex items-center justify-between gap-3 text-xs">
+                  <div className="p-3 bg-[#0D1419] border border-emerald-900/40 rounded-xl flex items-center justify-between gap-3 text-xs">
                     <div>
                       <div className="text-[10px] font-mono text-emerald-400 uppercase font-semibold">
                         SUCCESSFUL SAFETY RECORD
@@ -702,7 +700,7 @@ export default function AlertsPage() {
                 )}
 
                 {/* Plain Clean Action Checklist */}
-                <div className="p-3 rounded-xl bg-[#020507] border border-emerald-900/50 space-y-1.5">
+                <div className="p-3 rounded-xl bg-[#0A1115] border border-emerald-900/50 space-y-1.5">
                   <div className="text-[11px] font-bold text-emerald-400 flex items-center gap-1.5">
                     <ShieldCheck size={14} />
                     <span>Required Preventive Steps:</span>
@@ -720,10 +718,10 @@ export default function AlertsPage() {
                 {/* INTERACTIVE DEMO TEXT INPUT & CONFIRMATION FOR CRITICAL GAS ALERT */}
                 {isCriticalGasAlert && (
                   !isMitigationConfirmed ? (
-                    <div className="p-3.5 rounded-xl bg-[#061118] border border-cyan-800/60 space-y-3 shadow-md">
+                    <div className="p-3.5 rounded-xl bg-[#0D1419] border border-cyan-800/60 space-y-3 shadow-md">
                       <div className="flex items-center justify-between">
-                        <label className="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
-                          <CheckCircle2 size={14} className="text-cyan-400" />
+                        <label className="text-xs font-bold text-[#38BDF8] flex items-center gap-1.5">
+                          <CheckCircle2 size={14} className="text-[#38BDF8]" />
                           <span>Confirm Safety Step Before Drilling Ahead:</span>
                         </label>
                         <span className="text-[10px] font-mono text-amber-400/90 bg-amber-950/60 px-2 py-0.5 rounded border border-amber-900/60">
@@ -738,7 +736,7 @@ export default function AlertsPage() {
                           value={actionInput}
                           onChange={(e) => setActionInput(e.target.value)}
                           placeholder="Write the safety action taken (or click a quick preset above)..."
-                          className="w-full px-3 py-2 rounded-lg bg-[#020507] border border-cyan-700/60 focus:border-cyan-400 focus:outline-none text-xs text-white placeholder-slate-500 font-sans shadow-inner transition-colors"
+                          className="w-full px-3 py-2 rounded-lg bg-[#0A1115] border border-cyan-700/60 focus:border-cyan-400 focus:outline-none text-xs text-white placeholder-slate-500 font-sans shadow-inner transition-colors"
                         />
                         
                         {/* Quick-fill preset chips */}
@@ -747,21 +745,21 @@ export default function AlertsPage() {
                           <button
                             type="button"
                             onClick={() => setActionInput('Prepared heavy drilling fluid to safely hold down gas pressure')}
-                            className="px-2 py-0.5 rounded bg-cyan-950/70 border border-cyan-800 hover:border-cyan-500 text-cyan-300 hover:text-white transition-colors cursor-pointer"
+                            className="px-2 py-0.5 rounded bg-cyan-950/70 border border-cyan-800 hover:border-cyan-500 text-[#38BDF8] hover:text-white transition-colors cursor-pointer"
                           >
                             + Heavy Fluid Ready
                           </button>
                           <button
                             type="button"
                             onClick={() => setActionInput('Tested emergency shut-off valves (BOP) to seal well if gas enters')}
-                            className="px-2 py-0.5 rounded bg-cyan-950/70 border border-cyan-800 hover:border-cyan-500 text-cyan-300 hover:text-white transition-colors cursor-pointer"
+                            className="px-2 py-0.5 rounded bg-cyan-950/70 border border-cyan-800 hover:border-cyan-500 text-[#38BDF8] hover:text-white transition-colors cursor-pointer"
                           >
                             + Emergency Valve Tested
                           </button>
                           <button
                             type="button"
                             onClick={() => setActionInput('Fluid level sensors and gas alarms armed and verified')}
-                            className="px-2 py-0.5 rounded bg-cyan-950/70 border border-cyan-800 hover:border-cyan-500 text-cyan-300 hover:text-white transition-colors cursor-pointer"
+                            className="px-2 py-0.5 rounded bg-cyan-950/70 border border-cyan-800 hover:border-cyan-500 text-[#38BDF8] hover:text-white transition-colors cursor-pointer"
                           >
                             + Gas Alarm Active
                           </button>
@@ -772,7 +770,7 @@ export default function AlertsPage() {
                       <button
                         type="button"
                         onClick={() => handleConfirmCriticalMitigation(alert)}
-                        className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#0D5C75] to-[#147695] hover:from-[#116e8d] hover:to-[#1b8eb3] text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer border border-cyan-400/50"
+                        className="w-full py-2.5 px-4 rounded-xl bg-[#0D5C75] hover:bg-[#0F6D8A] text-white text-xs font-bold transition-all flex items-center justify-center gap-2 shadow-lg cursor-pointer border border-cyan-400/50"
                       >
                         <CheckCircle2 size={16} className="text-emerald-400" />
                         <span>✓ Confirm Safety Step & Lock Gas Barrier</span>
@@ -791,10 +789,9 @@ export default function AlertsPage() {
                       </div>
                       
                       {/* Display the custom text typed by the driller/user */}
-                      <div className="p-2.5 rounded-lg bg-[#020507] border border-emerald-900/80 text-xs">
+                      <div className="p-2.5 rounded-lg bg-[#0A1115] border border-emerald-900/80 text-xs">
                         <span className="text-slate-400 block text-[10px] uppercase font-mono mb-1">Recorded Safety Action:</span>
-                        <p className="text-emerald-200 font-medium italic">
-                          "{recordedAction || actionInput}"
+                        <p className="text-emerald-200 font-medium italic">"{recordedAction || actionInput}"
                         </p>
                       </div>
 
@@ -804,7 +801,7 @@ export default function AlertsPage() {
                           <button
                             type="button"
                             onClick={() => setActiveTab('audit')}
-                            className="text-cyan-300 hover:text-white font-semibold underline flex items-center gap-1 cursor-pointer transition-colors"
+                            className="text-[#38BDF8] hover:text-white font-semibold underline flex items-center gap-1 cursor-pointer transition-colors"
                           >
                             <span>View in Action Log →</span>
                           </button>
@@ -825,9 +822,9 @@ export default function AlertsPage() {
                 )}
 
                 {/* Evidence & Sign-off */}
-                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#162D38] text-[11px] text-slate-400">
+                <div className="flex flex-wrap items-center justify-between gap-2 pt-2 border-t border-[#1C2C35] text-[11px] text-slate-400">
                   <div className="flex flex-wrap items-center gap-2">
-                    <FileText size={12} className="text-cyan-400 shrink-0" />
+                    <FileText size={12} className="text-[#38BDF8] shrink-0" />
                     <span>Offset Well Records:</span>
                     <div className="flex flex-wrap items-center gap-1.5">
                       {(alert.offset_wells && alert.offset_wells.length > 0 ? alert.offset_wells : ['BAGHJAN-5', 'MORAN-12']).map((wName, wIdx) => (
@@ -835,11 +832,11 @@ export default function AlertsPage() {
                           key={wIdx}
                           type="button"
                           onClick={() => openEvidenceForWell(alert, wName)}
-                          className="px-2 py-0.5 rounded bg-[#020507] hover:bg-[#071318] border border-cyan-500/40 text-cyan-300 text-[10px] font-semibold flex items-center gap-1 cursor-pointer transition-colors shadow-sm"
+                          className="px-2 py-0.5 rounded bg-[#0A1115] hover:bg-[#111B21] border border-cyan-500/40 text-[#38BDF8] text-[10px] font-semibold flex items-center gap-1 cursor-pointer transition-colors shadow-sm"
                           title="Click to view verified source document"
                         >
                           <span>{wName}</span>
-                          <ChevronRight size={10} className="text-cyan-400" />
+                          <ChevronRight size={10} className="text-[#38BDF8]" />
                         </button>
                       ))}
                     </div>
@@ -867,7 +864,7 @@ export default function AlertsPage() {
                       value={actions[alert.id] ?? ''}
                       onChange={(e) => setActions({ ...actions, [alert.id]: e.target.value })}
                       placeholder="Enter safety action taken (e.g. Conducted flow check, prepared kill mud)"
-                      className="flex-1 px-3 py-2 rounded-xl bg-[#020507] border border-[#162D38] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
+                      className="flex-1 px-3 py-2 rounded-xl bg-[#0A1115] border border-[#1C2C35] text-xs text-white placeholder-slate-500 focus:outline-none focus:border-cyan-500"
                     />
                     <button
                       onClick={() => handleAcknowledge(alert)}
@@ -884,11 +881,11 @@ export default function AlertsPage() {
         </div>
       ) : (
         /* ─── 4. Activity Log Tab (Clean & No Blank Rows) ─── */
-        <div className="bg-[#050C10] border-2 border-[#162D38] rounded-2xl p-4 text-xs space-y-3 shadow-xl">
-          <div className="flex flex-wrap items-center justify-between border-b border-[#162D38] pb-2.5 mb-2 gap-2">
+        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 text-xs space-y-3 shadow-sm">
+          <div className="flex flex-wrap items-center justify-between border-b border-[#1C2C35] pb-2.5 mb-2 gap-2">
             <div>
               <span className="text-xs font-bold text-white uppercase flex items-center gap-2">
-                <ShieldCheck size={15} className="text-cyan-400" />
+                <ShieldCheck size={15} className="text-[#38BDF8]" />
                 Safety Action History Log
               </span>
               <p className="text-[10px] text-slate-400 mt-0.5">
@@ -899,12 +896,12 @@ export default function AlertsPage() {
               <button
                 type="button"
                 onClick={loadAuditLogs}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#020507] hover:bg-[#071318] border border-cyan-800/80 text-cyan-300 text-[10px] font-mono font-semibold cursor-pointer transition-colors shadow-sm"
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-[#0A1115] hover:bg-[#111B21] border border-cyan-800/80 text-[#38BDF8] text-[10px] font-mono font-semibold cursor-pointer transition-colors shadow-sm"
               >
                 <RefreshCw size={11} className={loading ? 'animate-spin' : ''} />
                 <span>Refresh Log</span>
               </button>
-              <span className="text-[10px] text-emerald-400 font-semibold bg-[#020507] px-2.5 py-1 rounded-lg border border-emerald-900/60">
+              <span className="text-[10px] text-emerald-400 font-semibold bg-[#0A1115] px-2.5 py-1 rounded-lg border border-emerald-900/60">
                 ✓ {auditLogs.length} Verified Entries
               </span>
             </div>
@@ -922,8 +919,8 @@ export default function AlertsPage() {
                   key={log.id}
                   className={`p-3 rounded-xl space-y-1.5 transition-all shadow-sm ${
                     isRecentCommit
-                      ? 'bg-emerald-950/40 border-2 border-emerald-500/80 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
-                      : 'bg-[#020507] border border-[#162D38] hover:border-slate-700'
+                      ? 'bg-emerald-950/40 border border-emerald-500/80 shadow-[0_0_15px_rgba(16,185,129,0.25)]'
+                      : 'bg-[#0A1115] border border-[#1C2C35] hover:border-slate-700'
                   }`}
                 >
                   <div className="flex flex-wrap items-center justify-between gap-2 text-[11px]">
@@ -931,7 +928,7 @@ export default function AlertsPage() {
                       <span className={`px-1.5 py-0.5 rounded font-mono font-bold text-[10px] ${
                         isRecentCommit
                           ? 'bg-emerald-900 text-emerald-200 border border-emerald-600'
-                          : 'bg-cyan-950 text-cyan-300 border border-cyan-800'
+                          : 'bg-cyan-950 text-[#38BDF8] border border-cyan-800'
                       }`}>
                         {log.id}
                       </span>
