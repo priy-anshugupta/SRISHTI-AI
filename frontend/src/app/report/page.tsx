@@ -234,13 +234,13 @@ export default function ReportPage() {
     <div className="space-y-3 font-sans text-slate-200 max-w-[1500px] mx-auto pb-12 select-none">
       
       {/* 1. Header Toolbar */}
-      <div className="print:hidden bg-[#0A1216] border border-slate-800 rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+      <div className="print:hidden bg-[#0D1419] border border-slate-800 rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-sm font-bold text-white tracking-wide uppercase font-mono">
               Pre-Drill Safety & Offset Brief
             </h1>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-cyan-300">
+            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[#38BDF8]">
               OIL INDIA LIMITED · UPPER ASSAM
             </span>
           </div>
@@ -273,33 +273,33 @@ export default function ReportPage() {
 
       {/* 2. Top 4 Metric Cards */}
       <div className="print:hidden grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-[#0A1216] border border-slate-800 rounded-lg p-3 space-y-0.5">
+        <div className="bg-[#0D1419] border border-slate-800 rounded-lg p-3 space-y-0.5">
           <span className="text-[10px] font-mono uppercase text-slate-400 block">TOTAL INCIDENTS</span>
-          <div className="text-xl font-bold font-mono text-white">{stats.total} <span className="text-xs text-slate-400 font-normal">Events</span></div>
+          <div className="text-lg font-bold font-mono text-white">{stats.total} <span className="text-xs text-slate-400 font-normal">Events</span></div>
           <p className="text-[11px] text-slate-400">Within {radius} km offset corridor</p>
         </div>
 
-        <div className="bg-[#0A1216] border border-slate-800 rounded-lg p-3 space-y-0.5">
+        <div className="bg-[#0D1419] border border-slate-800 rounded-lg p-3 space-y-0.5">
           <span className="text-[10px] font-mono uppercase text-slate-400 block">CRITICAL THREATS</span>
-          <div className="text-xl font-bold font-mono text-rose-400">{stats.critical} <span className="text-xs text-slate-400 font-normal">Gas Kicks</span></div>
+          <div className="text-lg font-bold font-mono text-rose-400">{stats.critical} <span className="text-xs text-slate-400 font-normal">Gas Kicks</span></div>
           <p className="text-[11px] text-slate-400">Overpressure influx events</p>
         </div>
 
-        <div className="bg-[#0A1216] border border-slate-800 rounded-lg p-3 space-y-0.5">
+        <div className="bg-[#0D1419] border border-slate-800 rounded-lg p-3 space-y-0.5">
           <span className="text-[10px] font-mono uppercase text-slate-400 block">HIGH RISK WARNINGS</span>
-          <div className="text-xl font-bold font-mono text-amber-300">{stats.high} <span className="text-xs text-slate-400 font-normal">Stuck Pipe / Loss</span></div>
+          <div className="text-lg font-bold font-mono text-amber-300">{stats.high} <span className="text-xs text-slate-400 font-normal">Stuck Pipe / Loss</span></div>
           <p className="text-[11px] text-slate-400">Swelling clay & circulation losses</p>
         </div>
 
-        <div className="bg-[#0A1216] border border-slate-800 rounded-lg p-3 space-y-0.5">
+        <div className="bg-[#0D1419] border border-slate-800 rounded-lg p-3 space-y-0.5">
           <span className="text-[10px] font-mono uppercase text-slate-400 block">FIRST HAZARD DEPTH</span>
-          <div className="text-xl font-bold font-mono text-emerald-400">{stats.closestDepth ? `${stats.closestDepth}m` : 'None'}</div>
+          <div className="text-lg font-bold font-mono text-emerald-400">{stats.closestDepth ? `${stats.closestDepth}m` : 'None'}</div>
           <p className="text-[11px] text-slate-400">Girujan Clay swelling zone</p>
         </div>
       </div>
 
       {/* 3. Controls & Filter Bar */}
-      <div className="print:hidden bg-[#0A1216] border border-slate-800 rounded-lg px-3 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="print:hidden bg-[#0D1419] border border-slate-800 rounded-lg px-3 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
         
         {/* Left: Well & Radius */}
         <div className="flex flex-wrap items-center gap-3 font-mono">
@@ -308,7 +308,7 @@ export default function ReportPage() {
             <select
               value={wellId}
               onChange={(e) => setWellId(e.target.value)}
-              className="px-2.5 py-1 rounded bg-[#060B0E] border border-slate-700 text-white font-mono text-xs focus:outline-none"
+              className="px-2.5 py-1 rounded bg-[#0D1419] border border-slate-700 text-white font-mono text-xs focus:outline-none"
             >
               {wells.map(w => (
                 <option key={w.id} value={w.id}>{w.name} ({w.field})</option>
@@ -326,7 +326,7 @@ export default function ReportPage() {
                 onClick={() => setRadius(r)}
                 className={`px-2 py-0.5 rounded text-xs transition-colors cursor-pointer ${
                   radius === r
-                    ? 'bg-slate-800 text-cyan-300 font-bold border border-slate-700'
+                    ? 'bg-slate-800 text-[#38BDF8] font-bold border border-slate-700'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -372,7 +372,7 @@ export default function ReportPage() {
             onClick={() => setSeverityFilter('MEDIUM')}
             className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
               severityFilter === 'MEDIUM'
-                ? 'bg-slate-800 text-cyan-300 border border-slate-700 font-semibold'
+                ? 'bg-slate-800 text-[#38BDF8] border border-slate-700 font-semibold'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -391,14 +391,14 @@ export default function ReportPage() {
       {/* 4. Streamlined Incident List (Simplified, Jargon-Free, No Nested Boxes) */}
       <div className="space-y-2">
         {loading && (
-          <div className="p-8 text-center bg-[#0A1216] border border-slate-800 rounded-lg space-y-2">
-            <RefreshCw size={20} className="animate-spin mx-auto text-cyan-400" />
+          <div className="p-8 text-center bg-[#0D1419] border border-slate-800 rounded-lg space-y-2">
+            <RefreshCw size={20} className="animate-spin mx-auto text-[#38BDF8]" />
             <div className="text-xs font-mono text-slate-400">LOADING OFFSET INCIDENTS...</div>
           </div>
         )}
 
         {!loading && filteredEvents.length === 0 && (
-          <div className="p-8 text-center bg-[#0A1216] border border-slate-800 rounded-lg space-y-1">
+          <div className="p-8 text-center bg-[#0D1419] border border-slate-800 rounded-lg space-y-1">
             <div className="text-sm font-semibold text-white">No Matching Incidents</div>
             <p className="text-xs text-slate-400">Try expanding the search radius or clearing filters.</p>
           </div>
@@ -412,7 +412,7 @@ export default function ReportPage() {
           return (
             <div
               key={index}
-              className="bg-[#0A1216] border border-slate-800 hover:border-slate-700 rounded-lg p-3 space-y-2 transition-colors"
+              className="bg-[#0D1419] border border-slate-800 hover:border-slate-700 rounded-lg p-3 space-y-2 transition-colors"
             >
               {/* Header Line */}
               <div className="flex flex-wrap items-center justify-between gap-2">
@@ -434,7 +434,7 @@ export default function ReportPage() {
 
                 {/* Metadata Tags */}
                 <div className="flex items-center gap-2 text-xs font-mono">
-                  <span className="text-cyan-300 font-semibold">{item.wells?.name ?? 'Offset Well'}</span>
+                  <span className="text-[#38BDF8] font-semibold">{item.wells?.name ?? 'Offset Well'}</span>
                   <span className="text-slate-500">·</span>
                   <span className="text-purple-300">{item.formations?.canonical_name ?? 'Barail Group'}</span>
                   <span className="text-slate-500">·</span>
