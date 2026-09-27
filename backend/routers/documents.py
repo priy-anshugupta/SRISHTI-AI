@@ -101,41 +101,39 @@ async def upload_document(file: UploadFile = File(...)):
                 page_count = len(pages)
                 text_content = "\n\n".join(pages)
             else:
-                text_content = f"Uploaded PDF '{file.filename}'. Extracted {page_count} pages of OCR text."
+                text_content = f"Uploaded PDF '{file.filename}'. No text extracted."
         except Exception:
-            text_content = f"Uploaded PDF '{file.filename}'. Extracted {page_count} pages of OCR text."
+            text_content = f"Uploaded PDF '{file.filename}'. No text extracted."
     else:
         try:
             text_content = contents.decode("utf-8")
         except Exception:
-            text_content = f"Uploaded binary/scanned document '{file.filename}'. Extracted {page_count} pages of OCR text."
+            text_content = f"Uploaded binary/scanned document '{file.filename}'. No text extracted."
 
     # Parse entities
     entities = extract_drilling_entities(text_content)
+    from backend.services.document_processing import calculate_extraction_confidence
+    real_confidence = calculate_extraction_confidence(text_content)
+    entities_count = len([k for k, v in entities.items() if v and k != "source_page"])
 
     doc_entry = {
         "filename": file.filename,
         "doc_type": "Daily Drilling Report (DDR)" if "ddr" in file.filename.lower() else "Well Completion Report (WCR)",
-        "well_id": entities["well_name"],
+        "well_id": entities.get("well_name", "Unknown"),
         "pages": page_count,
         "status": "NEEDS_REVIEW",
-        "confidence": 92.4,
-        "entities_count": 18,
+        "confidence": round(real_confidence, 1),
+        "entities_count": entities_count,
         "processing_time_s": 3.4,
-        "raw_excerpt": text_content[:600] if len(text_content) > 50 else (
-            "INCIDENT EXCERPT (Page 147):\n"
-            "Encountered severe loss of circulation at 1,840m MD in Tipam Sandstone pay interval. "
-            "Returns dropped to 35% with 60 bbl/hr loss rate. Mixed and spotted 25 bbl coarse calcium carbonate pill. "
-            "Circulation fully restored after 4 hours soak. Resumed drilling ahead."
-        ),
+        "raw_excerpt": text_content[:600] if len(text_content) > 50 else f"No substantial content extracted. (Length: {len(text_content)})",
         "reviewer_status": "PENDING",
         "reviewed_by": None,
         "extracted_facts": [
-            {"field": "Target Well", "value": entities["well_name"], "confidence": 98.0, "verified": False},
-            {"field": "Formation", "value": entities["formation"], "confidence": 94.0, "verified": False},
-            {"field": "Incident Depth", "value": f"{entities['depth_md']}m MD", "confidence": 96.0, "verified": False},
-            {"field": "Event Class", "value": entities["event_type"], "confidence": 91.0, "verified": False},
-            {"field": "Mitigation SOP", "value": entities["mitigation"], "confidence": 88.0, "verified": False}
+            {"field": "Target Well", "value": entities.get("well_name", "Unknown"), "confidence": round(real_confidence * 0.98, 1), "verified": False},
+            {"field": "Formation", "value": entities.get("formation", "Unknown"), "confidence": round(real_confidence * 0.94, 1), "verified": False},
+            {"field": "Incident Depth", "value": f"{entities.get('depth_md', '')}m MD", "confidence": round(real_confidence * 0.96, 1), "verified": False},
+            {"field": "Event Class", "value": entities.get("event_type", "Unknown"), "confidence": round(real_confidence * 0.91, 1), "verified": False},
+            {"field": "Mitigation SOP", "value": entities.get("mitigation", "Unknown"), "confidence": round(real_confidence * 0.88, 1), "verified": False}
         ]
     }
 
@@ -208,28 +206,30 @@ def load_sample_document(sample_name: str = Query("wcr_moran_7")):
     info = sample_files.get(sample_name, sample_files["wcr_moran_7"])
     filename, well_name, formation, depth_md, event_type = info
 
+    sample_text = f"Well: {well_name} | Horizon: {formation} | Depth: {depth_md}m MD\nEvent: {event_type} encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed."
+    from backend.services.document_processing import calculate_extraction_confidence
+    real_confidence = calculate_extraction_confidence(sample_text)
+
     doc_entry = {
         "filename": filename,
         "doc_type": "Daily Drilling Report (DDR)" if "ddr" in filename.lower() else "Well Completion Report (WCR)",
         "well_id": well_name,
         "pages": 4 if "ddr" in filename.lower() else 312,
         "status": "NEEDS_REVIEW",
-        "confidence": 97.2,
-        "entities_count": 22,
+        "confidence": round(real_confidence, 1),
+        "entities_count": 4,
         "processing_time_s": 2.1,
         "raw_excerpt": (
-            f"HISTORICAL DRILLING INCIDENT EXCERPT ({filename} · Page 147):\n"
-            f"Well: {well_name} | Horizon: {formation} | Depth: {depth_md}m MD\n"
-            f"Event: {event_type} encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed."
+            f"HISTORICAL DRILLING INCIDENT EXCERPT ({filename} · Page 147):\n{sample_text}"
         ),
         "reviewer_status": "PENDING",
         "reviewed_by": None,
         "extracted_facts": [
-            {"field": "Target Well", "value": well_name, "confidence": 99.0, "verified": False},
-            {"field": "Formation", "value": formation, "confidence": 98.0, "verified": False},
-            {"field": "Incident Depth", "value": f"{depth_md}m MD", "confidence": 97.0, "verified": False},
-            {"field": "Event Class", "value": event_type, "confidence": 96.0, "verified": False},
-            {"field": "Mitigation SOP", "value": "OISD-STD-174 well control protocol and barrier restoration", "confidence": 94.0, "verified": False}
+            {"field": "Target Well", "value": well_name, "confidence": round(real_confidence * 0.98, 1), "verified": False},
+            {"field": "Formation", "value": formation, "confidence": round(real_confidence * 0.94, 1), "verified": False},
+            {"field": "Incident Depth", "value": f"{depth_md}m MD", "confidence": round(real_confidence * 0.96, 1), "verified": False},
+            {"field": "Event Class", "value": event_type, "confidence": round(real_confidence * 0.91, 1), "verified": False},
+            {"field": "Mitigation SOP", "value": "OISD-STD-174 well control protocol and barrier restoration", "confidence": round(real_confidence * 0.88, 1), "verified": False}
         ]
     }
 
@@ -242,7 +242,7 @@ def load_sample_document(sample_name: str = Query("wcr_moran_7")):
         "formation": formation,
         "depth_md": depth_md,
         "event_type": event_type,
-        "ocr_confidence": 98.4,
+        "ocr_confidence": round(real_confidence, 1),
         "document": _enrich_doc(saved_doc),
         "extracted_preview": {
             "well_name": well_name,
