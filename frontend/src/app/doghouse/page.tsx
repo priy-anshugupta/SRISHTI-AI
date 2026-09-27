@@ -4,12 +4,16 @@ import React, { useState } from 'react';
 import { 
   Monitor, AlertTriangle, ShieldAlert, CheckCircle2, 
   Droplet, Gauge, Radio, ShieldCheck, ChevronRight, X,
-  Activity, Zap, Compass, Flame, Shield
+  Activity, Zap, Compass, Flame, Shield, Lock
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import { useTelemetry } from '@/context/TelemetryContext';
+import { useAuth } from '@/context/AuthContext';
 
 export default function DoghouseTerminal() {
+  const { user } = useAuth();
+  const isRigFloorWorker = user?.badge === 'Rig Floor' || user?.clearanceLevel === 'Rig Floor View';
+
   const [selectedSop, setSelectedSop] = useState<string | null>(null);
   const [confirmedAction, setConfirmedAction] = useState<string | null>(null);
   const [drillerId, setDrillerId] = useState('DR-8429');
@@ -87,9 +91,9 @@ export default function DoghouseTerminal() {
     <div className="space-y-3 font-sans text-slate-200 max-w-[1500px] mx-auto pb-12 select-none">
       
       {/* 1. Industrial SCADA Header Toolbar */}
-      <div className="bg-[#0A1216] border border-slate-800 rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+      <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded bg-[#0D2430] border border-[#1B4254] flex items-center justify-center text-cyan-400">
+          <div className="w-8 h-8 rounded bg-[#0D2430] border border-[#1B4254] flex items-center justify-center text-[#38BDF8]">
             <Monitor size={18} />
           </div>
           <div>
@@ -97,7 +101,7 @@ export default function DoghouseTerminal() {
               <h1 className="text-sm font-bold text-white tracking-wide uppercase font-mono">
                 Rig Floor Touch Terminal · OIL-RIG-04
               </h1>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-emerald-950/70 border border-emerald-800 text-emerald-300">
+              <span className="text-xs font-mono px-2 py-0.5 rounded bg-emerald-950/70 border border-emerald-800 text-emerald-300">
                 OISD-STD-174 COMPLIANT
               </span>
             </div>
@@ -107,8 +111,20 @@ export default function DoghouseTerminal() {
           </div>
         </div>
 
-        {/* Telemetry Stream Badge */}
-        <div className="flex items-center gap-2 text-xs font-mono">
+        {/* Telemetry Stream Badge & Kiosk Indicator */}
+        <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
+          {isRigFloorWorker ? (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-amber-950/70 border border-amber-700/80 text-amber-300 font-bold shadow-sm">
+              <Lock size={12} />
+              <span>KIOSK ACTIVE: DRILLER MODE (OISD-174)</span>
+            </div>
+          ) : (
+            <div className="flex items-center gap-1.5 px-2.5 py-1 rounded bg-[#0D5C75]/25 border border-[#38BDF8]/40 text-[#38BDF8] font-semibold shadow-sm">
+              <ShieldCheck size={13} className="text-[#38BDF8]" />
+              <span>ENGINEER SUPERVISOR VIEW (FULL ACCESS)</span>
+            </div>
+          )}
+
           <div className={`flex items-center gap-1.5 px-2.5 py-1 rounded border ${
             isConnected 
               ? 'bg-emerald-950/70 border-emerald-800 text-emerald-300' 
@@ -118,7 +134,7 @@ export default function DoghouseTerminal() {
             <span>{isConnected ? 'eRTMAC LIVE STREAM' : 'OFFLINE BUFFER'}</span>
           </div>
 
-          <div className="px-2.5 py-1 rounded bg-[#060B0E] border border-slate-800 text-slate-400">
+          <div className="px-2.5 py-1 rounded bg-[#0D1419] border border-[#1C2C35] text-slate-400">
             Driller: <strong className="text-white">{drillerId}</strong>
           </div>
         </div>
@@ -128,19 +144,19 @@ export default function DoghouseTerminal() {
       <div className="grid grid-cols-12 gap-3">
         
         {/* Left Column: Measured Depth & Precursor Hazard Banner (8 cols) */}
-        <div className="col-span-12 lg:col-span-8 bg-[#0A1216] border border-slate-800 rounded-lg p-5 flex flex-col justify-between space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800/80 pb-2.5">
+        <div className="col-span-12 lg:col-span-8 bg-[#0D1419] border border-[#1C2C35] rounded-lg p-5 flex flex-col justify-between space-y-4">
+          <div className="flex items-center justify-between border-b border-[#1C2C35]/80 pb-2.5">
             <span className="text-xs font-mono font-semibold uppercase text-slate-400">
               MEASURED HOLE DEPTH (MD)
             </span>
-            <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-[#060B0E] border border-slate-800 text-cyan-300 font-semibold">
+            <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-[#0D1419] border border-[#1C2C35] text-[#38BDF8] font-semibold">
               FORMATION: {formation.toUpperCase()}
             </span>
           </div>
 
           <div className="flex items-baseline gap-6 my-2">
             <div className="text-5xl sm:text-6xl font-bold font-mono tabular-nums text-white tracking-tight">
-              {depthMd.toFixed(1)} <span className="text-xl text-slate-400 font-normal font-sans">m</span>
+              {depthMd.toFixed(1)} <span className="text-lg text-slate-400 font-normal font-sans">m</span>
             </div>
             <div className="text-base font-mono text-slate-400">
               TVD: <span className="text-white font-bold">{tvdMd.toFixed(1)}m</span>
@@ -151,7 +167,7 @@ export default function DoghouseTerminal() {
           <div className={`p-3.5 rounded-lg border flex flex-wrap items-center justify-between gap-3 ${
             hazardDistance <= 15 
               ? 'bg-rose-950/40 border-rose-600/70' 
-              : 'bg-[#060B0E] border-amber-600/50'
+              : 'bg-[#0D1419] border-amber-600/50'
           }`}>
             <div className="flex items-center gap-2.5">
               <AlertTriangle size={20} className={hazardDistance <= 15 ? 'text-rose-400 shrink-0' : 'text-amber-400 shrink-0'} />
@@ -189,20 +205,20 @@ export default function DoghouseTerminal() {
             return (
               <div 
                 key={i} 
-                className={`p-3 bg-[#0A1216] border rounded-lg flex flex-col justify-between ${
-                  isAlert ? 'border-rose-600/70 bg-rose-950/15' : 'border-slate-800'
+                className={`p-3 bg-[#0D1419] border rounded-lg flex flex-col justify-between ${
+                  isAlert ? 'border-rose-600/70 bg-rose-950/15' : 'border-[#1C2C35]'
                 }`}
               >
-                <div className="flex items-center justify-between text-[10px] text-slate-400 font-semibold uppercase">
+                <div className="flex items-center justify-between text-xs text-slate-400 font-semibold uppercase">
                   <span>{g.label}</span>
-                  <span className={`w-1.5 h-1.5 rounded-full ${isAlert ? 'bg-rose-500 animate-pulse' : 'bg-emerald-400'}`} />
+                  <span className={`w-1.5 h-1.5 rounded-full ${isAlert ? 'bg-rose-500 ' : 'bg-emerald-400'}`} />
                 </div>
                 
-                <div className="my-1 text-xl font-bold text-white tabular-nums">
+                <div className="my-1 text-lg font-bold text-white tabular-nums">
                   {g.value} <span className="text-xs text-slate-400 font-normal">{g.unit}</span>
                 </div>
 
-                <div className={`text-[10px] font-bold ${isAlert ? 'text-rose-400' : 'text-emerald-400'}`}>
+                <div className={`text-xs font-bold ${isAlert ? 'text-rose-400' : 'text-emerald-400'}`}>
                   {g.status}
                 </div>
               </div>
@@ -213,61 +229,61 @@ export default function DoghouseTerminal() {
       </div>
 
       {/* 3. Real-Time Wellbore Pressure & Drilling Mechanics Strip */}
-      <div className="bg-[#0A1216] border border-slate-800 rounded-lg p-3.5 space-y-3">
-        <div className="flex items-center justify-between border-b border-slate-800/80 pb-2">
+      <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg p-3.5 space-y-3">
+        <div className="flex items-center justify-between border-b border-[#1C2C35]/80 pb-2">
           <div className="flex items-center gap-2">
-            <Activity size={14} className="text-cyan-400" />
+            <Activity size={14} className="text-[#38BDF8]" />
             <span className="text-xs font-mono font-bold uppercase text-slate-200">
               Real-Time Wellbore Mechanics & Pore Pressure Diagnostics
             </span>
           </div>
-          <span className="text-[10px] font-mono text-slate-400">
+          <span className="text-xs font-mono text-slate-400">
             EATON / D-EXPONENT CALIBRATION
           </span>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-2.5 font-mono text-xs">
           {/* Corrected d-Exponent */}
-          <div className="p-2.5 bg-[#060B0E] border border-slate-800 rounded space-y-0.5">
-            <span className="text-[10px] text-slate-400 uppercase font-semibold block">D-EXPONENT (d_cs)</span>
+          <div className="p-2.5 bg-[#0D1419] border border-[#1C2C35] rounded space-y-0.5">
+            <span className="text-xs text-slate-400 uppercase font-semibold block">D-EXPONENT (d_cs)</span>
             <div className="text-base font-bold text-amber-300">
               {physics.d_exponent_corrected.toFixed(3)}
-              <span className="text-[10px] text-slate-500 font-normal ml-2">Trend: {physics.d_normal_trend}</span>
+              <span className="text-xs text-slate-500 font-normal ml-2">Trend: {physics.d_normal_trend}</span>
             </div>
-            <div className="text-[10px] text-amber-300 font-sans">
+            <div className="text-xs text-amber-300 font-sans">
               {physics.d_exponent_corrected < physics.d_normal_trend ? '⚠️ Overpressure Ramp Detected' : 'Normal Compaction'}
             </div>
           </div>
 
           {/* Mechanical Specific Energy (MSE) */}
-          <div className="p-2.5 bg-[#060B0E] border border-slate-800 rounded space-y-0.5">
-            <span className="text-[10px] text-slate-400 uppercase font-semibold block">DRILLING ENERGY (MSE)</span>
+          <div className="p-2.5 bg-[#0D1419] border border-[#1C2C35] rounded space-y-0.5">
+            <span className="text-xs text-slate-400 uppercase font-semibold block">DRILLING ENERGY (MSE)</span>
             <div className="text-base font-bold text-white">
               {physics.mse_psi.toLocaleString()} <span className="text-xs text-slate-400 font-normal">PSI</span>
             </div>
-            <div className="text-[10px] text-emerald-400 font-sans">
+            <div className="text-xs text-emerald-400 font-sans">
               Efficiency: {physics.drilling_efficiency_pct}% · {physics.mse_status}
             </div>
           </div>
 
           {/* Equivalent Circulating Density (ECD) */}
-          <div className="p-2.5 bg-[#060B0E] border border-slate-800 rounded space-y-0.5">
-            <span className="text-[10px] text-slate-400 uppercase font-semibold block">EQUIVALENT DENSITY (ECD)</span>
-            <div className="text-base font-bold text-cyan-300">
+          <div className="p-2.5 bg-[#0D1419] border border-[#1C2C35] rounded space-y-0.5">
+            <span className="text-xs text-slate-400 uppercase font-semibold block">EQUIVALENT DENSITY (ECD)</span>
+            <div className="text-base font-bold text-[#38BDF8]">
               {physics.ecd_ppg.toFixed(2)} <span className="text-xs text-slate-400 font-normal">ppg</span>
             </div>
-            <div className="text-[10px] text-slate-400 font-sans">
+            <div className="text-xs text-slate-400 font-sans">
               Annular Loss: +{physics.annular_pressure_loss_psi} PSI
             </div>
           </div>
 
           {/* Eaton Predicted Pore Pressure */}
-          <div className="p-2.5 bg-[#060B0E] border border-slate-800 rounded space-y-0.5">
-            <span className="text-[10px] text-slate-400 uppercase font-semibold block">PORE PRESSURE PREDICTED</span>
+          <div className="p-2.5 bg-[#0D1419] border border-[#1C2C35] rounded space-y-0.5">
+            <span className="text-xs text-slate-400 uppercase font-semibold block">PORE PRESSURE PREDICTED</span>
             <div className="text-base font-bold text-rose-400">
               {physics.pore_pressure_pred_ppg.toFixed(2)} <span className="text-xs text-slate-400 font-normal">ppg</span>
             </div>
-            <div className="text-[10px] text-slate-400 font-sans">
+            <div className="text-xs text-slate-400 font-sans">
               Safe Mud Window: 10.4–11.0 ppg
             </div>
           </div>
@@ -286,12 +302,12 @@ export default function DoghouseTerminal() {
       )}
 
       {/* 4. Glove-Friendly Emergency SOP Buttons (OISD-STD-174) */}
-      <div className="bg-[#0A1216] border border-slate-800 rounded-lg p-3.5 space-y-2.5">
-        <div className="flex items-center justify-between text-xs font-mono border-b border-slate-800/80 pb-2">
+      <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg p-3.5 space-y-2.5">
+        <div className="flex items-center justify-between text-xs font-mono border-b border-[#1C2C35]/80 pb-2">
           <span className="font-bold text-slate-300 uppercase">
             Emergency Driller Mitigation Protocols (OISD-STD-174)
           </span>
-          <span className="text-[10px] text-slate-500">2-Step Confirmation Required</span>
+          <span className="text-xs text-slate-500">2-Step Confirmation Required</span>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 font-mono text-xs">
@@ -315,7 +331,7 @@ export default function DoghouseTerminal() {
             onClick={() => setSelectedSop('stuck')}
             className="py-2.5 px-3 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 font-bold rounded flex items-center justify-center gap-2 transition-colors cursor-pointer"
           >
-            <ShieldAlert size={15} className="text-cyan-400" />
+            <ShieldAlert size={15} className="text-[#38BDF8]" />
             <span>3. STUCK PIPE SOP (GIRUJAN)</span>
           </button>
         </div>
@@ -324,8 +340,8 @@ export default function DoghouseTerminal() {
       {/* Confirmation & SOP Instruction Modal */}
       {selectedSop && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0A1216] border border-slate-700 rounded-lg max-w-xl w-full p-5 space-y-4 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+          <div className="bg-[#0D1419] border border-slate-700 rounded-lg max-w-xl w-full p-5 space-y-4 shadow-sm">
+            <div className="flex items-center justify-between border-b border-[#1C2C35] pb-2.5">
               <h3 className="text-sm font-bold text-white font-mono flex items-center gap-2">
                 <ShieldCheck size={16} className="text-emerald-400" />
                 {sops[selectedSop as keyof typeof sops].title}
@@ -336,9 +352,9 @@ export default function DoghouseTerminal() {
             </div>
 
             {/* Steps Checklist */}
-            <div className="space-y-1.5 text-xs text-slate-200 bg-[#060B0E] p-3 rounded border border-slate-800 max-h-60 overflow-y-auto font-sans leading-relaxed">
+            <div className="space-y-1.5 text-xs text-slate-200 bg-[#0D1419] p-3 rounded border border-[#1C2C35] max-h-60 overflow-y-auto font-sans leading-relaxed">
               {sops[selectedSop as keyof typeof sops].steps.map((step, idx) => (
-                <div key={idx} className="p-1.5 border-b border-slate-800/60 last:border-0">
+                <div key={idx} className="p-1.5 border-b border-[#1C2C35]/60 last:border-0">
                   {step}
                 </div>
               ))}
