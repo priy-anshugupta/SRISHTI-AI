@@ -49,7 +49,7 @@ function LoginForm() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#070D0F] text-slate-100 font-sans selection:bg-[#0D5C75] selection:text-white flex flex-col justify-between relative overflow-hidden">
+    <div className="min-h-screen w-full bg-[#080E11] text-slate-100 font-sans selection:bg-[#0D5C75] selection:text-white flex flex-col justify-between relative overflow-hidden">
       
       {/* Background Ambience */}
       <div className="fixed inset-0 pointer-events-none z-0">
@@ -61,7 +61,7 @@ function LoginForm() {
       </div>
 
       {/* Top Enterprise Banner */}
-      <header className="relative z-10 w-full px-6 py-4 flex items-center justify-between border-b border-slate-800/80 bg-[#0A1215]/80 backdrop-blur-md font-sans">
+      <header className="relative z-10 w-full px-6 py-4 flex items-center justify-between border-b border-[#1C2C35]/80 bg-[#0A1215]/80 backdrop-blur-md font-sans">
         <Link href="/" className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-lg bg-[#0D5C75]/25 border border-[#0D5C75] flex items-center justify-center text-[#D97706]">
             <Flame size={18} />
@@ -70,20 +70,20 @@ function LoginForm() {
             <span className="text-white font-bold text-sm tracking-wider leading-none">
               SRISHTI <span className="text-[#D97706]">· AI</span>
             </span>
-            <span className="text-[10px] text-slate-400 font-medium tracking-wider mt-0.5">
+            <span className="text-xs text-slate-400 font-medium tracking-wider mt-0.5">
               OIL INDIA LIMITED · eRTMAC DULIAJAN
             </span>
           </div>
         </Link>
 
         <div className="flex items-center gap-2 text-xs font-sans">
-          <span className="hidden sm:inline-flex items-center gap-1.5 bg-[#0C1518] px-2.5 py-1 rounded-full border border-slate-800 text-[10px] font-semibold text-slate-400">
+          <span className="hidden sm:inline-flex items-center gap-1.5 bg-[#0D1419] px-2.5 py-1 rounded-full border border-[#1C2C35] text-xs font-semibold text-slate-400">
             <ShieldCheck size={12} className="text-emerald-400" />
             <span>Safety Compliant</span>
           </span>
           <Link
             href="/"
-            className="text-slate-400 hover:text-white px-2.5 py-1 rounded hover:bg-slate-800 transition-colors text-xs font-medium"
+            className="text-slate-400 hover:text-white px-2.5 py-1 rounded hover:bg-[#111B21] transition-colors text-xs font-medium"
           >
             Back to Overview
           </Link>
@@ -92,15 +92,15 @@ function LoginForm() {
 
       {/* Central Login Card Container */}
       <main className="relative z-10 flex-1 flex items-center justify-center px-4 py-8">
-        <div className="max-w-xl w-full bg-[#0B1316]/95 border-2 border-slate-700/90 rounded-2xl p-6 sm:p-8 shadow-2xl backdrop-blur-xl font-sans text-xs space-y-6">
+        <div className="max-w-xl w-full bg-[#0D1419]/95 border border-[#1C2C35]/90 rounded-xl p-6 sm:p-8 shadow-sm backdrop-blur-xl font-sans text-xs space-y-6">
           
           {/* Header Title */}
-          <div className="text-center space-y-2 border-b border-slate-800 pb-5">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#070D0F] border border-slate-700/60 text-[11px] font-medium text-slate-300">
+          <div className="text-center space-y-2 border-b border-[#1C2C35] pb-5">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#080E11] border border-[#1C2C35]/60 text-[11px] font-medium text-slate-300">
               <Lock size={12} className="text-emerald-400" />
               <span>Authorized Access</span>
             </div>
-            <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+            <h1 className="text-lg font-semibold text-white tracking-tight">
               Sign In to SRISHTI·AI
             </h1>
             <p className="text-slate-400 text-xs font-normal">
@@ -110,21 +110,21 @@ function LoginForm() {
 
           {/* Success Banner */}
           {loginSuccess && (
-            <div className="p-3 bg-emerald-950/60 border border-emerald-500 rounded-xl text-emerald-300 flex items-center gap-2.5 animate-pulse">
+            <div className="p-3 bg-emerald-950/60 border border-emerald-500 rounded-xl text-emerald-300 flex items-center gap-2.5 ">
               <CheckCircle2 size={16} className="text-emerald-400 shrink-0" />
               <span>{loginSuccess} — Redirecting to {redirectTarget}…</span>
             </div>
           )}
 
           {/* Mode Switcher Tabs */}
-          <div className="grid grid-cols-2 gap-2 bg-[#070D0F] p-1.5 rounded-xl border border-slate-800">
+          <div className="grid grid-cols-2 gap-2 bg-[#080E11] p-1.5 rounded-xl border border-[#1C2C35]">
             <button
               type="button"
               onClick={() => setActiveTab('persona')}
               className={`py-2 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'persona'
-                  ? 'bg-[#0D5C75] text-white shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#0D5C75]/15 text-[#38BDF8] border border-[#0D5C75]/40 font-semibold'
+                  : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               <Sparkles size={13} className={activeTab === 'persona' ? 'text-amber-300' : ''} />
@@ -135,8 +135,8 @@ function LoginForm() {
               onClick={() => setActiveTab('credentials')}
               className={`py-2 rounded-lg font-bold text-xs transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'credentials'
-                  ? 'bg-[#0D5C75] text-white shadow-md'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-[#0D5C75]/15 text-[#38BDF8] border border-[#0D5C75]/40 font-semibold'
+                  : 'text-slate-400 hover:text-slate-200'
               }`}
             >
               <KeyRound size={13} />
@@ -156,13 +156,13 @@ function LoginForm() {
                 {/* 1. Headquarters View */}
                 <div
                   onClick={() => !isLoggingIn && handlePersonaLogin(PRESET_PERSONAS[0], '/map')}
-                  className="p-4 bg-[#070D0F] hover:bg-[#0E1A1E] border border-slate-800 hover:border-[#38BDF8]/60 rounded-xl cursor-pointer transition-all flex flex-col justify-between space-y-3 group shadow-md"
+                  className="p-4 bg-[#080E11] hover:bg-[#0E1A1E] border border-[#1C2C35] hover:border-[#38BDF8]/60 rounded-xl cursor-pointer transition-all flex flex-col justify-between space-y-3 group shadow-md"
                 >
                   <div className="flex items-start justify-between">
                     <div className="w-10 h-10 rounded-xl bg-[#0D5C75]/25 border border-[#38BDF8]/40 flex items-center justify-center text-xl">
                       🏢
                     </div>
-                    <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 text-slate-300">
+                    <span className="text-xs font-medium px-2 py-0.5 rounded bg-[#111B21]/80 border border-[#1C2C35]/60 text-slate-300">
                       Office / HQ
                     </span>
                   </div>
@@ -176,7 +176,7 @@ function LoginForm() {
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-[#38BDF8] font-medium">
+                  <div className="pt-2 border-t border-[#1C2C35]/80 flex items-center justify-between text-xs text-[#38BDF8] font-medium">
                     <span>Enter Headquarters</span>
                     <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </div>
@@ -185,13 +185,13 @@ function LoginForm() {
                 {/* 2. Rig Floor View */}
                 <div
                   onClick={() => !isLoggingIn && handlePersonaLogin(PRESET_PERSONAS[2], '/doghouse')}
-                  className="p-4 bg-[#070D0F] hover:bg-[#0E1A1E] border border-slate-800 hover:border-amber-500/60 rounded-xl cursor-pointer transition-all flex flex-col justify-between space-y-3 group shadow-md"
+                  className="p-4 bg-[#080E11] hover:bg-[#0E1A1E] border border-[#1C2C35] hover:border-amber-500/60 rounded-xl cursor-pointer transition-all flex flex-col justify-between space-y-3 group shadow-md"
                 >
                   <div className="flex items-start justify-between">
                     <div className="w-10 h-10 rounded-xl bg-amber-950/30 border border-amber-600/40 flex items-center justify-center text-xl">
                       🛢️
                     </div>
-                    <span className="text-[10px] font-medium px-2 py-0.5 rounded bg-slate-800/80 border border-slate-700/60 text-amber-300">
+                    <span className="text-xs font-medium px-2 py-0.5 rounded bg-[#111B21]/80 border border-[#1C2C35]/60 text-amber-300">
                       Rig Floor
                     </span>
                   </div>
@@ -205,14 +205,14 @@ function LoginForm() {
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t border-slate-800/80 flex items-center justify-between text-xs text-amber-400 font-medium">
+                  <div className="pt-2 border-t border-[#1C2C35]/80 flex items-center justify-between text-xs text-amber-400 font-medium">
                     <span>Open Rig Terminal</span>
                     <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
                   </div>
                 </div>
               </div>
 
-              <div className="p-2.5 bg-slate-900/60 border border-slate-800 rounded-lg text-[11px] text-slate-400 text-center">
+              <div className="p-2.5 bg-slate-900/60 border border-[#1C2C35] rounded-lg text-[11px] text-slate-400 text-center">
                 <span>You can seamlessly switch between Headquarters and Rig Floor views at any time inside the app.</span>
               </div>
             </div>
@@ -222,7 +222,7 @@ function LoginForm() {
           {activeTab === 'credentials' && (
             <form onSubmit={handleCredentialsSubmit} className="space-y-4 font-sans">
               <div className="space-y-1.5">
-                <label className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">
+                <label className="text-slate-400 text-xs uppercase font-bold tracking-wider">
                   Employee ID or Email:
                 </label>
                 <input
@@ -231,12 +231,12 @@ function LoginForm() {
                   value={badgeInput}
                   onChange={(e) => setBadgeInput(e.target.value)}
                   placeholder="e.g. p.saikia@oilindia.in"
-                  className="w-full px-3.5 py-2.5 rounded-lg bg-[#070D0F] border border-slate-700 text-white focus:outline-none focus:border-cyan-500 text-xs font-sans"
+                  className="w-full px-3.5 py-2.5 rounded-lg bg-[#080E11] border border-[#1C2C35] text-white focus:outline-none focus:border-cyan-500 text-xs font-sans"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">
+                <label className="text-slate-400 text-xs uppercase font-bold tracking-wider">
                   Password:
                 </label>
                 <input
@@ -245,18 +245,18 @@ function LoginForm() {
                   value={passwordInput}
                   onChange={(e) => setPasswordInput(e.target.value)}
                   placeholder="••••••••••••"
-                  className="w-full px-3.5 py-2.5 rounded-lg bg-[#070D0F] border border-slate-700 text-white focus:outline-none focus:border-cyan-500 text-xs font-sans"
+                  className="w-full px-3.5 py-2.5 rounded-lg bg-[#080E11] border border-[#1C2C35] text-white focus:outline-none focus:border-cyan-500 text-xs font-sans"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-slate-400 text-[10px] uppercase font-bold tracking-wider">
+                <label className="text-slate-400 text-xs uppercase font-bold tracking-wider">
                   Field / Operational Base:
                 </label>
                 <select
                   value={selectedField}
                   onChange={(e) => setSelectedField(e.target.value)}
-                  className="w-full px-3.5 py-2.5 rounded-lg bg-[#070D0F] border border-slate-700 text-white focus:outline-none focus:border-cyan-500 text-xs font-sans"
+                  className="w-full px-3.5 py-2.5 rounded-lg bg-[#080E11] border border-[#1C2C35] text-white focus:outline-none focus:border-cyan-500 text-xs font-sans"
                 >
                   <option value="Moran Asset (Upper Assam)">Moran Field (Upper Assam)</option>
                   <option value="Naharkatiya Deep Asset">Naharkatiya Field</option>
@@ -269,7 +269,7 @@ function LoginForm() {
               <button
                 type="submit"
                 disabled={isLoggingIn}
-                className="w-full py-2.5 bg-[#0D5C75] hover:bg-[#116F8C] text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-xs shadow-md disabled:opacity-50 font-sans cursor-pointer"
+                className="w-full py-2.5 bg-[#0D5C75] hover:bg-[#0F6D8A] text-white font-medium rounded-lg transition-colors flex items-center justify-center gap-2 text-xs shadow-md disabled:opacity-50 font-sans cursor-pointer"
               >
                 <ShieldCheck size={15} />
                 <span>Sign In to Platform</span>
@@ -278,7 +278,7 @@ function LoginForm() {
           )}
 
           {/* Footer Security Badge */}
-          <div className="pt-3 border-t border-slate-800 text-[10px] text-slate-400 text-center space-y-0.5 font-sans">
+          <div className="pt-3 border-t border-[#1C2C35] text-xs text-slate-400 text-center space-y-0.5 font-sans">
             <p>Protected by Oil India Internal Security Protocols</p>
             <p className="text-slate-500">100% Private Network · Subsurface data stays securely on premises</p>
           </div>
@@ -287,7 +287,7 @@ function LoginForm() {
       </main>
 
       {/* Bottom Footer */}
-      <footer className="relative z-10 w-full px-6 py-3 border-t border-slate-800/80 bg-[#0A1215]/80 text-[10px] font-sans text-slate-500 flex flex-wrap items-center justify-between">
+      <footer className="relative z-10 w-full px-6 py-3 border-t border-[#1C2C35]/80 bg-[#0A1215]/80 text-xs font-sans text-slate-500 flex flex-wrap items-center justify-between">
         <span>© 2026 Oil India Limited · Operations Control Centre</span>
         <span className="font-medium text-slate-400">SRISHTI·AI Platform</span>
       </footer>
@@ -299,7 +299,7 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen bg-[#070D0F] flex items-center justify-center text-cyan-400 font-sans text-xs">
+      <div className="min-h-screen bg-[#080E11] flex items-center justify-center text-[#38BDF8] font-sans text-xs">
         Loading Sovereign Gateway…
       </div>
     }>

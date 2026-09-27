@@ -178,7 +178,7 @@ export default function WellPage() {
   if (loading && !data) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[50vh] text-xs text-slate-400 space-y-3">
-        <RefreshCw size={24} className="animate-spin text-cyan-400" />
+        <RefreshCw size={24} className="animate-spin text-[#38BDF8]" />
         <p className="text-slate-300">Loading well details ({params.id})…</p>
       </div>
     );
@@ -186,7 +186,7 @@ export default function WellPage() {
 
   if (error || !data) {
     return (
-      <div className="p-5 bg-[#050C10] border border-red-800 rounded-xl text-xs text-red-300 space-y-3 max-w-lg mx-auto my-8">
+      <div className="p-5 bg-[#0D1419] border border-red-800 rounded-xl text-xs text-red-300 space-y-3 max-w-lg mx-auto my-8">
         <div className="text-sm font-bold text-white flex items-center gap-2">
           <AlertTriangle className="text-red-400" size={16} />
           Could not load well details
@@ -195,13 +195,13 @@ export default function WellPage() {
         <div className="flex items-center gap-2">
           <button
             onClick={loadDossier}
-            className="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-white rounded-lg font-bold"
+            className="px-3 py-1.5 bg-[#111B21] hover:bg-[#1C2C35] text-white rounded-lg font-bold"
           >
             Retry
           </button>
           <Link
             href="/map"
-            className="px-3 py-1.5 bg-[#0D5C75] hover:bg-[#147695] text-white rounded-lg font-bold"
+            className="px-3 py-1.5 bg-[#0D5C75] hover:bg-[#0F6D8A] text-white rounded-lg font-bold"
           >
             Back to Map
           </Link>
@@ -260,11 +260,11 @@ export default function WellPage() {
     <div className="space-y-3 font-sans text-slate-100 min-h-full pb-8">
       
       {/* 1. Header Toolbar (Clean, Uncluttered) */}
-      <div className="flex flex-wrap items-center justify-between gap-2.5 p-3 bg-[#050C10] border-2 border-[#162D38] rounded-xl shadow-md">
+      <div className="flex flex-wrap items-center justify-between gap-2.5 p-3 bg-[#0D1419] border border-[#1C2C35] rounded-xl shadow-md">
         <div className="flex items-center gap-2.5">
           <Link
             href="/map"
-            className="px-2.5 py-1.5 rounded-lg bg-[#020507] border border-[#162D38] text-slate-300 hover:text-white transition-all flex items-center gap-1 text-xs font-semibold"
+            className="px-2.5 py-1.5 rounded-lg bg-[#0A1115] border border-[#1C2C35] text-slate-300 hover:text-white transition-all flex items-center gap-1 text-xs font-semibold"
             title="Back to Nearby Well Map"
           >
             <ArrowLeft size={13} />
@@ -273,13 +273,13 @@ export default function WellPage() {
 
           <div>
             <div className="flex items-center gap-2">
-              <span className={`w-2 h-2 rounded-full ${isActiveRigWell ? 'bg-cyan-400 animate-pulse' : 'bg-emerald-400'}`} />
+              <span className={`w-2 h-2 rounded-full ${isActiveRigWell ? 'bg-cyan-400 ' : 'bg-emerald-400'}`} />
               <h1 className="text-base font-bold text-white tracking-wide">
                 {well.name}
               </h1>
-              <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+              <span className={`px-2 py-0.5 rounded text-xs font-bold ${
                 isActiveRigWell 
-                  ? 'bg-cyan-950 text-cyan-300 border border-cyan-800' 
+                  ? 'bg-cyan-950 text-[#38BDF8] border border-cyan-800' 
                   : well.status === 'CRITICAL INCIDENT'
                   ? 'bg-red-950 text-red-300 border border-red-800'
                   : 'bg-emerald-950 text-emerald-300 border border-emerald-800'
@@ -302,16 +302,16 @@ export default function WellPage() {
               className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#07241A] hover:bg-[#0C3B2B] text-emerald-300 border border-emerald-700/80 rounded-lg text-xs font-semibold transition-all shadow-sm"
               title="Open Live Rig Floor Gauges & Doghouse"
             >
-              <Monitor size={12} className="text-emerald-400 animate-pulse" />
+              <Monitor size={12} className="text-emerald-400 " />
               <span>Rig Floor (Live)</span>
             </Link>
           ) : (
             <Link
               href="/well/MOR-29"
-              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#09222E] hover:bg-[#0E364A] text-cyan-300 border border-cyan-700/80 rounded-lg text-xs font-semibold transition-all shadow-sm"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 bg-[#111B21] hover:bg-[#1C2C35] text-[#38BDF8] border border-cyan-700/80 rounded-lg text-xs font-semibold transition-all shadow-sm"
               title="View Active Rig (MORAN-29)"
             >
-              <Activity size={12} className="text-cyan-400 animate-pulse" />
+              <Activity size={12} className="text-[#38BDF8] " />
               <span>View Active Rig (MOR-29)</span>
             </Link>
           )}
@@ -319,10 +319,10 @@ export default function WellPage() {
           <select
             value={params.id}
             onChange={(e) => router.push(`/well/${e.target.value}`)}
-            className="bg-[#020507] text-white text-xs font-medium border border-[#162D38] rounded-lg px-2.5 py-1.5 outline-none cursor-pointer"
+            className="bg-[#0A1115] text-white text-xs font-medium border border-[#1C2C35] rounded-lg px-2.5 py-1.5 outline-none cursor-pointer"
           >
             {allWells.map((w) => (
-              <option key={w.id} value={w.id} className="bg-[#050C10] text-white">
+              <option key={w.id} value={w.id} className="bg-[#0D1419] text-white">
                 {w.name} {w.id === 'MOR-29' ? '★ (Active Rig)' : `· ${w.field}`}
               </option>
             ))}
@@ -334,29 +334,29 @@ export default function WellPage() {
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-2.5 font-sans">
         
         {/* Card 1: Depth */}
-        <div className={`p-3 bg-[#050C10] border-2 border-[#162D38] rounded-xl space-y-1 shadow-sm ${
+        <div className={`p-3 bg-[#0D1419] border border-[#1C2C35] rounded-xl space-y-1 shadow-sm ${
           isActiveRigWell ? 'border-t-2 border-t-cyan-400' : 'border-t-2 border-t-emerald-400'
         }`}>
-          <div className="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">
+          <div className="flex justify-between items-center text-xs font-bold text-slate-400 uppercase">
             <span>{isActiveRigWell ? 'CURRENT DEPTH' : 'FINAL DRILLED DEPTH'}</span>
-            <span className={`font-mono ${isActiveRigWell ? 'text-cyan-300' : 'text-emerald-400'}`}>
+            <span className={`font-mono ${isActiveRigWell ? 'text-[#38BDF8]' : 'text-emerald-400'}`}>
               {isActiveRigWell ? `${progressPct}%` : '✓ 100%'}
             </span>
           </div>
-          <div className={`text-xl font-bold font-mono ${isActiveRigWell ? 'text-cyan-300' : 'text-emerald-300'}`}>
+          <div className={`text-xl font-bold font-mono ${isActiveRigWell ? 'text-[#38BDF8]' : 'text-emerald-300'}`}>
             {currentWellDepth.toFixed(0)} <span className="text-xs text-slate-400 font-sans font-normal">meters</span>
           </div>
-          <div className="text-[10px] text-slate-400">
+          <div className="text-xs text-slate-400">
             {isActiveRigWell ? `Target: ${targetDepth}m` : 'Completed to target'}
           </div>
         </div>
 
         {/* Card 2: Delays / Downtime */}
-        <div className="p-3 bg-[#050C10] border-2 border-[#162D38] border-t-2 border-t-amber-400 rounded-xl space-y-1 shadow-sm">
-          <div className="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase">
+        <div className="p-3 bg-[#0D1419] border border-[#1C2C35] border-t-2 border-t-amber-400 rounded-xl space-y-1 shadow-sm">
+          <div className="flex justify-between items-center text-xs font-bold text-slate-400 uppercase">
             <span>TIME DELAYED</span>
             {totalFinancialCost > 0 && (
-              <span className="text-amber-400 font-bold font-mono text-[10px]">
+              <span className="text-amber-400 font-bold font-mono text-xs">
                 {formatCostInr(totalFinancialCost)}
               </span>
             )}
@@ -364,42 +364,42 @@ export default function WellPage() {
           <div className="text-xl font-bold font-mono text-amber-300">
             {totalNptHours > 24 ? `${Math.round(totalNptHours / 24)} days lost` : `${totalNptHours} hours`}
           </div>
-          <div className="text-[10px] text-slate-400">
+          <div className="text-xs text-slate-400">
             {drilling_events.length > 0 ? `${drilling_events.length} incident logged` : 'No major delays'}
           </div>
         </div>
 
         {/* Card 3: Mud Weight */}
-        <div className="p-3 bg-[#050C10] border-2 border-[#162D38] border-t-2 border-t-purple-400 rounded-xl space-y-1 shadow-sm">
-          <div className="text-[10px] font-bold text-slate-400 uppercase">DRILLING MUD</div>
+        <div className="p-3 bg-[#0D1419] border border-[#1C2C35] border-t-2 border-t-purple-400 rounded-xl space-y-1 shadow-sm">
+          <div className="text-xs font-bold text-slate-400 uppercase">DRILLING MUD</div>
           <div className="text-xl font-bold font-mono text-purple-300">
             {well.mud_weight_ppg ?? 10.8} <span className="text-xs text-slate-400 font-sans font-normal">ppg</span>
           </div>
-          <div className="text-[10px] text-slate-400">
+          <div className="text-xs text-slate-400">
             Casing shoe at {intermediateShoe}m
           </div>
         </div>
 
         {/* Card 4: Safety / Hazard Summary */}
-        <div className="p-3 bg-[#050C10] border-2 border-[#162D38] border-t-2 border-t-red-500 rounded-xl space-y-1 shadow-sm">
-          <div className="text-[10px] font-bold text-slate-400 uppercase">PAST INCIDENT</div>
+        <div className="p-3 bg-[#0D1419] border border-[#1C2C35] border-t-2 border-t-red-500 rounded-xl space-y-1 shadow-sm">
+          <div className="text-xs font-bold text-slate-400 uppercase">PAST INCIDENT</div>
           <div className="text-xl font-bold font-mono text-red-400">
             {drilling_events.length || (well.primary_hazard ? 1 : 0)} <span className="text-xs text-slate-400 font-sans font-normal">recorded</span>
           </div>
-          <div className="text-[10px] text-slate-400 truncate">
+          <div className="text-xs text-slate-400 truncate">
             {drilling_events[0] ? getSimpleTitle(drilling_events[0].event_type) : (well.primary_hazard ? well.primary_hazard.split('(')[0] : 'Normal drilling')}
           </div>
         </div>
       </div>
 
       {/* 3. Simple Tab Navigation */}
-      <div className="flex items-center gap-1.5 border-b border-[#162D38] pb-1.5 text-xs">
+      <div className="flex items-center gap-1.5 border-b border-[#1C2C35] pb-1.5 text-xs">
         <button
           onClick={() => setActiveTab('schematic')}
           className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
             activeTab === 'schematic'
-              ? 'bg-[#0D5C75] text-white shadow-sm'
-              : 'bg-[#050C10] text-slate-400 hover:text-white border border-[#162D38]'
+              ? 'bg-[#0D5C75]/15 text-[#38BDF8] border border-[#0D5C75]/40 font-semibold'
+              : 'text-slate-400 hover:text-slate-200 border border-transparent'
           }`}
         >
           Well Schematic
@@ -409,8 +409,8 @@ export default function WellPage() {
           onClick={() => setActiveTab('timeline')}
           className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
             activeTab === 'timeline'
-              ? 'bg-[#0D5C75] text-white shadow-sm'
-              : 'bg-[#050C10] text-slate-400 hover:text-white border border-[#162D38]'
+              ? 'bg-[#0D5C75]/15 text-[#38BDF8] border border-[#0D5C75]/40 font-semibold'
+              : 'text-slate-400 hover:text-slate-200 border border-transparent'
           }`}
         >
           Timeline History
@@ -420,8 +420,8 @@ export default function WellPage() {
           onClick={() => setActiveTab('formations')}
           className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
             activeTab === 'formations'
-              ? 'bg-[#0D5C75] text-white shadow-sm'
-              : 'bg-[#050C10] text-slate-400 hover:text-white border border-[#162D38]'
+              ? 'bg-[#0D5C75]/15 text-[#38BDF8] border border-[#0D5C75]/40 font-semibold'
+              : 'text-slate-400 hover:text-slate-200 border border-transparent'
           }`}
         >
           Rock Layers ({formation_tops.length})
@@ -431,8 +431,8 @@ export default function WellPage() {
           onClick={() => setActiveTab('lessons')}
           className={`px-3 py-1.5 rounded-lg font-semibold transition-all cursor-pointer ${
             activeTab === 'lessons'
-              ? 'bg-[#0D5C75] text-white shadow-sm'
-              : 'bg-[#050C10] text-slate-400 hover:text-white border border-[#162D38]'
+              ? 'bg-[#0D5C75]/15 text-[#38BDF8] border border-[#0D5C75]/40 font-semibold'
+              : 'text-slate-400 hover:text-slate-200 border border-transparent'
           }`}
         >
           Lessons for Live Rig
@@ -441,8 +441,8 @@ export default function WellPage() {
 
       {/* 4. Tab 1: Simplified Historical Timeline */}
       {activeTab === 'timeline' && (
-        <div className="bg-[#050C10] border-2 border-[#162D38] rounded-xl p-4 shadow-lg space-y-3.5">
-          <div className="border-b border-[#162D38] pb-2">
+        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 shadow-sm space-y-3.5">
+          <div className="border-b border-[#1C2C35] pb-2">
             <h3 className="text-sm font-bold text-white">
               Drilling Chronicle: What Happened at {well.name}
             </h3>
@@ -456,10 +456,10 @@ export default function WellPage() {
             
             {/* Step 1: Start */}
             <div className="relative">
-              <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#020507] border-2 border-cyan-400" />
-              <div className="bg-[#020507] border border-[#162D38] rounded-lg p-2.5 text-xs space-y-1">
-                <div className="flex justify-between items-center text-[10px]">
-                  <span className="text-cyan-300 font-bold">1. DRILLING BEGAN</span>
+              <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#0A1115] border border-cyan-400" />
+              <div className="bg-[#0A1115] border border-[#1C2C35] rounded-lg p-2.5 text-xs space-y-1">
+                <div className="flex justify-between items-center text-xs">
+                  <span className="text-[#38BDF8] font-bold">1. DRILLING BEGAN</span>
                   <span className="font-mono text-slate-500">Surface (0m)</span>
                 </div>
                 <p className="text-slate-300">
@@ -470,9 +470,9 @@ export default function WellPage() {
 
             {/* Step 2: Surface Pipe */}
             <div className="relative">
-              <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#020507] border-2 border-blue-400" />
-              <div className="bg-[#020507] border border-[#162D38] rounded-lg p-2.5 text-xs space-y-1">
-                <div className="flex justify-between items-center text-[10px]">
+              <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#0A1115] border border-blue-400" />
+              <div className="bg-[#0A1115] border border-[#1C2C35] rounded-lg p-2.5 text-xs space-y-1">
+                <div className="flex justify-between items-center text-xs">
                   <span className="text-blue-300 font-bold">2. SURFACE PIPE INSTALLED</span>
                   <span className="font-mono text-slate-500">{surfaceShoe}m depth</span>
                 </div>
@@ -487,14 +487,14 @@ export default function WellPage() {
               const { problem, solution } = simplifyIncident(event.event_type, event.description, event.mitigation);
               return (
                 <div key={event.id} className="relative">
-                  <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#020507] border-2 border-amber-400" />
-                  <div className="bg-[#020507] border-2 border-amber-800/80 rounded-lg p-3 text-xs space-y-2">
-                    <div className="flex justify-between items-center text-[10px]">
+                  <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#0A1115] border border-amber-400" />
+                  <div className="bg-[#0A1115] border border-amber-800/80 rounded-lg p-3 text-xs space-y-2">
+                    <div className="flex justify-between items-center text-xs">
                       <div className="flex items-center gap-1.5">
                         <span className="px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-bold">
                           ⚠️ {getSimpleTitle(event.event_type)}
                         </span>
-                        <span className="font-mono text-cyan-300 font-semibold">{event.depth_from_md_m}m depth</span>
+                        <span className="font-mono text-[#38BDF8] font-semibold">{event.depth_from_md_m}m depth</span>
                       </div>
                       {event.duration_hrs ? (
                         <span className="text-amber-400 font-semibold">
@@ -522,13 +522,13 @@ export default function WellPage() {
             {/* Fallback if no event array items */}
             {drilling_events.length === 0 && well.primary_hazard && (
               <div className="relative">
-                <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#020507] border-2 border-amber-400" />
-                <div className="bg-[#020507] border border-amber-800/80 rounded-lg p-3 text-xs space-y-1.5">
-                  <div className="flex justify-between items-center text-[10px]">
+                <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#0A1115] border border-amber-400" />
+                <div className="bg-[#0A1115] border border-amber-800/80 rounded-lg p-3 text-xs space-y-1.5">
+                  <div className="flex justify-between items-center text-xs">
                     <span className="px-1.5 py-0.5 rounded bg-amber-950 text-amber-300 border border-amber-800 font-bold">
                       ⚠️ RECORDED HAZARD
                     </span>
-                    <span className="font-mono text-cyan-300">{intermediateShoe}m depth</span>
+                    <span className="font-mono text-[#38BDF8]">{intermediateShoe}m depth</span>
                   </div>
                   <div>
                     <span className="text-amber-300 font-semibold">Issue: </span>
@@ -540,9 +540,9 @@ export default function WellPage() {
 
             {/* Step 4: Intermediate Pipe */}
             <div className="relative">
-              <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#020507] border-2 border-amber-400" />
-              <div className="bg-[#020507] border border-[#162D38] rounded-lg p-2.5 text-xs space-y-1">
-                <div className="flex justify-between items-center text-[10px]">
+              <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#0A1115] border border-amber-400" />
+              <div className="bg-[#0A1115] border border-[#1C2C35] rounded-lg p-2.5 text-xs space-y-1">
+                <div className="flex justify-between items-center text-xs">
                   <span className="text-amber-300 font-bold">4. INTERMEDIATE PIPE SET</span>
                   <span className="font-mono text-slate-500">{intermediateShoe}m depth</span>
                 </div>
@@ -554,9 +554,9 @@ export default function WellPage() {
 
             {/* Step 5: Finished */}
             <div className="relative">
-              <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#020507] border-2 border-emerald-400" />
-              <div className="bg-[#020507] border border-[#162D38] rounded-lg p-2.5 text-xs space-y-1">
-                <div className="flex justify-between items-center text-[10px]">
+              <div className="absolute -left-[23px] top-1.5 w-3 h-3 rounded-full bg-[#0A1115] border border-emerald-400" />
+              <div className="bg-[#0A1115] border border-[#1C2C35] rounded-lg p-2.5 text-xs space-y-1">
+                <div className="flex justify-between items-center text-xs">
                   <span className="text-emerald-400 font-bold">5. TOTAL DEPTH REACHED</span>
                   <span className="font-mono text-emerald-400">{targetDepth}m depth</span>
                 </div>
@@ -575,16 +575,16 @@ export default function WellPage() {
       {/* 5. Tab 2: Wellbore Schematic (Crisp & Simple) */}
       {activeTab === 'schematic' && (
         <div className="grid grid-cols-12 gap-3">
-          <div className="col-span-12 lg:col-span-5 bg-[#050C10] border-2 border-[#162D38] rounded-xl p-3 shadow-md flex flex-col">
-            <div className="flex items-center justify-between border-b border-[#162D38] pb-1.5 mb-2">
+          <div className="col-span-12 lg:col-span-5 bg-[#0D1419] border border-[#1C2C35] rounded-xl p-3 shadow-md flex flex-col">
+            <div className="flex items-center justify-between border-b border-[#1C2C35] pb-1.5 mb-2">
               <span className="font-bold text-white text-xs flex items-center gap-1.5">
-                <Anchor size={13} className="text-cyan-400" />
+                <Anchor size={13} className="text-[#38BDF8]" />
                 Well Cross-Section
               </span>
               <span className="text-[11px] text-slate-400 font-mono">0 – {Math.round(targetDepth)}m</span>
             </div>
 
-            <div className="relative w-full flex-1 min-h-[460px] bg-[#020507] border border-[#162D38] rounded-lg p-2 flex items-center justify-center overflow-hidden">
+            <div className="relative w-full flex-1 min-h-[460px] bg-[#0A1115] border border-[#1C2C35] rounded-lg p-2 flex items-center justify-center overflow-hidden">
               <svg viewBox="0 0 280 480" className="w-full h-full select-none max-h-[500px]">
                 <defs>
                   <linearGradient id="pipeConductor" x1="0" y1="0" x2="1" y2="0">
@@ -673,29 +673,29 @@ export default function WellPage() {
           </div>
 
           {/* Simple Pipe List */}
-          <div className="col-span-12 lg:col-span-7 bg-[#050C10] border-2 border-[#162D38] rounded-xl p-4 shadow-md space-y-2.5">
-            <h3 className="text-xs font-bold text-white border-b border-[#162D38] pb-1.5">
+          <div className="col-span-12 lg:col-span-7 bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 shadow-md space-y-2.5">
+            <h3 className="text-xs font-bold text-white border-b border-[#1C2C35] pb-1.5">
               Steel Casing Installed in this Well
             </h3>
 
             <div className="space-y-2 text-xs">
-              <div className="p-2.5 rounded-lg bg-[#020507] border border-[#162D38] flex justify-between items-center">
+              <div className="p-2.5 rounded-lg bg-[#0A1115] border border-[#1C2C35] flex justify-between items-center">
                 <div>
                   <div className="font-bold text-slate-200">20" Conductor Pipe</div>
                   <div className="text-[11px] text-slate-400">Protects surface ground from washouts</div>
                 </div>
-                <span className="text-cyan-300 font-mono font-bold">0 – {conductorShoe}m</span>
+                <span className="text-[#38BDF8] font-mono font-bold">0 – {conductorShoe}m</span>
               </div>
 
-              <div className="p-2.5 rounded-lg bg-[#020507] border border-[#162D38] flex justify-between items-center">
+              <div className="p-2.5 rounded-lg bg-[#0A1115] border border-[#1C2C35] flex justify-between items-center">
                 <div>
                   <div className="font-bold text-slate-200">13-3/8" Surface Pipe</div>
                   <div className="text-[11px] text-slate-400">Protects drinking water aquifers</div>
                 </div>
-                <span className="text-cyan-300 font-mono font-bold">0 – {surfaceShoe}m</span>
+                <span className="text-[#38BDF8] font-mono font-bold">0 – {surfaceShoe}m</span>
               </div>
 
-              <div className="p-2.5 rounded-lg bg-[#020507] border border-[#162D38] flex justify-between items-center">
+              <div className="p-2.5 rounded-lg bg-[#0A1115] border border-[#1C2C35] flex justify-between items-center">
                 <div>
                   <div className="font-bold text-slate-200">9-5/8" Intermediate Pipe</div>
                   <div className="text-[11px] text-slate-400">Seals sticky clay and leak zones</div>
@@ -703,7 +703,7 @@ export default function WellPage() {
                 <span className="text-amber-300 font-mono font-bold">0 – {intermediateShoe}m</span>
               </div>
 
-              <div className="p-2.5 rounded-lg bg-[#020507] border border-[#162D38] flex justify-between items-center">
+              <div className="p-2.5 rounded-lg bg-[#0A1115] border border-[#1C2C35] flex justify-between items-center">
                 <div>
                   <div className="font-bold text-slate-200">7" Production Liner</div>
                   <div className="text-[11px] text-slate-400">Protects deep target oil and gas zone</div>
@@ -717,8 +717,8 @@ export default function WellPage() {
 
       {/* 6. Tab 3: Rock Layers (Simple & Compact) */}
       {activeTab === 'formations' && (
-        <div className="bg-[#050C10] border-2 border-[#162D38] rounded-xl p-4 shadow-md space-y-3">
-          <div className="border-b border-[#162D38] pb-1.5 flex justify-between items-center">
+        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 shadow-md space-y-3">
+          <div className="border-b border-[#1C2C35] pb-1.5 flex justify-between items-center">
             <h3 className="text-xs font-bold text-white">
               Underground Rock Layers at {well.name}
             </h3>
@@ -737,8 +737,8 @@ export default function WellPage() {
                     isCurrent
                       ? 'bg-cyan-950/40 border-cyan-400 shadow-sm'
                       : isPenetrated
-                      ? 'bg-[#020507] border-[#162D38]'
-                      : 'bg-[#020507]/40 border-[#101C24] opacity-50'
+                      ? 'bg-[#0A1115] border-[#1C2C35]'
+                      : 'bg-[#0A1115]/40 border-[#101C24] opacity-50'
                   }`}
                 >
                   <div className="flex items-center gap-2">
@@ -747,7 +747,7 @@ export default function WellPage() {
                       {item.formations.canonical_name}
                     </span>
                     {isCurrent && (
-                      <span className="px-1.5 py-0.5 rounded bg-cyan-400 text-black text-[9px] font-bold">
+                      <span className="px-1.5 py-0.5 rounded bg-cyan-400 text-black text-[11px] font-bold">
                         Drilling Now
                       </span>
                     )}
@@ -765,8 +765,8 @@ export default function WellPage() {
 
       {/* 7. Tab 4: Direct Lessons / Active Rig Safeguards */}
       {activeTab === 'lessons' && (
-        <div className="bg-[#050C10] border-2 border-[#162D38] rounded-xl p-4 shadow-md space-y-3">
-          <div className="border-b border-[#162D38] pb-1.5 flex justify-between items-center">
+        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 shadow-md space-y-3">
+          <div className="border-b border-[#1C2C35] pb-1.5 flex justify-between items-center">
             <h3 className="text-xs font-bold text-white">
               {isActiveRigWell
                 ? 'Active Drilling Safeguards & Advisory (MORAN-29)'
@@ -777,14 +777,14 @@ export default function WellPage() {
                 href="/doghouse"
                 className="flex items-center gap-1.5 text-[11px] text-emerald-400 hover:text-emerald-300 font-semibold px-2 py-1 rounded bg-[#07241A] border border-emerald-700/80"
               >
-                <Monitor size={11} className="animate-pulse" />
+                <Monitor size={11} className="" />
                 <span>Open Rig Floor View</span>
                 <ExternalLink size={11} />
               </Link>
             ) : (
               <Link
                 href="/well/MOR-29"
-                className="flex items-center gap-1 text-[11px] text-cyan-400 hover:text-cyan-300 font-semibold px-2 py-1 rounded bg-[#09222E] border border-cyan-700/80"
+                className="flex items-center gap-1 text-[11px] text-[#38BDF8] hover:text-[#38BDF8] font-semibold px-2 py-1 rounded bg-[#111B21] border border-cyan-700/80"
               >
                 <span>Switch to Active Rig (MOR-29)</span>
                 <ExternalLink size={11} />
@@ -793,7 +793,7 @@ export default function WellPage() {
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
-            <div className="p-3 rounded-lg bg-[#020507] border border-[#162D38] space-y-1">
+            <div className="p-3 rounded-lg bg-[#0A1115] border border-[#1C2C35] space-y-1">
               <div className="font-bold text-amber-300">
                 1. Gas Pressure Warning
               </div>
@@ -802,8 +802,8 @@ export default function WellPage() {
               </p>
             </div>
 
-            <div className="p-3 rounded-lg bg-[#020507] border border-[#162D38] space-y-1">
-              <div className="font-bold text-cyan-300">
+            <div className="p-3 rounded-lg bg-[#0A1115] border border-[#1C2C35] space-y-1">
+              <div className="font-bold text-[#38BDF8]">
                 2. Avoid Pipe Sticking
               </div>
               <p className="text-slate-300 text-[11px] leading-relaxed">
