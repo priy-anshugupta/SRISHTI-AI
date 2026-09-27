@@ -67,16 +67,16 @@ export default function PlanAWellDashboard() {
   });
 
   return (
-    <div className="min-h-full bg-[#070D0F] text-slate-100 font-sans space-y-6">
+    <div className="min-h-full bg-[#080E11] text-slate-100 font-sans space-y-6">
       
       {/* 1. Dashboard Title Row & Action Group */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <h1 className="text-2xl font-bold text-white tracking-tight">
+            <h1 className="text-lg font-semibold text-white tracking-tight">
               Offset Intelligence Dashboard
             </h1>
-            <span className="px-2 py-0.5 rounded-full bg-[#0D5C75]/25 border border-[#0D5C75]/60 text-[10px] font-mono font-bold text-[#38BDF8]">
+            <span className="px-2 py-0.5 rounded-full bg-[#0D5C75]/25 border border-[#0D5C75]/60 text-xs font-mono font-bold text-[#38BDF8]">
               OISD-STD-174 AI
             </span>
           </div>
@@ -89,15 +89,15 @@ export default function PlanAWellDashboard() {
         <div className="flex flex-wrap items-center gap-2.5">
           <button 
             onClick={() => setShowSwarmModal(true)}
-            className="flex items-center gap-2 px-3.5 py-2 bg-[#0C1518] hover:bg-[#121F24] border border-slate-700 hover:border-[#38BDF8] text-[#38BDF8] rounded-md text-xs font-semibold transition-all shadow-sm"
+            className="flex items-center gap-2 px-3.5 py-2 bg-[#0D1419] hover:bg-[#111B21] border border-[#1C2C35] hover:border-[#38BDF8] text-[#38BDF8] rounded-md text-xs font-semibold transition-all shadow-sm"
           >
-            <span className="w-2 h-2 rounded-full bg-[#38BDF8] animate-pulse" />
+            <span className="w-2 h-2 rounded-full bg-[#38BDF8] " />
             <span>Inspect 8-Agent Swarm Trace</span>
           </button>
 
           <Link
             href="/report"
-            className="flex items-center gap-1.5 px-3 py-2 bg-[#0e191d] hover:bg-[#15252c] border border-slate-700 text-slate-200 text-xs font-semibold rounded-md transition-all"
+            className="flex items-center gap-1.5 px-3 py-2 bg-[#111B21] hover:bg-[#1C2C35] border border-[#1C2C35] text-slate-200 text-xs font-semibold rounded-md transition-all"
           >
             <FileDown size={13} className="text-[#38BDF8]" />
             <span>Pre-Drill Safety Brief (PDF)</span>
@@ -106,7 +106,7 @@ export default function PlanAWellDashboard() {
           <button
             onClick={fetchOffsets}
             disabled={loading}
-            className="p-2 bg-[#0e191d] hover:bg-[#15252c] border border-slate-700 text-slate-300 hover:text-white rounded-md transition-colors"
+            className="p-2 bg-[#111B21] hover:bg-[#1C2C35] border border-[#1C2C35] text-slate-300 hover:text-white rounded-md transition-colors"
             title="Refresh Data"
           >
             <RefreshCw size={14} className={loading ? 'animate-spin' : ''} />
@@ -114,7 +114,7 @@ export default function PlanAWellDashboard() {
 
           <Link
             href="/review"
-            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0D5C75] hover:bg-[#0284c7] text-white text-xs font-bold rounded-md transition-all shadow-[0_0_15px_rgba(13,92,117,0.4)]"
+            className="flex items-center gap-1.5 px-3.5 py-2 bg-[#0D5C75] hover:bg-[#0F6D8A] text-white text-xs font-bold rounded-md transition-all "
           >
             <Plus size={14} />
             <span>Ingest Observation</span>
@@ -125,15 +125,15 @@ export default function PlanAWellDashboard() {
       {/* 2. Five Metric Summary KPI Cards */}
       <div className="grid grid-cols-2 md:grid-cols-5 gap-3.5">
         {/* Card 1: Total Ingested */}
-        <div className="p-4 bg-[#0B1316] border border-slate-800 border-t-2 border-t-slate-500 rounded-lg space-y-1 shadow-sm">
-          <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">TOTAL INGESTED</div>
+        <div className="p-4 bg-[#0D1419] border border-[#1C2C35] border-t-2 border-t-slate-500 rounded-lg space-y-1 shadow-sm">
+          <div className="text-xs font-semibold text-slate-400 uppercase tracking-wider">TOTAL INGESTED</div>
           <div className="text-2xl font-bold font-mono tabular-nums text-white">553</div>
           <div className="text-[11px] text-slate-400">Across 10 Oil India Assets</div>
         </div>
 
         {/* Card 2: High Kick / Influx Precursors (Red) */}
-        <div className="p-4 bg-[#0B1316] border border-slate-800 border-t-2 border-t-red-500 rounded-lg space-y-1 shadow-sm">
-          <div className="text-[10px] font-semibold text-red-400 uppercase tracking-wider flex items-center gap-1">
+        <div className="p-4 bg-[#0D1419] border border-[#1C2C35] border-t-2 border-t-red-500 rounded-lg space-y-1 shadow-sm">
+          <div className="text-xs font-semibold text-red-400 uppercase tracking-wider flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-red-500" />
             KICK PRECURSORS
           </div>
@@ -142,8 +142,8 @@ export default function PlanAWellDashboard() {
         </div>
 
         {/* Card 3: Stuck Pipe / Loss Risk (Amber) */}
-        <div className="p-4 bg-[#0B1316] border border-slate-800 border-t-2 border-t-amber-500 rounded-lg space-y-1 shadow-sm">
-          <div className="text-[10px] font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-1">
+        <div className="p-4 bg-[#0D1419] border border-[#1C2C35] border-t-2 border-t-amber-500 rounded-lg space-y-1 shadow-sm">
+          <div className="text-xs font-semibold text-amber-400 uppercase tracking-wider flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-amber-500" />
             STUCK PIPE & LOSSES
           </div>
@@ -152,8 +152,8 @@ export default function PlanAWellDashboard() {
         </div>
 
         {/* Card 4: Normal Hole Conditions (Green) */}
-        <div className="p-4 bg-[#0B1316] border border-slate-800 border-t-2 border-t-emerald-500 rounded-lg space-y-1 shadow-sm">
-          <div className="text-[10px] font-semibold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
+        <div className="p-4 bg-[#0D1419] border border-[#1C2C35] border-t-2 border-t-emerald-500 rounded-lg space-y-1 shadow-sm">
+          <div className="text-xs font-semibold text-emerald-400 uppercase tracking-wider flex items-center gap-1">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
             STABLE INTERVALS
           </div>
@@ -162,8 +162,8 @@ export default function PlanAWellDashboard() {
         </div>
 
         {/* Card 5: Neural Latency (Teal) */}
-        <div className="p-4 bg-[#0B1316] border border-slate-800 border-t-2 border-t-[#38BDF8] rounded-lg space-y-1 shadow-sm col-span-2 md:col-span-1">
-          <div className="text-[10px] font-semibold text-[#38BDF8] uppercase tracking-wider">NEURAL LATENCY</div>
+        <div className="p-4 bg-[#0D1419] border border-[#1C2C35] border-t-2 border-t-[#38BDF8] rounded-lg space-y-1 shadow-sm col-span-2 md:col-span-1">
+          <div className="text-xs font-semibold text-[#38BDF8] uppercase tracking-wider">NEURAL LATENCY</div>
           <div className="text-2xl font-bold font-mono tabular-nums text-white">&lt; 4.5s</div>
           <div className="text-[11px] text-slate-400">7-Stage Pipeline Execution</div>
         </div>
@@ -172,22 +172,22 @@ export default function PlanAWellDashboard() {
       {/* 3. Filter Bar & Search Input */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pt-2">
         {/* Filter Pills */}
-        <div className="flex items-center gap-1.5 bg-[#0B1316] border border-slate-800 p-1 rounded-md text-xs">
+        <div className="flex items-center gap-1.5 bg-[#0D1419] border border-[#1C2C35] p-1 rounded-md text-xs">
           <button
             onClick={() => setFilterMode('ALL')}
-            className={`px-3 py-1 rounded transition-colors font-medium ${filterMode === 'ALL' ? 'bg-[#0D5C75] text-white font-bold' : 'text-slate-400 hover:text-white'}`}
+            className={`px-3 py-1 rounded transition-colors font-medium ${filterMode === 'ALL' ? 'bg-[#0D5C75]/15 text-[#38BDF8] border border-[#0D5C75]/40 font-semibold' : 'text-slate-400 hover:text-slate-200'}`}
           >
             All Incidents
           </button>
           <button
             onClick={() => setFilterMode('CRITICAL')}
-            className={`px-3 py-1 rounded transition-colors font-medium ${filterMode === 'CRITICAL' ? 'bg-[#0D5C75] text-white font-bold' : 'text-slate-400 hover:text-white'}`}
+            className={`px-3 py-1 rounded transition-colors font-medium ${filterMode === 'CRITICAL' ? 'bg-[#0D5C75]/15 text-[#38BDF8] border border-[#0D5C75]/40 font-semibold' : 'text-slate-400 hover:text-slate-200'}`}
           >
             Kick Precursors
           </button>
           <button
             onClick={() => setFilterMode('HIGH')}
-            className={`px-3 py-1 rounded transition-colors font-medium ${filterMode === 'HIGH' ? 'bg-[#0D5C75] text-white font-bold' : 'text-slate-400 hover:text-white'}`}
+            className={`px-3 py-1 rounded transition-colors font-medium ${filterMode === 'HIGH' ? 'bg-[#0D5C75]/15 text-[#38BDF8] border border-[#0D5C75]/40 font-semibold' : 'text-slate-400 hover:text-slate-200'}`}
           >
             High Risk
           </button>
@@ -201,15 +201,15 @@ export default function PlanAWellDashboard() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search equipment, location, hazard..."
-            className="w-full bg-[#0B1316] border border-slate-800 rounded-md pl-9 pr-3 py-1.5 text-xs text-slate-200 outline-none focus:border-[#0D5C75] transition-colors"
+            className="w-full bg-[#0D1419] border border-[#1C2C35] rounded-md pl-9 pr-3 py-1.5 text-xs text-slate-200 outline-none focus:border-[#0D5C75] transition-colors"
           />
         </div>
       </div>
 
       {/* 4. Enterprise Data Table */}
-      <div className="border border-slate-800 rounded-lg overflow-hidden bg-[#0B1316] shadow-md">
+      <div className="border border-[#1C2C35] rounded-lg overflow-hidden bg-[#0D1419] shadow-md">
         <table className="w-full text-left text-xs font-sans">
-          <thead className="bg-[#091013] text-slate-400 uppercase text-[10px] font-semibold border-b border-slate-800 tracking-wider">
+          <thead className="bg-[#0A1115] text-slate-400 uppercase text-xs font-semibold border-b border-[#1C2C35] tracking-wider">
             <tr>
               <th className="py-3 px-4 w-10">#</th>
               <th className="py-3 px-4">DRILLING INCIDENT NARRATIVE</th>
@@ -223,7 +223,7 @@ export default function PlanAWellDashboard() {
           </thead>
           <tbody className="divide-y divide-slate-800/60 font-sans">
             {filtered.map((w, idx) => (
-              <tr key={w.id} className="hover:bg-[#0e181c] transition-colors group">
+              <tr key={w.id} className="hover:bg-[#111B21] transition-colors group">
                 <td className="py-3.5 px-4 text-slate-400 font-bold font-mono tabular-nums">{idx + 1}</td>
                 
                 {/* Narrative column with ID */}
@@ -231,7 +231,7 @@ export default function PlanAWellDashboard() {
                   <div className="text-xs text-white font-sans font-medium leading-snug">
                     {w.primary_hazard || "Standard drilling operations logged. Normal hole conditions across interval."}
                   </div>
-                  <div className="text-[10px] text-slate-500 font-mono mt-0.5">
+                  <div className="text-xs text-slate-500 font-mono mt-0.5">
                     ID: {w.id.toLowerCase()}-offset-cluster-{w.distance_km}km
                   </div>
                 </td>
@@ -250,7 +250,7 @@ export default function PlanAWellDashboard() {
 
                 {/* OISD Rule */}
                 <td className="py-3.5 px-4">
-                  <span className="px-2 py-0.5 rounded bg-[#101b1f] border border-slate-700 text-slate-300 text-[11px] font-medium">
+                  <span className="px-2 py-0.5 rounded bg-[#111B21] border border-[#1C2C35] text-slate-300 text-[11px] font-medium">
                     {w.incident_count > 0 ? 'OISD-174 Sec 6.3 (BOP Shut-in)' : 'OISD-174 Sec 4.1 (MW Margin)'}
                   </span>
                 </td>
@@ -263,8 +263,8 @@ export default function PlanAWellDashboard() {
 
                 {/* Status Pill */}
                 <td className="py-3.5 px-4">
-                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold ${
-                    w.incident_count > 0 ? 'bg-red-950/50 text-red-400 border border-red-800/50' : 'bg-slate-800 text-slate-400'
+                  <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs font-bold ${
+                    w.incident_count > 0 ? 'bg-red-950/50 text-red-400 border border-red-800/50' : 'bg-[#111B21] text-slate-400'
                   }`}>
                     <span className={`w-1.5 h-1.5 rounded-full ${w.incident_count > 0 ? 'bg-red-500' : 'bg-slate-500'}`} />
                     {w.incident_count > 0 ? 'KICK ALERT' : 'NORMAL'}
@@ -291,8 +291,8 @@ export default function PlanAWellDashboard() {
       {/* 5. 8-Agent Swarm Modal */}
       {showSwarmModal && (
         <div className="fixed inset-0 z-50 bg-black/85 backdrop-blur-sm flex items-center justify-center p-4">
-          <div className="bg-[#0e171a] border border-slate-700 rounded-xl max-w-2xl w-full p-6 space-y-4 shadow-2xl font-sans">
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+          <div className="bg-[#0D1419] border border-[#1C2C35] rounded-xl max-w-2xl w-full p-6 space-y-4 shadow-sm font-sans">
+            <div className="flex items-center justify-between border-b border-[#1C2C35] pb-3">
               <div className="flex items-center gap-2">
                 <Brain size={18} className="text-[#38BDF8]" />
                 <h3 className="text-sm font-bold text-white">8-AGENT NEURAL SWARM TRACE (ACTIVE EXECUTION)</h3>
@@ -311,7 +311,7 @@ export default function PlanAWellDashboard() {
                 { name: '7. AlertAgent', latency: '16ms', status: 'COMPLETED', task: 'Triggered OISD-STD-174 well control lookahead' },
                 { name: '8. ReportAgent', latency: '30ms', status: 'COMPLETED', task: 'Compiled pre-spud briefing export' },
               ].map((a, i) => (
-                <div key={i} className="p-2.5 bg-[#070D0F] border border-slate-800 rounded flex items-center justify-between">
+                <div key={i} className="p-2.5 bg-[#080E11] border border-[#1C2C35] rounded flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <span className="w-1.5 h-1.5 rounded-full bg-[#10B981]" />
                     <span className="font-bold text-white">{a.name}</span>
@@ -324,7 +324,7 @@ export default function PlanAWellDashboard() {
 
             <button
               onClick={() => setShowSwarmModal(false)}
-              className="w-full py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded transition-colors"
+              className="w-full py-2 bg-[#111B21] hover:bg-[#1C2C35] text-slate-200 text-xs font-semibold rounded transition-colors"
             >
               Close Trace
             </button>
