@@ -20,6 +20,11 @@ from backend.agents.tools import (
     tool_retrieve_evidence_citations
 )
 
+try:
+    from backend.agents.langgraph_pipeline import run_langgraph_pipeline, HAS_LANGGRAPH
+except ImportError:
+    HAS_LANGGRAPH = False
+
 logger = logging.getLogger(__name__)
 
 
@@ -303,6 +308,15 @@ class HybridAgentOrchestrator:
         Automatically falls back to deterministic rule engine if no API key or upon failure.
         Respects mode: 'cloud' vs 'edge' (Ollama / Air-Gap).
         """
+        # Attempt to run LangGraph if available and explicitly requested or by default
+        if HAS_LANGGRAPH:
+            try:
+                lg_result = run_langgraph_pipeline(query, target_well=target_well, current_depth_md=current_depth_md)
+                if "error" not in lg_result and "final_response" in lg_result:
+                    return lg_result["final_response"]
+            except Exception as e:
+                logger.warning(f"LangGraph execution failed ({e}), falling back to standard pipeline.")
+
         client, model, provider_name = self._resolve_ai_client(mode_override=mode)
 
         # If no LLM configured, execute deterministic fallback
