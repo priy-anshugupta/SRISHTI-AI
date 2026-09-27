@@ -18,7 +18,8 @@ const jetbrainsMono = JetBrains_Mono({
 
 export const metadata: Metadata = {
   title: 'SRISHTI·AI | Drilling Intelligence Platform',
-  description: 'Smart India Hackathon 2026 - Drilling Intelligence Platform',
+  description: 'Smart India Hackathon 2026 - Drilling Intelligence Platform for Oil India Limited (eRTMAC)',
+  manifest: '/manifest.json',
 };
 
 export default function RootLayout({
@@ -27,8 +28,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} min-h-full antialiased dark scroll-smooth`}>
-      <body className="min-h-full bg-[#070D0F] text-slate-200 font-sans selection:bg-[#0D5C75] selection:text-white">
+    <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} min-h-full antialiased scroll-smooth`}>
+      <body className="min-h-full font-sans selection:bg-[#0D5C75] selection:text-white">
         <AppShell>
           {children}
         </AppShell>
