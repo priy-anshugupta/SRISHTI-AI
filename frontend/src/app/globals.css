@@ -62,7 +62,7 @@ code, pre, kbd, samp, .font-code {
   border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #0D5C75;
+  background: #1C2C35;
 }
 
 .no-scrollbar::-webkit-scrollbar {
@@ -71,6 +71,60 @@ code, pre, kbd, samp, .font-code {
 .no-scrollbar {
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   INDUSTRIAL COMMAND CENTER (HIGH-CONTRAST DARK MODE)
+   Provides clear, crisp card separation and distinct elevations
+   ───────────────────────────────────────────────────────────────────────────── */
+html.dark, html:not(.light) {
+  color-scheme: dark;
+}
+
+html.dark body,
+html:not(.light) body {
+  background-color: #0A0F13 !important;
+  color: #E2E8F0 !important;
+}
+
+/* Page canvas background */
+html.dark .bg-\[\#080E11\],
+html:not(.light) .bg-\[\#080E11\] {
+  background-color: #0A0F13 !important;
+}
+
+/* Clearly distinct container cards with visible crisp elevation */
+html.dark .bg-\[\#0D1419\],
+html:not(.light) .bg-\[\#0D1419\] {
+  background-color: #131D24 !important;
+  border-color: #243542 !important;
+}
+
+/* Interactive elevated cards / active states */
+html.dark .bg-\[\#111B21\],
+html:not(.light) .bg-\[\#111B21\] {
+  background-color: #1A2732 !important;
+  border-color: #2D4253 !important;
+}
+
+/* Inset surface for inputs, search boxes, and tables */
+html.dark .bg-\[\#0A1115\],
+html:not(.light) .bg-\[\#0A1115\] {
+  background-color: #0D141A !important;
+  border-color: #1E2D38 !important;
+}
+
+/* Topbar and Sidebar */
+html.dark .bg-\[\#0A0F12\],
+html:not(.light) .bg-\[\#0A0F12\] {
+  background-color: #0D1318 !important;
+  border-color: #1F2E3A !important;
+}
+
+/* Standard card borders */
+html.dark .border-\[\#1C2C35\],
+html:not(.light) .border-\[\#1C2C35\] {
+  border-color: #243542 !important;
 }
 
 /* ─────────────────────────────────────────────────────────────────────────────
@@ -96,6 +150,12 @@ html.light #__next {
 }
 
 /* 1. All Dark Hex Containers across the whole monorepo -> Crisp White Cards */
+html.light .bg-\[\#080E11\],
+html.light .bg-\[\#0D1419\],
+html.light .bg-\[\#111B21\],
+html.light .bg-\[\#0A1115\],
+html.light .bg-\[\#0A0F12\],
+html.light .bg-\[\#0A0F12\]\/95,
 html.light .bg-\[\#020507\],
 html.light .bg-\[\#020608\],
 html.light .bg-\[\#030608\],
@@ -151,6 +211,7 @@ html.light .bg-\[\#132126\],
 html.light .bg-\[\#142227\],
 html.light .bg-\[\#142C37\],
 html.light .bg-\[\#162D38\],
+html.light .bg-\[\#1C2C35\],
 html.light .bg-\[\#182a32\],
 html.light .bg-\[\#1A0C0C\],
 html.light .bg-slate-950,
@@ -167,6 +228,7 @@ html.light header {
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06) !important;
 }
 
+html.light header .bg-\[\#0D1419\],
 html.light header .bg-\[\#071014\] {
   background-color: #F1F5F9 !important;
   border-color: #E2E8F0 !important;
@@ -198,6 +260,7 @@ html.light aside .border-t {
   border-color: #E2E8F0 !important;
 }
 
+html.light aside .bg-\[\#0A0F12\],
 html.light aside .bg-\[\#050C10\],
 html.light aside .bg-\[\#030608\] {
   background-color: #FFFFFF !important;
@@ -216,6 +279,7 @@ html.light aside a:hover {
   color: #0F172A !important;
 }
 
+html.light aside a.bg-\[\#0D5C75\]\/15,
 html.light aside a.bg-\[\#0D5C75\]\/25,
 html.light aside a.border-\[\#0D5C75\] {
   background-color: #F0F9FF !important;
@@ -223,12 +287,14 @@ html.light aside a.border-\[\#0D5C75\] {
   color: #0369A1 !important;
 }
 
+html.light aside .bg-\[\#0D1419\],
 html.light aside .bg-\[\#060E12\] {
   background-color: #F8FAFC !important;
   border-color: #E2E8F0 !important;
   color: #0F172A !important;
 }
 
+html.light aside .bg-\[\#0D1419\]:hover,
 html.light aside .bg-\[\#060E12\]:hover {
   background-color: #F1F5F9 !important;
 }
