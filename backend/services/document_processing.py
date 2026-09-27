@@ -18,6 +18,16 @@ from pypdf import PdfReader
 from backend.core.config import get_settings
 from backend.database.supabase import SupabaseRepository
 
+try:
+    import fitz
+    import pytesseract
+    from PIL import Image
+    OCR_AVAILABLE = True
+except ImportError:
+    OCR_AVAILABLE = False
+    import logging
+    logging.warning("OCR dependencies (pymupdf, pytesseract, Pillow) are not installed. OCR will be disabled.")
+
 
 EXTRACTION_SCHEMA: dict[str, Any] = {
     "type": "object",
@@ -51,9 +61,76 @@ def file_sha256(content: bytes) -> str:
     return hashlib.sha256(content).hexdigest()
 
 
+def calculate_extraction_confidence(text: str) -> float:
+    if not text:
+        return 0.0
+    text_length = len(text)
+    length_score = min(text_length / 1000.0, 1.0) * 0.3
+    keywords = ["drilling", "well", "formation", "depth", "incident", "mud", "kick", "loss"]
+    keyword_count = sum(1 for kw in keywords if kw in text.lower())
+    keyword_score = min(keyword_count / 5.0, 1.0) * 0.3
+    alnum_count = sum(1 for c in text if c.isalnum() or c.isspace())
+    ratio = alnum_count / text_length if text_length > 0 else 0
+    ratio_score = min(ratio, 1.0) * 0.4
+    return min((length_score + keyword_score + ratio_score) * 100.0, 100.0)
+
+
+def ocr_pdf_pages(file_bytes: bytes) -> list[dict]:
+    if not OCR_AVAILABLE:
+        return []
+    results = []
+    try:
+        doc = fitz.open(stream=file_bytes, filetype="pdf")
+        for i, page in enumerate(doc):
+            pix = page.get_pixmap()
+            img_data = pix.tobytes("png")
+            img = Image.open(BytesIO(img_data))
+            
+            ocr_data = pytesseract.image_to_data(img, output_type=pytesseract.Output.DICT)
+            texts = ocr_data.get('text', [])
+            confs = ocr_data.get('conf', [])
+            
+            valid_texts = []
+            valid_confs = []
+            for text, conf in zip(texts, confs):
+                text_strip = text.strip()
+                if text_strip:
+                    try:
+                        conf_val = float(conf)
+                        if conf_val > 0:
+                            valid_texts.append(text_strip)
+                            valid_confs.append(conf_val)
+                    except ValueError:
+                        pass
+                        
+            page_text = " ".join(valid_texts)
+            avg_conf = sum(valid_confs) / len(valid_confs) if valid_confs else 0.0
+            results.append({
+                "page": i + 1,
+                "text": page_text,
+                "confidence": avg_conf
+            })
+    except Exception as e:
+        import logging
+        logging.error(f"OCR processing failed: {e}")
+        
+    return results
+
+
 def extract_pdf_pages(content: bytes) -> list[str]:
     reader = PdfReader(BytesIO(content))
-    return [(page.extract_text() or "").strip() for page in reader.pages]
+    pages = []
+    ocr_results = None
+    
+    for i, page in enumerate(reader.pages):
+        text = (page.extract_text() or "").strip()
+        if len(text) < 50 and OCR_AVAILABLE:
+            if ocr_results is None:
+                ocr_results = ocr_pdf_pages(content)
+            if i < len(ocr_results):
+                text = ocr_results[i]["text"]
+        pages.append(text)
+    return pages
 
 
 def _llm_extract(pages: list[str]) -> dict[str, Any]:
