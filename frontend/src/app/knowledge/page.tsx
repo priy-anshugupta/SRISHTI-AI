@@ -72,16 +72,16 @@ type BowtieResponse = {
   basin: string;
 };
 
-/* ─── HIGH-CONTRAST VIBRANT COLOR PALETTE ─── */
+/* ─── PROFESSIONAL ENTERPRISE COLOR PALETTE ─── */
 const TYPE_CONFIG: Record<string, { fill: string; stroke: string; line: string; label: string; icon: string }> = {
-  well:       { fill: '#0369a1', stroke: '#38bdf8', line: '#38bdf8', label: 'Well Rig',          icon: 'W' },
-  event:      { fill: '#991b1b', stroke: '#f87171', line: '#f87171', label: 'Incident',          icon: '!' },
-  formation:  { fill: '#6b21a8', stroke: '#c084fc', line: '#c084fc', label: 'Rock Layer',        icon: 'R' },
-  hazard:     { fill: '#9a3412', stroke: '#fb923c', line: '#fb923c', label: 'Subsurface Hazard', icon: 'H' },
-  barrier:    { fill: '#854d0e', stroke: '#facc15', line: '#facc15', label: 'Safety Barrier',    icon: 'B' },
-  mitigation: { fill: '#065f46', stroke: '#34d399', line: '#34d399', label: 'Remedy / SOP',      icon: 'S' },
-  standard:   { fill: '#1e40af', stroke: '#60a5fa', line: '#60a5fa', label: 'Safety Standard',   icon: '§' },
-  document:   { fill: '#115e59', stroke: '#2dd4bf', line: '#2dd4bf', label: 'Well Report',       icon: 'D' },
+  well:       { fill: '#0D5C75', stroke: '#38BDF8', line: '#38BDF8', label: 'Well Rig',          icon: 'W' },
+  event:      { fill: '#7F1D1D', stroke: '#F87171', line: '#EF4444', label: 'Incident',          icon: '!' },
+  formation:  { fill: '#1E293B', stroke: '#94A3B8', line: '#64748B', label: 'Rock Layer',        icon: 'R' },
+  hazard:     { fill: '#7C2D12', stroke: '#FB923C', line: '#EA580C', label: 'Subsurface Hazard', icon: 'H' },
+  barrier:    { fill: '#1E3A8A', stroke: '#60A5FA', line: '#3B82F6', label: 'Safety Barrier',    icon: 'B' },
+  mitigation: { fill: '#064E3B', stroke: '#34D399', line: '#10B981', label: 'Remedy / SOP',      icon: 'S' },
+  standard:   { fill: '#1E293B', stroke: '#38BDF8', line: '#0284C7', label: 'Safety Standard',   icon: '§' },
+  document:   { fill: '#1E293B', stroke: '#64748B', line: '#475569', label: 'Well Report',       icon: 'D' },
 };
 
 function getNodeConfig(type: string, severity?: string) {
@@ -398,11 +398,11 @@ export default function KnowledgePage() {
 
     // SCENARIO B: ALL BASIN WELLS (Spacious 5-Oilfield Regional Clusters)
     const fieldCenters: Record<string, { x: number; y: number; label: string }> = {
-      'Moran':        { x: 340,  y: 220, label: 'Moran Field' },
-      'Baghjan':      { x: 920,  y: 220, label: 'Baghjan Field' },
-      'Nahorkatiya':  { x: 920,  y: 440, label: 'Nahorkatiya Field' },
-      'Lakwa':        { x: 340,  y: 440, label: 'Lakwa Field' },
-      'Rudrasagar':   { x: 630,  y: 520, label: 'Rudrasagar & Others' },
+      'Moran': { x: 340, y: 220, label: 'Moran Field' },
+      'Baghjan': { x: 920, y: 220, label: 'Baghjan Field' },
+      'Nahorkatiya': { x: 920, y: 440, label: 'Nahorkatiya Field' },
+      'Lakwa': { x: 340, y: 440, label: 'Lakwa Field' },
+      'Rudrasagar': { x: 630, y: 520, label: 'Rudrasagar & Others' },
     };
 
     const positionedNodes: Node[] = [];
@@ -649,12 +649,12 @@ export default function KnowledgePage() {
     <div className="space-y-4 font-sans text-slate-100 min-h-full pb-16">
 
       {/* ─── 1. TOP HEADER TOOLBAR ─── */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#050C10] border-2 border-[#162D38] rounded-2xl shadow-xl">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#0D1419] border border-[#1C2C35] rounded-xl shadow-sm">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-            <h1 className="text-xl font-bold tracking-tight text-white flex items-center gap-2">
-              <Network className="text-cyan-400" size={22} />
+            <h1 className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
+              <Network className="text-[#38BDF8]" size={22} />
               <span>Drilling Safety Knowledge Map</span>
             </h1>
           </div>
@@ -664,15 +664,15 @@ export default function KnowledgePage() {
         </div>
 
         <div className="flex items-center gap-2 text-xs">
-          <span className="hidden sm:inline-flex items-center px-3 py-1.5 rounded-xl bg-[#020507] border border-[#162D38] text-slate-300 font-mono text-[11px]">
+          <span className="hidden sm:inline-flex items-center px-3 py-1.5 rounded-xl bg-[#0A1115] border border-[#1C2C35] text-slate-300 font-mono text-[11px]">
             {displayNodes.length} nodes · {displayEdges.length} links
           </span>
 
           <button
             onClick={() => setShowBaghjanModal(true)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-red-950/60 hover:bg-red-900/80 border border-red-700/80 text-red-200 text-xs font-bold transition-all shadow-md shadow-red-950/40 cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-red-950/60 hover:bg-red-900/80 border border-red-700/80 text-red-200 text-xs font-bold transition-all shadow-sm cursor-pointer"
           >
-            <Flame size={14} className="text-red-400 animate-pulse" />
+            <Flame size={14} className="text-red-400" />
             <span>Baghjan-5 Case Study</span>
           </button>
 
@@ -688,10 +688,10 @@ export default function KnowledgePage() {
       </div>
 
       {/* ─── 2. QUICK WELL SELECTOR TOOLBAR ─── */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#050C10] border-2 border-[#162D38] rounded-2xl text-xs shadow-md">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#0D1419] border border-[#1C2C35] rounded-xl text-xs shadow-md">
         <div className="flex flex-wrap items-center gap-2">
           <span className="text-slate-400 text-xs font-bold flex items-center gap-1.5 shrink-0">
-            <Eye size={14} className="text-cyan-400" />
+            <Eye size={14} className="text-[#38BDF8]" />
             <span>Focus Well:</span>
           </span>
 
@@ -701,7 +701,7 @@ export default function KnowledgePage() {
             onChange={(e) => {
               if (e.target.value) setSelectedWellId(e.target.value);
             }}
-            className="px-3 py-1.5 rounded-xl bg-[#020507] border-2 border-[#162D38] hover:border-cyan-500/60 text-cyan-300 font-bold text-xs focus:outline-none focus:border-cyan-400 cursor-pointer shadow-inner min-w-[200px]"
+            className="px-3 py-1.5 rounded-xl bg-[#0A1115] border border-[#1C2C35] hover:border-cyan-500/60 text-[#38BDF8] font-bold text-xs focus:outline-none focus:border-cyan-400 cursor-pointer shadow-inner min-w-[200px]"
           >
             <option value="ALL">🌐 View All 18 Basin Wells</option>
             <optgroup label="Active Drilling Asset">
@@ -727,7 +727,7 @@ export default function KnowledgePage() {
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               selectedWellId === 'well:MOR-29'
                 ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-500/30 font-extrabold ring-2 ring-cyan-300'
-                : 'bg-[#020507] text-cyan-300 border border-cyan-800/60 hover:bg-cyan-950/40'
+                : 'bg-[#0A1115] text-[#38BDF8] border border-cyan-800/60 hover:bg-cyan-950/40'
             }`}
           >
             <Sparkles size={12} />
@@ -739,7 +739,7 @@ export default function KnowledgePage() {
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               selectedWellId === 'well:BGH-05'
                 ? 'bg-red-500 text-white shadow-lg shadow-red-500/30 font-bold'
-                : 'bg-[#020507] text-red-300 border border-red-800/60 hover:bg-red-950/40'
+                : 'bg-[#0A1115] text-red-300 border border-red-800/60 hover:bg-red-950/40'
             }`}
           >
             <Flame size={12} />
@@ -752,7 +752,7 @@ export default function KnowledgePage() {
             className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
               selectedWellId === 'ALL'
                 ? 'bg-amber-500 text-black font-extrabold shadow-lg shadow-amber-500/20'
-                : 'bg-[#020507] text-amber-300 border border-amber-800/60 hover:bg-amber-950/40'
+                : 'bg-[#0A1115] text-amber-300 border border-amber-800/60 hover:bg-amber-950/40'
             }`}
           >
             <Maximize2 size={12} />
@@ -762,23 +762,23 @@ export default function KnowledgePage() {
 
         {/* Compact Action Hint */}
         <div className="flex items-center gap-1.5 text-xs text-slate-400 shrink-0">
-          <Move size={13} className="text-cyan-400" />
+          <Move size={13} className="text-[#38BDF8]" />
           <span>Click & hold to drag graph</span>
         </div>
       </div>
 
       {/* ─── 3. THE KNOWLEDGE GRAPH CANVAS (SMOOTH DRAG & PAN ENABLED) ─── */}
-      <div className="relative bg-[#020507] border-2 border-[#162D38] rounded-2xl overflow-hidden shadow-2xl h-[580px] w-full">
+      <div className="relative bg-[#0A1115] border border-[#1C2C35] rounded-xl overflow-hidden shadow-sm h-[580px] w-full">
         
         {loading && (
-          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#020507]/80 backdrop-blur-sm pointer-events-none">
-            <RefreshCw size={28} className="animate-spin text-cyan-400 mb-2" />
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#0A1115]/80 backdrop-blur-sm pointer-events-none">
+            <RefreshCw size={28} className="animate-spin text-[#38BDF8] mb-2" />
             <p className="text-xs text-slate-300 font-medium">Constructing Subsurface Knowledge Graph…</p>
           </div>
         )}
 
         {error && (
-          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#020507]/90 p-4">
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#0A1115]/90 p-4">
             <AlertTriangle size={32} className="text-red-400 mb-2" />
             <p className="text-xs text-red-300 mb-3">{error}</p>
             <button onClick={loadGraph} className="px-4 py-1.5 bg-cyan-700 hover:bg-cyan-600 text-white rounded-lg text-xs font-semibold">
@@ -788,8 +788,8 @@ export default function KnowledgePage() {
         )}
 
         {/* Top-Left View Badge */}
-        <div className="absolute top-3.5 left-3.5 z-10 bg-[#050C10]/95 backdrop-blur-md border border-[#162D38] rounded-xl px-3.5 py-1.5 shadow-lg flex items-center gap-2 pointer-events-none">
-          <MapPin size={14} className="text-cyan-400" />
+        <div className="absolute top-3.5 left-3.5 z-10 bg-[#0D1419]/95 backdrop-blur-md border border-[#1C2C35] rounded-xl px-3.5 py-1.5 shadow-lg flex items-center gap-2 pointer-events-none">
+          <MapPin size={14} className="text-[#38BDF8]" />
           <span className="text-xs font-bold text-white">
             {selectedWellId === 'ALL'
               ? 'Full Regional Knowledge Map (Upper Assam Basin)'
@@ -798,7 +798,7 @@ export default function KnowledgePage() {
         </div>
 
         {/* Top-Right Floating Zoom Controls */}
-        <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1.5 bg-[#050C10]/95 backdrop-blur-md border border-[#162D38] rounded-xl p-1.5 shadow-lg">
+        <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1.5 bg-[#0D1419]/95 backdrop-blur-md border border-[#1C2C35] rounded-xl p-1.5 shadow-lg">
           <button
             onClick={zoomIn}
             className="p-1.5 rounded-lg hover:bg-[#162D38] text-slate-300 hover:text-white transition-colors cursor-pointer"
@@ -823,7 +823,7 @@ export default function KnowledgePage() {
         </div>
 
         {/* Bottom Helper Instruction */}
-        <div className="absolute bottom-3 right-3.5 z-10 hidden md:block text-[10px] text-slate-400 bg-[#050C10]/90 px-3 py-1 rounded-xl border border-[#162D38] pointer-events-none">
+        <div className="absolute bottom-3 right-3.5 z-10 hidden md:block text-[10px] text-slate-400 bg-[#0D1419]/90 px-3 py-1 rounded-xl border border-[#1C2C35] pointer-events-none">
           Left-click & hold anywhere to move graph · Drag nodes · Ctrl + Scroll to zoom
         </div>
 
@@ -859,11 +859,6 @@ export default function KnowledgePage() {
               <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#c084fc" />
             </marker>
 
-            {/* Glowing Halo */}
-            <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
-              <feGaussianBlur stdDeviation="4" result="blur" />
-              <feComposite in="SourceGraphic" in2="blur" operator="over" />
-            </filter>
           </defs>
 
           {/* Transform Group */}
@@ -874,7 +869,7 @@ export default function KnowledgePage() {
             </pattern>
             <rect x="-4000" y="-4000" width="10000" height="10000" fill="url(#bg-grid)" />
 
-            {/* ─── 1. HIGH-CONTRAST CONNECTING LINES WITH MOVING DOTS ─── */}
+            {/* ─── 1. CLEAN ENGINEERING CONNECTING LINES ─── */}
             <g className="edges-layer" pointerEvents="none">
               {displayEdges.map((edge, idx) => {
                 const src = nodePositionMap.get(edge.source);
@@ -885,30 +880,29 @@ export default function KnowledgePage() {
                   ? (edge.source === activeFocusId || edge.target === activeFocusId)
                   : false;
 
-                const opacity = connectedIds ? (isConnected ? 1.0 : 0.08) : 0.82;
+                const opacity = connectedIds ? (isConnected ? 1.0 : 0.08) : 0.75;
 
-                let strokeColor = '#38bdf8';
+                let strokeColor = '#475569';
                 let markerId = 'url(#arrow-well)';
                 if (edge.type === 'RECORDED_INCIDENT') {
-                  strokeColor = '#f87171';
+                  strokeColor = '#EF4444';
                   markerId = 'url(#arrow-event)';
                 } else if (edge.type === 'CONTAINS_THREAT' || edge.type === 'FAILED_ENERGY_BARRIER') {
-                  strokeColor = '#fb923c';
+                  strokeColor = '#F97316';
                   markerId = 'url(#arrow-hazard)';
                 } else if (edge.type === 'BARRIER_DEGRADATION' || edge.type === 'VIOLATES_STANDARD') {
-                  strokeColor = '#facc15';
+                  strokeColor = '#3B82F6';
                   markerId = 'url(#arrow-barrier)';
                 } else if (edge.type === 'MITIGATED_BY') {
-                  strokeColor = '#34d399';
+                  strokeColor = '#10B981';
                   markerId = 'url(#arrow-mitigation)';
                 } else if (edge.type === 'IN_FORMATION' || edge.type === 'DEPLOYED_IN') {
-                  strokeColor = '#c084fc';
+                  strokeColor = '#64748B';
                   markerId = 'url(#arrow-formation)';
                 }
 
                 const midX = (src.x + tgt.x) / 2;
                 const midY = (src.y + tgt.y) / 2;
-                const dur = 2.4 + (idx % 4) * 0.6;
 
                 return (
                   <g key={`edge-${idx}`} style={{ opacity, transition: 'opacity 0.2s ease' }}>
@@ -918,22 +912,9 @@ export default function KnowledgePage() {
                       x2={tgt.x}
                       y2={tgt.y}
                       stroke={strokeColor}
-                      strokeWidth={isConnected ? 3.0 : 2.0}
+                      strokeWidth={isConnected ? 2.5 : 1.5}
                       markerEnd={markerId}
                     />
-
-                    <circle
-                      r={isConnected ? 4.5 : 3.5}
-                      fill="#ffffff"
-                      stroke={strokeColor}
-                      strokeWidth="1.8"
-                    >
-                      <animateMotion
-                        dur={`${dur}s`}
-                        repeatCount="indefinite"
-                        path={`M${src.x},${src.y} L${tgt.x},${tgt.y}`}
-                      />
-                    </circle>
 
                     {(isConnected || (selectedWellId !== 'ALL' && transform.scale > 0.8)) && (
                       <g transform={`translate(${midX}, ${midY})`}>
@@ -1032,9 +1013,8 @@ export default function KnowledgePage() {
                         r={r + 6}
                         fill="none"
                         stroke={config.stroke}
-                        strokeWidth="3"
-                        opacity="0.85"
-                        filter="url(#glow)"
+                        strokeWidth="2"
+                        opacity="0.6"
                         pointerEvents="none"
                       />
                     )}
@@ -1092,10 +1072,10 @@ export default function KnowledgePage() {
 
         {/* ─── FLOATING HOVER TOOLTIP CARD ─── */}
         {hoveredNode && !selectedNode && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-[#050C10]/95 backdrop-blur-md border border-cyan-500/50 rounded-xl px-4 py-2 shadow-2xl pointer-events-none flex items-center gap-3 animate-in fade-in zoom-in-95 duration-100">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-[#0D1419]/95 backdrop-blur-md border border-cyan-500/50 rounded-xl px-4 py-2 shadow-sm pointer-events-none flex items-center gap-3 animate-in fade-in zoom-in-95 duration-100">
             <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: getNodeConfig(hoveredNode.type).stroke }} />
             <div>
-              <div className="text-[10px] uppercase font-bold text-cyan-400">
+              <div className="text-[10px] uppercase font-bold text-[#38BDF8]">
                 {getNodeConfig(hoveredNode.type).label} {hoveredNode.field ? `· ${hoveredNode.field} Field` : ''}
               </div>
               <div className="text-xs font-bold text-white">{hoveredNode.label}</div>
@@ -1107,7 +1087,7 @@ export default function KnowledgePage() {
         )}
 
         {/* ─── BOTTOM-LEFT LEGEND DOCK ─── */}
-        <div className="absolute bottom-3 left-3 z-10 bg-[#050C10]/95 backdrop-blur-md border border-[#162D38] rounded-xl p-3 text-[11px] hidden sm:block shadow-xl pointer-events-none">
+        <div className="absolute bottom-3 left-3 z-10 bg-[#0D1419]/95 backdrop-blur-md border border-[#1C2C35] rounded-xl p-3 text-[11px] hidden sm:block shadow-sm pointer-events-none">
           <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">
             <span>Entity Legend</span>
           </div>
@@ -1123,10 +1103,10 @@ export default function KnowledgePage() {
 
         {/* ─── RIGHT SLIDE-OVER DETAIL INSPECTOR PANEL ─── */}
         {selectedNode && (
-          <div className="absolute top-3 right-3 z-20 max-w-sm w-full bg-[#050C10]/98 backdrop-blur-md border-2 border-cyan-500/60 rounded-xl p-4 shadow-2xl space-y-3 max-h-[92%] overflow-y-auto font-sans ring-1 ring-cyan-500/30 animate-in fade-in slide-in-from-right-4 duration-150">
-            <div className="flex items-start justify-between border-b border-[#162D38] pb-2">
+          <div className="absolute top-3 right-3 z-20 max-w-sm w-full bg-[#0D1419]/98 backdrop-blur-md border border-cyan-500/60 rounded-xl p-4 shadow-sm space-y-3 max-h-[92%] overflow-y-auto font-sans ring-1 ring-cyan-500/30 animate-in fade-in slide-in-from-right-4 duration-150">
+            <div className="flex items-start justify-between border-b border-[#1C2C35] pb-2">
               <div>
-                <span className="text-[10px] uppercase font-bold text-cyan-400 flex items-center gap-1">
+                <span className="text-[10px] uppercase font-bold text-[#38BDF8] flex items-center gap-1">
                   <Sparkles size={11} />
                   {getNodeConfig(selectedNode.type).label}
                 </span>
@@ -1140,7 +1120,7 @@ export default function KnowledgePage() {
               </button>
             </div>
 
-            <div className="p-2.5 bg-[#020507] rounded-lg border border-[#162D38] space-y-1.5 text-xs shadow-inner">
+            <div className="p-2.5 bg-[#0A1115] rounded-lg border border-[#1C2C35] space-y-1.5 text-xs shadow-inner">
               <div className="flex justify-between text-slate-400">
                 <span>ID:</span>
                 <span className="text-slate-200 font-mono text-[11px]">{selectedNode.id}</span>
@@ -1160,7 +1140,7 @@ export default function KnowledgePage() {
               {selectedNode.depth_md && (
                 <div className="flex justify-between text-slate-400">
                   <span>Recorded Depth:</span>
-                  <span className="text-cyan-300 font-mono font-bold">{selectedNode.depth_md} meters</span>
+                  <span className="text-[#38BDF8] font-mono font-bold">{selectedNode.depth_md} meters</span>
                 </div>
               )}
               {selectedNode.field && (
@@ -1184,14 +1164,14 @@ export default function KnowledgePage() {
             </div>
 
             {selectedNode.description && (
-              <div className="p-2.5 bg-[#020507] rounded-lg border border-[#162D38] text-xs text-slate-300 space-y-1 shadow-inner">
+              <div className="p-2.5 bg-[#0A1115] rounded-lg border border-[#1C2C35] text-xs text-slate-300 space-y-1 shadow-inner">
                 <div className="text-[10px] text-slate-400 uppercase font-bold">Operational Context:</div>
                 <p className="leading-relaxed">{selectedNode.description}</p>
               </div>
             )}
 
             {selectedNode.mitigation && (
-              <div className="p-2.5 bg-[#020507] rounded-lg border border-emerald-900/60 text-xs text-emerald-200 space-y-1 shadow-inner">
+              <div className="p-2.5 bg-[#0A1115] rounded-lg border border-emerald-900/60 text-xs text-emerald-200 space-y-1 shadow-inner">
                 <div className="text-[10px] text-emerald-400 uppercase font-bold flex items-center gap-1">
                   <Wrench size={11} />
                   Verified Mitigation Procedure:
@@ -1200,7 +1180,7 @@ export default function KnowledgePage() {
               </div>
             )}
 
-            <div className="p-2.5 bg-[#020507] rounded-lg border border-[#162D38] space-y-1.5 shadow-inner">
+            <div className="p-2.5 bg-[#0A1115] rounded-lg border border-[#1C2C35] space-y-1.5 shadow-inner">
               <span className="text-[10px] font-bold uppercase text-slate-400">
                 Connected Relationships ({displayEdges.filter(e => e.source === selectedNode.id || e.target === selectedNode.id).length})
               </span>
@@ -1214,12 +1194,12 @@ export default function KnowledgePage() {
                       <div
                         key={idx}
                         onClick={() => other && setSelectedNode(other)}
-                        className="flex items-center justify-between p-1.5 rounded-lg bg-[#050C10] hover:bg-[#0c1c24] border border-[#162D38] hover:border-cyan-500/50 cursor-pointer text-[11px] transition-colors"
+                        className="flex items-center justify-between p-1.5 rounded-lg bg-[#0D1419] hover:bg-[#0c1c24] border border-[#1C2C35] hover:border-cyan-500/50 cursor-pointer text-[11px] transition-colors"
                       >
-                        <span className="text-cyan-300 font-bold truncate max-w-[150px]">
+                        <span className="text-[#38BDF8] font-bold truncate max-w-[150px]">
                           {other?.label ?? otherId}
                         </span>
-                        <span className="text-[9px] text-slate-400 font-mono px-1.5 py-0.5 rounded bg-[#020507] border border-[#162D38]">
+                        <span className="text-[9px] text-slate-400 font-mono px-1.5 py-0.5 rounded bg-[#0A1115] border border-[#1C2C35]">
                           {friendlyEdgeLabel(edge.type)}
                         </span>
                       </div>
@@ -1252,7 +1232,7 @@ export default function KnowledgePage() {
 
       {/* ─── 4. SIMPLIFIED OFFSET INCIDENTS REGISTRY (CLEAN, JARGON-FREE) ─── */}
       <div className="space-y-3 pt-2">
-        <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#050C10] border-2 border-[#162D38] rounded-2xl shadow-xl">
+        <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#0D1419] border border-[#1C2C35] rounded-xl shadow-sm">
           <div>
             <h2 className="text-base font-bold text-white flex items-center gap-2">
               <ShieldAlert className="text-amber-400" size={18} />
@@ -1269,7 +1249,7 @@ export default function KnowledgePage() {
 
           <div className="flex flex-wrap items-center gap-2">
             {/* View scope toggle */}
-            <div className="flex items-center bg-[#020507] p-1 rounded-xl border border-[#162D38] text-xs">
+            <div className="flex items-center bg-[#0A1115] p-1 rounded-xl border border-[#1C2C35] text-xs">
               <button
                 onClick={() => setShowAllCards(false)}
                 className={`px-3 py-1 rounded-lg font-bold transition-all text-xs cursor-pointer ${
@@ -1293,7 +1273,7 @@ export default function KnowledgePage() {
             </div>
 
             {/* Severity Filter Pills */}
-            <div className="flex items-center gap-1 bg-[#020507] p-1 rounded-xl border border-[#162D38] text-xs">
+            <div className="flex items-center gap-1 bg-[#0A1115] p-1 rounded-xl border border-[#1C2C35] text-xs">
               {(['ALL', 'CRITICAL', 'HIGH', 'MEDIUM'] as const).map(sev => (
                 <button
                   key={sev}
@@ -1324,17 +1304,17 @@ export default function KnowledgePage() {
             return (
               <div
                 key={item.pathway_id}
-                className={`p-4 rounded-xl border-2 transition-all shadow-md flex flex-col justify-between space-y-2.5 ${
+                className={`p-4 rounded-xl border transition-all shadow-md flex flex-col justify-between space-y-2.5 ${
                   isCritical
                     ? 'bg-[#0f0505] border-red-900/70 hover:border-red-600'
                     : isHigh
                     ? 'bg-[#0c0804] border-orange-900/70 hover:border-orange-600'
-                    : 'bg-[#050C10] border-[#162D38] hover:border-cyan-600/70'
+                    : 'bg-[#0D1419] border-[#1C2C35] hover:border-cyan-600/70'
                 }`}
               >
                 <div>
                   {/* Card Header: Well & Severity Badge */}
-                  <div className="flex items-center justify-between pb-2 border-b border-[#162D38] mb-2">
+                  <div className="flex items-center justify-between pb-2 border-b border-[#1C2C35] mb-2">
                     <div className="flex items-center gap-2">
                       <span className="font-bold text-white text-sm">{item.well.name}</span>
                       <span className="text-[10px] text-slate-400 font-medium">({item.well.field} Field)</span>
@@ -1350,7 +1330,7 @@ export default function KnowledgePage() {
                   </div>
 
                   {/* Incident Title & Depth */}
-                  <div className="text-sm font-bold text-cyan-300 mb-1 flex items-center justify-between">
+                  <div className="text-sm font-bold text-[#38BDF8] mb-1 flex items-center justify-between">
                     <span>{item.top_event.event_type}</span>
                     <span className="text-xs font-mono text-slate-400">{item.top_event.depth_md}m MD</span>
                   </div>
@@ -1380,7 +1360,7 @@ export default function KnowledgePage() {
                 </div>
 
                 {/* Footer Standard Code & Focus on Graph Button */}
-                <div className="pt-2 border-t border-[#162D38] flex items-center justify-between text-xs">
+                <div className="pt-2 border-t border-[#1C2C35] flex items-center justify-between text-xs">
                   <span className="font-mono text-[10px] text-blue-300 bg-blue-950/60 px-2 py-0.5 rounded border border-blue-900/60 font-semibold">
                     {item.regulatory_standard.code}
                   </span>
@@ -1391,7 +1371,7 @@ export default function KnowledgePage() {
                       setSelectedWellId(wellId);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className="flex items-center gap-1 text-cyan-400 hover:text-cyan-200 font-bold text-xs cursor-pointer"
+                    className="flex items-center gap-1 text-[#38BDF8] hover:text-cyan-200 font-bold text-xs cursor-pointer"
                   >
                     <span>Focus on Graph</span>
                     <ChevronRight size={13} />
@@ -1405,7 +1385,7 @@ export default function KnowledgePage() {
 
         {/* Empty state if filtered */}
         {displayedRegistry.length === 0 && (
-          <div className="p-8 text-center bg-[#050C10] rounded-xl border border-[#162D38] text-slate-400 text-xs space-y-2">
+          <div className="p-8 text-center bg-[#0D1419] rounded-xl border border-[#1C2C35] text-slate-400 text-xs space-y-2">
             <p>No incidents match the active filter.</p>
             <button
               onClick={() => { setShowAllCards(true); setSeverityFilter('ALL'); }}
@@ -1420,12 +1400,12 @@ export default function KnowledgePage() {
       {/* ─── 5. BAGHJAN-5 CASE STUDY MODAL ─── */}
       {showBaghjanModal && (
         <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#050C10] border-2 border-red-700/80 rounded-2xl max-w-3xl w-full p-6 space-y-4 shadow-2xl my-6 ring-1 ring-red-500/20">
+          <div className="bg-[#0D1419] border border-red-700/80 rounded-xl max-w-3xl w-full p-6 space-y-4 shadow-sm my-6 ring-1 ring-red-500/20">
             
             <div className="flex items-start justify-between pb-3 border-b border-red-900/50">
               <div className="flex items-center gap-3">
                 <div className="p-2.5 rounded-xl bg-red-950/80 border border-red-600 text-red-400">
-                  <Flame size={24} className="animate-pulse" />
+                  <Flame size={24} className="" />
                 </div>
                 <div>
                   <span className="text-[10px] uppercase font-bold text-red-400 tracking-wider">
@@ -1442,7 +1422,7 @@ export default function KnowledgePage() {
 
               <button
                 onClick={() => setShowBaghjanModal(false)}
-                className="p-1.5 rounded-lg bg-[#020507] border border-[#162D38] hover:bg-slate-800 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg bg-[#0A1115] border border-[#1C2C35] hover:bg-slate-800 text-slate-300 hover:text-white transition-colors cursor-pointer"
               >
                 <X size={16} />
               </button>
@@ -1450,22 +1430,22 @@ export default function KnowledgePage() {
 
             {/* Quick Facts */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-              <div className="p-2.5 bg-[#020507] rounded-xl border border-[#162D38] shadow-inner">
+              <div className="p-2.5 bg-[#0A1115] rounded-xl border border-[#1C2C35] shadow-inner">
                 <span className="text-[10px] text-slate-400 uppercase font-bold">DATE OF BLOWOUT</span>
                 <div className="text-sm font-bold text-white mt-0.5">27 May 2020</div>
                 <div className="text-[10px] text-slate-500">Burned 190 days</div>
               </div>
-              <div className="p-2.5 bg-[#020507] rounded-xl border border-[#162D38] shadow-inner">
+              <div className="p-2.5 bg-[#0A1115] rounded-xl border border-[#1C2C35] shadow-inner">
                 <span className="text-[10px] text-slate-400 uppercase font-bold">RESERVOIR DEPTH</span>
-                <div className="text-sm font-bold text-cyan-300 mt-0.5 font-mono">3,870m MD</div>
+                <div className="text-sm font-bold text-[#38BDF8] mt-0.5 font-mono">3,870m MD</div>
                 <div className="text-[10px] text-slate-500">Lakadong / Therria Sand</div>
               </div>
-              <div className="p-2.5 bg-[#020507] rounded-xl border border-[#162D38] shadow-inner">
+              <div className="p-2.5 bg-[#0A1115] rounded-xl border border-[#1C2C35] shadow-inner">
                 <span className="text-[10px] text-slate-400 uppercase font-bold">HUMAN TOLL</span>
                 <div className="text-sm font-bold text-red-400 mt-0.5">3 Fatalities</div>
                 <div className="text-[10px] text-slate-500">OIL Firefighters & Crew</div>
               </div>
-              <div className="p-2.5 bg-[#020507] rounded-xl border border-[#162D38] shadow-inner">
+              <div className="p-2.5 bg-[#0A1115] rounded-xl border border-[#1C2C35] shadow-inner">
                 <span className="text-[10px] text-slate-400 uppercase font-bold">ESTIMATED LOSS</span>
                 <div className="text-sm font-bold text-amber-300 mt-0.5 font-mono">₹2,500+ Cr</div>
                 <div className="text-[10px] text-slate-500">Compensation & Capping</div>
@@ -1480,7 +1460,7 @@ export default function KnowledgePage() {
               </h3>
 
               <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[11px]">
-                <div className="p-3 bg-[#020507] rounded-xl border border-red-900/50 space-y-1.5 shadow-inner">
+                <div className="p-3 bg-[#0A1115] rounded-xl border border-red-900/50 space-y-1.5 shadow-inner">
                   <span className="text-[10px] font-bold text-red-400 uppercase">
                     1. PREMATURE BOP REMOVAL
                   </span>
@@ -1492,7 +1472,7 @@ export default function KnowledgePage() {
                   </div>
                 </div>
 
-                <div className="p-3 bg-[#020507] rounded-xl border border-red-900/50 space-y-1.5 shadow-inner">
+                <div className="p-3 bg-[#0A1115] rounded-xl border border-red-900/50 space-y-1.5 shadow-inner">
                   <span className="text-[10px] font-bold text-red-400 uppercase">
                     2. SHALLOW PLUG IN DEVIATED HOLE
                   </span>
@@ -1504,7 +1484,7 @@ export default function KnowledgePage() {
                   </div>
                 </div>
 
-                <div className="p-3 bg-[#020507] rounded-xl border border-red-900/50 space-y-1.5 shadow-inner">
+                <div className="p-3 bg-[#0A1115] rounded-xl border border-red-900/50 space-y-1.5 shadow-inner">
                   <span className="text-[10px] font-bold text-red-400 uppercase">
                     3. KNOWLEDGE DISCONNECT
                   </span>
