@@ -4,10 +4,11 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useNetworkMode } from '@/context/NetworkModeContext';
-import { Bell, Cpu, LogOut, Wifi, WifiOff, ShieldCheck } from 'lucide-react';
+import { Bell, Cpu, LogOut, Wifi, WifiOff, ShieldCheck, Sun, Moon } from 'lucide-react';
 import SwarmTraceModal from '@/components/modals/SwarmTraceModal';
 import { useAuth } from '@/context/AuthContext';
 import { useTelemetry } from '@/context/TelemetryContext';
+import { useTheme } from '@/context/ThemeContext';
 
 const routeLabels: Record<string, string> = {
   '/map': 'Nearby Well Map',
@@ -29,6 +30,7 @@ export default function Topbar() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
   const { isAirGapped, toggleNetworkMode } = useNetworkMode();
+  const { theme, toggleTheme } = useTheme();
   const {
     depthMd,
     rop,
@@ -54,14 +56,14 @@ export default function Topbar() {
 
   return (
     <>
-    <header className="print:hidden h-14 shrink-0 bg-[#04090C]/95 backdrop-blur-md border-b-2 border-[#162D38] shadow-[0_4px_25px_rgba(0,0,0,0.7)] flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 z-20 w-full font-sans select-none relative">
+    <header className="print:hidden h-14 shrink-0 bg-[#0A0F12]/95 backdrop-blur-md border-b border-[#1C2C35] shadow-sm flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 z-20 w-full font-sans select-none relative">
       {/* Subtle bottom accent */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-[#162D38] pointer-events-none" />
+      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-[#1C2C35] pointer-events-none" />
 
       {/* 1. Left Breadcrumb Capsule */}
-      <div className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#071014] border border-[#162D38] shadow-inner text-xs whitespace-nowrap shrink-0">
+      <div className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#0D1419] border border-[#1C2C35] shadow-sm text-xs whitespace-nowrap shrink-0">
         <Link href="/" className="text-slate-400 hover:text-white transition-colors font-medium flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse" />
+          <span className="w-1.5 h-1.5 rounded-full bg-[#38BDF8]" />
           <span>Operations</span>
         </Link>
         <span className="text-slate-600 font-normal">/</span>
@@ -70,7 +72,7 @@ export default function Topbar() {
 
       {/* 2. Center Active Rig Live Telemetry Ticker */}
       <div className="flex items-center justify-center flex-1 min-w-0 px-1 overflow-visible">
-        <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#071014] border border-[#162D38] shadow-inner text-xs text-slate-300 whitespace-nowrap shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#0D1419] border border-[#1C2C35] shadow-sm text-xs text-slate-300 whitespace-nowrap shrink-0">
           <span
             className={`w-2 h-2 rounded-full shrink-0 ${
               isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
@@ -97,6 +99,25 @@ export default function Topbar() {
 
       {/* 3. Right Action Controls */}
       <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
+        {/* Day / Night Theme Toggle */}
+        <button
+          onClick={toggleTheme}
+          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-[#0D1419] hover:bg-[#111B21] border border-[#1C2C35] hover:border-slate-500 text-slate-300 text-xs font-semibold rounded-lg transition-all cursor-pointer shadow-sm"
+          title={theme === 'dark' ? 'Switch to Government Daylight Mode' : 'Switch to Industrial SCADA Dark Mode'}
+        >
+          {theme === 'dark' ? (
+            <>
+              <Sun size={14} className="text-amber-400 shrink-0" />
+              <span className="hidden md:inline text-[11px] font-medium text-slate-200">Day View</span>
+            </>
+          ) : (
+            <>
+              <Moon size={14} className="text-blue-500 shrink-0" />
+              <span className="hidden md:inline text-[11px] font-medium text-slate-800">Night View</span>
+            </>
+          )}
+        </button>
+
         {/* Rig Air-Gap / Edge Server vs Cloud Mode Toggle */}
         <button
           onClick={toggleNetworkMode}
@@ -127,7 +148,7 @@ export default function Topbar() {
         {/* AI Agent Trace Button */}
         <button
           onClick={() => setShowSwarmModal(true)}
-          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-[#071014] hover:bg-[#0C1B22] border border-[#162D38] hover:border-slate-600 text-slate-300 text-xs font-medium rounded-lg transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-[#0D1419] hover:bg-[#111B21] border border-[#1C2C35] hover:border-slate-600 text-slate-300 text-xs font-medium rounded-lg transition-colors cursor-pointer"
           title="Inspect Multi-Agent AI Decision Trace"
         >
           <Cpu size={13} className="text-slate-400 shrink-0" />
@@ -137,12 +158,12 @@ export default function Topbar() {
         {/* Proactive Notification Bell with Badge */}
         <Link
           href="/alerts"
-          className="relative p-2 bg-[#071014] hover:bg-[#0C1B22] border border-[#162D38] hover:border-slate-600 rounded-lg text-slate-300 hover:text-white transition-colors shrink-0"
+          className="relative p-2 bg-[#0D1419] hover:bg-[#111B21] border border-[#1C2C35] hover:border-slate-600 rounded-lg text-slate-300 hover:text-white transition-colors shrink-0"
           title="Active Drilling Advisory Alerts"
         >
           <Bell size={15} />
           {unreadAlertsCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center border border-[#04090C]">
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center border border-[#0A0F12]">
               {unreadAlertsCount}
             </span>
           )}
@@ -150,14 +171,14 @@ export default function Topbar() {
 
         {/* User Identity & Quick Log Out Button */}
         {user && (
-          <div className="flex items-center gap-2 bg-[#071014] border border-[#162D38] px-2 sm:px-2 py-1 rounded-lg shadow-sm shrink-0">
+          <div className="flex items-center gap-2 bg-[#0D1419] border border-[#1C2C35] px-2 sm:px-2 py-1 rounded-lg shadow-sm shrink-0">
             <div className="hidden xl:flex flex-col text-right text-xs">
               <span className="text-white font-semibold text-[11px] leading-tight truncate max-w-[120px]">{user.name}</span>
               <span className="text-[9px] text-slate-400 font-mono leading-tight">{user.badge}</span>
             </div>
             <button
               onClick={logout}
-              className="p-1.5 bg-[#0A151A] hover:bg-red-950/50 border border-slate-700/80 hover:border-red-600 rounded-md text-slate-400 hover:text-red-300 transition-colors"
+              className="p-1.5 bg-[#111B21] hover:bg-red-950/50 border border-slate-700/80 hover:border-red-600 rounded-md text-slate-400 hover:text-red-300 transition-colors"
               title="Sign Out / Lock Session"
             >
               <LogOut size={13} />
