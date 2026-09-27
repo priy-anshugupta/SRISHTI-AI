@@ -171,13 +171,13 @@ export default function IngestPage() {
     <div className="space-y-4 font-sans text-slate-200 max-w-[1500px] mx-auto pb-12 select-none">
       
       {/* 1. Header Toolbar */}
-      <div className="bg-[#0A1216] border border-slate-800 rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+      <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-sm font-bold text-white tracking-wide uppercase font-mono">
               Well Reports & Wireline Log Ingestion
             </h1>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-cyan-300">
+            <span className="text-xs font-mono px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[#38BDF8]">
               EVIDENCE LIBRARY
             </span>
           </div>
@@ -187,12 +187,12 @@ export default function IngestPage() {
         </div>
 
         {/* Tab Switcher */}
-        <div className="flex items-center gap-1 bg-[#060B0E] p-1 rounded-md border border-slate-800 text-xs font-mono">
+        <div className="flex items-center gap-1 bg-[#0D1419] p-1 rounded-md border border-[#1C2C35] text-xs font-mono">
           <button
             onClick={() => setActiveTab('pdf')}
             className={`px-3 py-1.5 rounded transition-colors cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'pdf'
-                ? 'bg-slate-800 text-cyan-300 font-semibold border border-slate-700'
+                ? 'bg-slate-800 text-[#38BDF8] font-semibold border border-slate-700'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -203,7 +203,7 @@ export default function IngestPage() {
             onClick={() => setActiveTab('las')}
             className={`px-3 py-1.5 rounded transition-colors cursor-pointer flex items-center gap-1.5 ${
               activeTab === 'las'
-                ? 'bg-slate-800 text-cyan-300 font-semibold border border-slate-700'
+                ? 'bg-slate-800 text-[#38BDF8] font-semibold border border-slate-700'
                 : 'text-slate-400 hover:text-white'
             }`}
           >
@@ -240,12 +240,12 @@ export default function IngestPage() {
         <div className="space-y-3.5">
 
           {/* Quick Benchmark Datasets Bar */}
-          <div className="p-3.5 bg-[#0A1216] border border-slate-800 rounded-lg space-y-2.5">
+          <div className="p-3.5 bg-[#0D1419] border border-[#1C2C35] rounded-lg space-y-2.5">
             <div className="flex flex-wrap items-center justify-between gap-2">
-              <span className="text-[11px] font-mono font-bold uppercase tracking-wider text-slate-300">
+              <span className="text-xs font-mono font-bold uppercase tracking-wider text-slate-300">
                 Quick Load Benchmark Datasets:
               </span>
-              <div className="flex items-center gap-3 text-xs font-mono text-cyan-400">
+              <div className="flex items-center gap-3 text-xs font-mono text-[#38BDF8]">
                 <a href="/demo-files/Sample_WCR_Moran_7.pdf" download className="hover:underline flex items-center gap-1">
                   <span>Sample WCR.pdf</span>
                 </a>
@@ -261,13 +261,13 @@ export default function IngestPage() {
                 type="button"
                 onClick={() => loadPresetSample('wcr_moran_7', 'WCR MORAN-7')}
                 disabled={uploading}
-                className="p-2.5 rounded bg-[#060B0E] hover:bg-[#0E1A20] border border-slate-800 hover:border-cyan-500/60 text-left transition-colors cursor-pointer group disabled:opacity-50"
+                className="p-2.5 rounded bg-[#0D1419] hover:bg-[#0E1A20] border border-[#1C2C35] hover:border-cyan-500/60 text-left transition-colors cursor-pointer group disabled:opacity-50"
               >
-                <div className="flex items-center justify-between text-xs font-bold text-white group-hover:text-cyan-300 font-sans">
+                <div className="flex items-center justify-between text-xs font-bold text-white group-hover:text-[#38BDF8] font-sans">
                   <span>Moran-7 (WCR)</span>
-                  <span className="text-[10px] font-mono text-cyan-400">147 pgs</span>
+                  <span className="text-xs font-mono text-[#38BDF8]">147 pgs</span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-0.5 truncate">
+                <p className="text-xs text-slate-400 mt-0.5 truncate">
                   Girujan stuck pipe (1,680m) & Tipam loss (1,840m)
                 </p>
               </button>
@@ -276,13 +276,13 @@ export default function IngestPage() {
                 type="button"
                 onClick={() => loadPresetSample('ddr_moran_29', 'DDR MORAN-29')}
                 disabled={uploading}
-                className="p-2.5 rounded bg-[#060B0E] hover:bg-[#0E1A20] border border-slate-800 hover:border-amber-500/60 text-left transition-colors cursor-pointer group disabled:opacity-50"
+                className="p-2.5 rounded bg-[#0D1419] hover:bg-[#0E1A20] border border-[#1C2C35] hover:border-amber-500/60 text-left transition-colors cursor-pointer group disabled:opacity-50"
               >
                 <div className="flex items-center justify-between text-xs font-bold text-white group-hover:text-amber-300 font-sans">
                   <span>Moran-29 (DDR)</span>
-                  <span className="text-[10px] font-mono text-amber-400">Day 28</span>
+                  <span className="text-xs font-mono text-amber-400">Day 28</span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-0.5 truncate">
+                <p className="text-xs text-slate-400 mt-0.5 truncate">
                   Barail gas kick precursor horizon at 2,418m MD
                 </p>
               </button>
@@ -291,13 +291,13 @@ export default function IngestPage() {
                 type="button"
                 onClick={() => loadPresetSample('geomech_baghjan', 'Geomech Study Baghjan')}
                 disabled={uploading}
-                className="p-2.5 rounded bg-[#060B0E] hover:bg-[#0E1A20] border border-slate-800 hover:border-purple-500/60 text-left transition-colors cursor-pointer group disabled:opacity-50"
+                className="p-2.5 rounded bg-[#0D1419] hover:bg-[#0E1A20] border border-[#1C2C35] hover:border-purple-500/60 text-left transition-colors cursor-pointer group disabled:opacity-50"
               >
                 <div className="flex items-center justify-between text-xs font-bold text-white group-hover:text-purple-300 font-sans">
                   <span>Baghjan-5 (Study)</span>
-                  <span className="text-[10px] font-mono text-purple-400">42 pgs</span>
+                  <span className="text-xs font-mono text-purple-400">42 pgs</span>
                 </div>
-                <p className="text-[11px] text-slate-400 mt-0.5 truncate">
+                <p className="text-xs text-slate-400 mt-0.5 truncate">
                   Overpressured gas kick pore pressure calibration
                 </p>
               </button>
@@ -305,7 +305,7 @@ export default function IngestPage() {
           </div>
 
           {/* Compact Dropzone */}
-          <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-slate-700 bg-[#0A1216] hover:border-cyan-500/80 px-4 py-6 text-center transition-colors">
+          <label className="flex cursor-pointer flex-col items-center justify-center rounded-lg border border-dashed border-slate-700 bg-[#0D1419] hover:border-cyan-500/80 px-4 py-6 text-center transition-colors">
             <input
               className="sr-only"
               type="file"
@@ -314,23 +314,23 @@ export default function IngestPage() {
               disabled={uploading}
             />
             {uploading ? (
-              <LoaderCircle className="animate-spin text-cyan-400" size={28} />
+              <LoaderCircle className="animate-spin text-[#38BDF8]" size={28} />
             ) : (
-              <Upload className="text-slate-400 hover:text-cyan-400 transition-colors" size={28} />
+              <Upload className="text-slate-400 hover:text-[#38BDF8] transition-colors" size={28} />
             )}
             <span className="mt-2 font-bold text-white text-xs font-sans">
               {uploading ? 'Processing and extracting drilling incidents…' : 'Drop Well Completion Report (WCR) or Daily Drilling Report (DDR) here'}
             </span>
-            <span className="mt-0.5 text-[11px] text-slate-400">
+            <span className="mt-0.5 text-xs text-slate-400">
               PDF format · Up to 50 MB · Automated fact extraction and depth tagging
             </span>
           </label>
 
           {/* Document Register Table */}
-          <div className="bg-[#0A1216] border border-slate-800 rounded-lg overflow-hidden text-xs">
+          <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg overflow-hidden text-xs">
             
             {/* Table Header & Search */}
-            <div className="flex flex-wrap items-center justify-between gap-3 p-3 border-b border-slate-800/80 bg-[#060B0E]">
+            <div className="flex flex-wrap items-center justify-between gap-3 p-3 border-b border-[#1C2C35]/80 bg-[#0D1419]">
               <div className="flex items-center gap-2">
                 <span className="font-bold text-white uppercase text-xs font-mono">
                   Indexed Reports ({filteredDocs.length} Files)
@@ -345,7 +345,7 @@ export default function IngestPage() {
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
                     placeholder="Search by well or filename..."
-                    className="w-full bg-[#0A1216] border border-slate-800 rounded pl-8 pr-3 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-700 font-sans"
+                    className="w-full bg-[#0D1419] border border-[#1C2C35] rounded pl-8 pr-3 py-1 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-slate-700 font-sans"
                   />
                 </div>
 
@@ -363,7 +363,7 @@ export default function IngestPage() {
             {/* Table Rows */}
             <div className="overflow-x-auto max-h-[460px]">
               <table className="w-full text-left border-collapse text-xs">
-                <thead className="border-b border-slate-800 text-[10px] text-slate-400 uppercase font-mono bg-[#081014] sticky top-0">
+                <thead className="border-b border-[#1C2C35] text-xs text-slate-400 uppercase font-mono bg-[#081014] sticky top-0">
                   <tr>
                     <th className="py-2.5 px-3">REPORT TITLE</th>
                     <th className="py-2.5 px-3">WELL</th>
@@ -377,17 +377,17 @@ export default function IngestPage() {
                   {filteredDocs.map((doc) => {
                     const meta = formatDocTitle(doc.original_filename);
                     return (
-                      <tr key={doc.id} className="hover:bg-[#060B0E] transition-colors">
+                      <tr key={doc.id} className="hover:bg-[#0D1419] transition-colors">
                         <td className="py-2.5 px-3 text-white font-medium">
                           {meta.title}
-                          <span className="block text-[10px] text-slate-400 font-mono mt-0.5 truncate max-w-sm">
+                          <span className="block text-xs text-slate-400 font-mono mt-0.5 truncate max-w-sm">
                             {doc.original_filename}
                           </span>
                         </td>
-                        <td className="py-2.5 px-3 font-mono text-cyan-300 font-semibold">
+                        <td className="py-2.5 px-3 font-mono text-[#38BDF8] font-semibold">
                           {meta.well}
                         </td>
-                        <td className="py-2.5 px-3 font-mono text-[10px]">
+                        <td className="py-2.5 px-3 font-mono text-xs">
                           <span className={`px-2 py-0.5 rounded font-semibold ${
                             meta.type === 'WCR' ? 'bg-blue-950/70 text-blue-300 border border-blue-800' :
                             meta.type === 'DDR' ? 'bg-amber-950/70 text-amber-300 border border-amber-800' :
@@ -401,14 +401,14 @@ export default function IngestPage() {
                           {doc.page_count ?? '—'}
                         </td>
                         <td className="py-2.5 px-3">
-                          <span className="px-2 py-0.5 rounded text-[10px] font-mono font-semibold bg-emerald-950/70 text-emerald-300 border border-emerald-800">
+                          <span className="px-2 py-0.5 rounded text-xs font-mono font-semibold bg-emerald-950/70 text-emerald-300 border border-emerald-800">
                             {doc.processing_status}
                           </span>
                         </td>
                         <td className="py-2.5 px-3 text-right">
                           <Link
                             href={`/review?doc=${doc.id}`}
-                            className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-cyan-300 hover:text-white font-mono text-[11px] transition-colors"
+                            className="px-2.5 py-1 rounded bg-slate-800 hover:bg-slate-700 border border-slate-700 text-[#38BDF8] hover:text-white font-mono text-xs transition-colors"
                           >
                             Review Facts →
                           </Link>
@@ -427,8 +427,8 @@ export default function IngestPage() {
 
       {/* 3. TAB 2: LAS 2.0 WIRELINE LOG VIEWER */}
       {activeTab === 'las' && (
-        <div className="bg-[#0A1216] border border-slate-800 rounded-lg p-4 space-y-4">
-          <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg p-4 space-y-4">
+          <div className="flex items-center justify-between border-b border-[#1C2C35] pb-3">
             <div>
               <h2 className="text-sm font-bold text-white font-mono uppercase">
                 LAS 2.0 Digital Well Log Track Viewer
@@ -438,7 +438,7 @@ export default function IngestPage() {
               </p>
             </div>
             {lasData && (
-              <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-cyan-300 font-semibold">
+              <span className="text-xs font-mono px-2.5 py-0.5 rounded bg-slate-800 border border-slate-700 text-[#38BDF8] font-semibold">
                 {lasData.well_name} · {lasData.start_depth}m – {lasData.stop_depth}m MD
               </span>
             )}
@@ -446,7 +446,7 @@ export default function IngestPage() {
 
           {loadingLas && (
             <div className="p-8 text-center text-xs font-mono text-slate-400 space-y-2">
-              <RefreshCw size={20} className="animate-spin mx-auto text-cyan-400" />
+              <RefreshCw size={20} className="animate-spin mx-auto text-[#38BDF8]" />
               <div>PARSING LAS 2.0 WIRELINE TRACKS...</div>
             </div>
           )}
@@ -454,33 +454,33 @@ export default function IngestPage() {
           {lasData && (
             <div className="space-y-3">
               <div className="grid grid-cols-2 md:grid-cols-4 gap-2 text-xs font-mono">
-                <div className="p-2.5 bg-[#060B0E] border border-slate-800 rounded">
-                  <span className="text-[10px] text-slate-400 block">WELL</span>
+                <div className="p-2.5 bg-[#0D1419] border border-[#1C2C35] rounded">
+                  <span className="text-xs text-slate-400 block">WELL</span>
                   <span className="font-bold text-white">{lasData.well_name}</span>
                 </div>
-                <div className="p-2.5 bg-[#060B0E] border border-slate-800 rounded">
-                  <span className="text-[10px] text-slate-400 block">DEPTH INTERVAL</span>
-                  <span className="font-bold text-cyan-300">{lasData.start_depth}m – {lasData.stop_depth}m</span>
+                <div className="p-2.5 bg-[#0D1419] border border-[#1C2C35] rounded">
+                  <span className="text-xs text-slate-400 block">DEPTH INTERVAL</span>
+                  <span className="font-bold text-[#38BDF8]">{lasData.start_depth}m – {lasData.stop_depth}m</span>
                 </div>
-                <div className="p-2.5 bg-[#060B0E] border border-slate-800 rounded">
-                  <span className="text-[10px] text-slate-400 block">CURVES PARSED</span>
+                <div className="p-2.5 bg-[#0D1419] border border-[#1C2C35] rounded">
+                  <span className="text-xs text-slate-400 block">CURVES PARSED</span>
                   <span className="font-bold text-white">{lasData.curves.length} Channels</span>
                 </div>
-                <div className="p-2.5 bg-[#060B0E] border border-slate-800 rounded">
-                  <span className="text-[10px] text-slate-400 block">DATA POINTS</span>
+                <div className="p-2.5 bg-[#0D1419] border border-[#1C2C35] rounded">
+                  <span className="text-xs text-slate-400 block">DATA POINTS</span>
                   <span className="font-bold text-emerald-400">{lasData.data_count.toLocaleString()}</span>
                 </div>
               </div>
 
               {/* Curve List */}
-              <div className="p-3 bg-[#060B0E] border border-slate-800 rounded space-y-2">
-                <span className="text-[10px] font-mono text-slate-400 uppercase font-semibold block">
+              <div className="p-3 bg-[#0D1419] border border-[#1C2C35] rounded space-y-2">
+                <span className="text-xs font-mono text-slate-400 uppercase font-semibold block">
                   CALIBRATED CURVES RECORDED IN LOG:
                 </span>
                 <div className="flex flex-wrap gap-1.5">
                   {lasData.curves.map(c => (
                     <span key={c.mnemonic} className="px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-xs font-mono text-slate-200">
-                      <strong className="text-cyan-300">{c.mnemonic}</strong> ({c.unit}): {c.description}
+                      <strong className="text-[#38BDF8]">{c.mnemonic}</strong> ({c.unit}): {c.description}
                     </span>
                   ))}
                 </div>
