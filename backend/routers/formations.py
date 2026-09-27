@@ -178,6 +178,63 @@ async def formation_correlation(formation_id: str):
             "correlation_confidence": 0.85,
             "wells": {"name": w["name"]}
         })
-    return {"formation_id": formation_id, "well_intervals": intervals, "notice": "Regional formation intervals from local evidence database."}
+
+@router.post("/predict/risk")
+async def predict_risk_endpoint(params: dict):
+    """Predict drilling risks using ML model"""
+    try:
+        from backend.services.ml_predictor import predict_risk
+        return predict_risk(
+            depth_md=params.get("depth_md", 0),
+            formation=params.get("formation_encoded", 0),
+            mud_weight=params.get("mud_weight_ppg", 10.0),
+            rop=params.get("rop_m_hr", 10.0),
+            wob=params.get("wob_klbs", 20.0),
+            rpm=params.get("rpm", 80.0),
+            torque=params.get("torque_kft_lbs", 10.0),
+            spp=params.get("spp_psi", 2000.0),
+            nearby_events=params.get("nearby_event_count", 0),
+            distance_km=params.get("distance_to_nearest_well_km", 1.0)
+        )
+    except Exception as e:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/predict/metrics")
+async def get_predict_metrics():
+    """Get ML model training metrics"""
+    try:
+        from backend.services.ml_predictor import get_model_metrics
+        return get_model_metrics()
+    except Exception as e:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/predict/feature-importance")
+async def get_predict_feature_importance():
+    """Get feature importance from ML model"""
+    try:
+        from backend.services.ml_predictor import get_model_metrics
+        metrics = get_model_metrics()
+        if metrics and "feature_importance" in metrics:
+            return {"feature_importance": metrics["feature_importance"]}
+        return {"feature_importance": {}}
+    except Exception as e:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.get("/dtw/{well_a_id}/{well_b_id}")
+async def get_dtw_well_correlation(well_a_id: str, well_b_id: str):
+    """
+    Computes real Dynamic Time Warping (DTW) stratigraphic depth correlation
+    between two wells, returning warping distance, alignment confidence,
+    and formation top depth shifts. Compliant with PRD §16.2.
+    """
+    try:
+        from backend.services.dtw_correlator import correlate_wells_stratigraphy
+        return correlate_wells_stratigraphy(well_a_id, well_b_id)
+    except Exception as e:
+        from fastapi import HTTPException
+        raise HTTPException(status_code=500, detail=f"DTW correlation failed: {str(e)}")
 
 
