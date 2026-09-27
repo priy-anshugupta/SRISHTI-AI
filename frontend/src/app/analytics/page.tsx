@@ -173,7 +173,7 @@ export default function AnalyticsPage() {
     <div className="space-y-4 font-sans text-slate-200 max-w-[1500px] mx-auto pb-8">
       
       {/* 1. Header Toolbar */}
-      <div className="bg-[#0D1419] border border-slate-800 rounded-xl px-4 py-3.5 flex flex-wrap items-center justify-between gap-3 shadow-md">
+      <div className="bg-[#0D1419] border border-[#1C2C35] rounded-xl px-4 py-3.5 flex flex-wrap items-center justify-between gap-3 shadow-md">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-base font-bold text-white tracking-wide uppercase">
@@ -189,7 +189,7 @@ export default function AnalyticsPage() {
         </div>
 
         {/* Tab Buttons */}
-        <div className="flex items-center gap-1.5 bg-[#0D1419] p-1 rounded-lg border border-slate-800 text-xs">
+        <div className="flex items-center gap-1.5 bg-[#0D1419] p-1 rounded-lg border border-[#1C2C35] text-xs">
           <button
             onClick={() => setActiveTab('roi')}
             className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer flex items-center gap-1.5 ${
@@ -228,10 +228,10 @@ export default function AnalyticsPage() {
 
           <button
             onClick={() => setActiveTab('ml')}
-            className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer flex items-center gap-1.5 font-bold ${
+            className={`px-3 py-1.5 rounded-md transition-colors cursor-pointer flex items-center gap-1.5 font-semibold ${
               activeTab === 'ml'
-                ? 'bg-emerald-600 text-white shadow-sm'
-                : 'text-emerald-400 hover:text-white bg-emerald-950/40 border border-emerald-800/60'
+                ? 'bg-[#0D5C75] text-white shadow-sm'
+                : 'text-slate-400 hover:text-white'
             }`}
           >
             <BrainCircuit size={14} />
@@ -241,7 +241,7 @@ export default function AnalyticsPage() {
       </div>
 
       {/* Helpful PPG Definition Banner */}
-      <div className="bg-[#0D1419] border border-cyan-800/40 rounded-lg px-3.5 py-2 flex items-center gap-2 text-xs text-slate-300">
+      <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg px-3.5 py-2 flex items-center gap-2 text-xs text-slate-300">
         <Info size={15} className="text-[#38BDF8] shrink-0" />
         <span>
           <strong className="text-[#38BDF8]">PPG = Pounds Per Gallon:</strong> The unit measuring how heavy/dense the drilling fluid (mud) is. Correct mud weight holds back underground gas without cracking the rock.
@@ -263,10 +263,10 @@ export default function AnalyticsPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             
             {/* Stat 1: Total Past Loss */}
-            <div className="bg-[#0D1419] border border-slate-800 rounded-xl p-4 space-y-1.5 shadow-sm">
+            <div className="bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 space-y-1.5 shadow-sm">
               <div className="flex items-center justify-between text-xs font-semibold text-slate-400 uppercase">
                 <span>Past Money Lost in Assam</span>
-                <span className="w-2.5 h-2.5 rounded-full bg-rose-500" />
+                <span className="w-2 h-2 rounded-full bg-rose-500" />
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-bold font-mono text-white">₹88.5</span>
@@ -278,14 +278,14 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Stat 2: Projected Yearly Savings */}
-            <div className="bg-[#0D1419] border border-slate-800 rounded-xl p-4 space-y-1.5 shadow-sm">
+            <div className="bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 space-y-1.5 shadow-sm">
               <div className="flex items-center justify-between text-xs font-semibold text-slate-400 uppercase">
                 <span>Estimated Yearly Savings</span>
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400" />
+                <span className="w-2 h-2 rounded-full bg-emerald-400" />
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold font-mono text-emerald-400">₹35 – 48</span>
-                <span className="text-xs text-emerald-300 font-medium">Crore / Year</span>
+                <span className="text-3xl font-bold font-mono text-white">₹35 – 48</span>
+                <span className="text-xs text-emerald-400 font-medium">Crore / Year</span>
               </div>
               <p className="text-xs text-slate-400">
                 Reduces rig stoppage time by 40%–50% by stopping kicks and stuck pipe early
@@ -293,13 +293,13 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Stat 3: Advance Warning Distance */}
-            <div className="bg-[#0D1419] border border-slate-800 rounded-xl p-4 space-y-1.5 shadow-sm">
+            <div className="bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 space-y-1.5 shadow-sm">
               <div className="flex items-center justify-between text-xs font-semibold text-slate-400 uppercase">
                 <span>Advance Warning Distance</span>
-                <span className="w-2.5 h-2.5 rounded-full bg-cyan-400" />
+                <span className="w-2 h-2 rounded-full bg-[#38BDF8]" />
               </div>
               <div className="flex items-baseline gap-2">
-                <span className="text-3xl font-bold font-mono text-[#38BDF8]">32</span>
+                <span className="text-3xl font-bold font-mono text-white">32</span>
                 <span className="text-xs text-[#38BDF8] font-medium">Meters Ahead</span>
               </div>
               <p className="text-xs text-slate-400">
@@ -313,8 +313,8 @@ export default function AnalyticsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
             {/* Left: Where 82% of Losses Happen (6 cols) */}
-            <div className="lg:col-span-6 bg-[#0D1419] border border-slate-800 rounded-xl p-4 space-y-3.5 shadow-sm">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+            <div className="lg:col-span-6 bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 space-y-3.5 shadow-sm">
+              <div className="flex items-center justify-between border-b border-[#1C2C35] pb-2.5">
                 <div className="flex items-center gap-2">
                   <ShieldAlert size={16} className="text-amber-400" />
                   <span className="text-xs font-bold uppercase text-white">
@@ -328,7 +328,7 @@ export default function AnalyticsPage() {
 
               <div className="space-y-3">
                 {/* Cause 1 */}
-                <div className="p-3 bg-[#0D1419] border border-slate-800 rounded-lg space-y-1.5">
+                <div className="p-3 bg-[#0D1419] border border-[#1C2C35] rounded-lg space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold text-white">1. Barail Rock — High-Pressure Gas Kicks</span>
                     <span className="font-mono font-bold text-rose-400">₹59.0 Cr (67%)</span>
@@ -343,7 +343,7 @@ export default function AnalyticsPage() {
                 </div>
 
                 {/* Cause 2 */}
-                <div className="p-3 bg-[#0D1419] border border-slate-800 rounded-lg space-y-1.5">
+                <div className="p-3 bg-[#0D1419] border border-[#1C2C35] rounded-lg space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold text-white">2. Girujan Clay — Swelling & Stuck Pipe</span>
                     <span className="font-mono font-bold text-amber-400">₹13.1 Cr (15%)</span>
@@ -358,7 +358,7 @@ export default function AnalyticsPage() {
                 </div>
 
                 {/* Cause 3 */}
-                <div className="p-3 bg-[#0D1419] border border-slate-800 rounded-lg space-y-1.5">
+                <div className="p-3 bg-[#0D1419] border border-[#1C2C35] rounded-lg space-y-1.5">
                   <div className="flex items-center justify-between text-xs">
                     <span className="font-bold text-slate-300">3. Other Layers — Fluid Loss & Cave-ins</span>
                     <span className="font-mono font-bold text-slate-400">₹16.4 Cr (18%)</span>
@@ -373,14 +373,14 @@ export default function AnalyticsPage() {
                 </div>
               </div>
 
-              <div className="p-3 bg-[#0D1419] border border-slate-800 rounded-lg text-xs text-slate-300 leading-relaxed">
+              <div className="p-3 bg-[#0D1419] border border-[#1C2C35] rounded-lg text-xs text-slate-300 leading-relaxed">
                 <strong className="text-[#38BDF8]">💡 Key Takeaway:</strong> Preventing gas kicks in Barail rock and stuck pipes in Girujan clay stops <strong>82% of all drilling downtime</strong> for Oil India Limited.
               </div>
             </div>
 
             {/* Right: Conventional vs SRISHTI AI Comparison (6 cols) */}
-            <div className="lg:col-span-6 bg-[#0D1419] border border-slate-800 rounded-xl p-4 space-y-3.5 shadow-sm">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-2.5">
+            <div className="lg:col-span-6 bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 space-y-3.5 shadow-sm">
+              <div className="flex items-center justify-between border-b border-[#1C2C35] pb-2.5">
                 <div className="flex items-center gap-2">
                   <ShieldCheck size={16} className="text-emerald-400" />
                   <span className="text-xs font-bold uppercase text-white">
@@ -395,7 +395,7 @@ export default function AnalyticsPage() {
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse text-xs">
                   <thead>
-                    <tr className="border-b border-slate-800 text-slate-400 text-[10px] uppercase">
+                    <tr className="border-b border-[#1C2C35] text-slate-400 text-[10px] uppercase">
                       <th className="py-2 px-2.5">FEATURE</th>
                       <th className="py-2 px-2.5">WITHOUT AI (CONVENTIONAL)</th>
                       <th className="py-2 px-2.5 text-[#38BDF8]">WITH SRISHTI AI</th>
@@ -431,7 +431,7 @@ export default function AnalyticsPage() {
                 </table>
               </div>
 
-              <div className="p-3 bg-[#0D1419] border border-slate-800 rounded-lg text-xs text-slate-400 leading-relaxed">
+              <div className="p-3 bg-[#0D1419] border border-[#1C2C35] rounded-lg text-xs text-slate-400 leading-relaxed">
                 <strong className="text-slate-200">Fleet Baseline:</strong> Based on 18 active OIL drilling rigs in Assam. Every single day of avoided downtime saves approximately <strong>₹18 Lakhs</strong>.
               </div>
             </div>
@@ -456,7 +456,7 @@ export default function AnalyticsPage() {
                   className={`p-3.5 rounded-xl border transition-all cursor-pointer text-xs ${
                     isSelected
                       ? 'bg-[#111B21] border-cyan-400 text-white shadow-md'
-                      : 'bg-[#0D1419] border-slate-800 text-slate-300 hover:border-slate-700'
+                      : 'bg-[#0D1419] border-[#1C2C35] text-slate-300 hover:border-slate-700'
                   }`}
                 >
                   <div className="flex items-center justify-between mb-1.5">
@@ -483,7 +483,7 @@ export default function AnalyticsPage() {
                     {strat.hazard}
                   </p>
 
-                  <div className="flex items-center justify-between text-xs pt-1.5 border-t border-slate-800/80">
+                  <div className="flex items-center justify-between text-xs pt-1.5 border-t border-[#1C2C35]/80">
                     <span className="text-slate-400">Safe Mud: <strong className="text-emerald-400">{strat.safeWindow}</strong></span>
                     <span className="text-rose-400 font-bold font-mono">₹{strat.nptCostCr} Cr loss</span>
                   </div>
@@ -493,8 +493,8 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Right Column: Selected Formation Detail (7 cols) */}
-          <div className="lg:col-span-7 bg-[#0D1419] border border-slate-800 rounded-xl p-5 space-y-3.5 text-xs shadow-md">
-            <div className="border-b border-slate-800 pb-3 flex items-start justify-between">
+          <div className="lg:col-span-7 bg-[#0D1419] border border-[#1C2C35] rounded-xl p-5 space-y-3.5 text-xs shadow-md">
+            <div className="border-b border-[#1C2C35] pb-3 flex items-start justify-between">
               <div>
                 <div className="flex items-center gap-2">
                   <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 text-[#38BDF8] border border-slate-700">
@@ -516,18 +516,18 @@ export default function AnalyticsPage() {
             </div>
 
             <div className="space-y-3">
-              <div className="p-3 bg-[#0D1419] border border-slate-800 rounded-lg space-y-1">
+              <div className="p-3 bg-[#0D1419] border border-[#1C2C35] rounded-lg space-y-1">
                 <span className="text-[10px] text-slate-400 uppercase font-bold block">WHAT THIS ROCK LAYER IS:</span>
                 <p className="text-slate-200 text-xs leading-relaxed">{selectedStrat.description}</p>
               </div>
 
               <div className="grid grid-cols-2 gap-2.5">
-                <div className="p-3 bg-[#0D1419] border border-slate-800 rounded-lg">
+                <div className="p-3 bg-[#0D1419] border border-[#1C2C35] rounded-lg">
                   <span className="text-[10px] text-slate-400 uppercase font-semibold block">UNDERGROUND GAS PRESSURE</span>
                   <span className="text-base font-bold text-white font-mono">{selectedStrat.porePressure}</span>
                   <span className="text-[10px] text-slate-500 block mt-0.5">Pounds Per Gallon</span>
                 </div>
-                <div className="p-3 bg-[#0D1419] border border-slate-800 rounded-lg">
+                <div className="p-3 bg-[#0D1419] border border-[#1C2C35] rounded-lg">
                   <span className="text-[10px] text-emerald-400 uppercase font-semibold block">RECOMMENDED SAFE MUD WEIGHT</span>
                   <span className="text-base font-bold text-emerald-400 font-mono">{selectedStrat.safeWindow}</span>
                   <span className="text-[10px] text-slate-500 block mt-0.5">Safe Operating Corridor</span>
@@ -544,7 +544,7 @@ export default function AnalyticsPage() {
                 <p className="text-slate-200 text-xs leading-relaxed">{selectedStrat.action}</p>
               </div>
 
-              <div className="p-3 bg-[#0D1419] border border-slate-800 rounded-lg flex items-center justify-between text-xs">
+              <div className="p-3 bg-[#0D1419] border border-[#1C2C35] rounded-lg flex items-center justify-between text-xs">
                 <span className="text-slate-400">HISTORICAL ACCIDENT DAMAGE:</span>
                 <span className="text-rose-400 font-bold font-mono">₹{selectedStrat.nptCostCr} Crore lost · {selectedStrat.nptHours} hours downtime</span>
               </div>
@@ -556,9 +556,9 @@ export default function AnalyticsPage() {
 
       {/* TAB 3: SAFE MUD WEIGHTS */}
       {activeTab === 'geomechanics' && (
-        <div className="bg-[#0D1419] border border-slate-800 rounded-xl p-4 space-y-3.5 text-xs shadow-md">
+        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 space-y-3.5 text-xs shadow-md">
           
-          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 pb-2.5">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#1C2C35] pb-2.5">
             <div>
               <h2 className="text-sm font-bold text-white uppercase flex items-center gap-2">
                 <TrendingUp size={16} className="text-[#38BDF8]" />
@@ -586,7 +586,7 @@ export default function AnalyticsPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse text-xs">
               <thead>
-                <tr className="border-b border-slate-800 text-slate-400 text-[10px] uppercase">
+                <tr className="border-b border-[#1C2C35] text-slate-400 text-[10px] uppercase">
                   <th className="py-2.5 px-3">ROCK LAYER</th>
                   <th className="py-2.5 px-3">DEPTH</th>
                   <th className="py-2.5 px-3">UNDERGROUND PRESSURE</th>
@@ -661,7 +661,7 @@ export default function AnalyticsPage() {
                   Upper Assam Basin
                 </span>
               </div>
-              <div className="text-right border-l border-slate-800 pl-4">
+              <div className="text-right border-l border-[#1C2C35] pl-4">
                 <span className="text-slate-400 text-[10px] block font-sans">VALIDATION METHOD</span>
                 <span className="text-emerald-400 font-bold text-xs uppercase">
                   Stratified 5-Fold CV
@@ -674,8 +674,8 @@ export default function AnalyticsPage() {
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
             {/* Left Column: Interactive Rig Simulator Form */}
-            <div className="lg:col-span-7 bg-[#0D1419] border border-slate-800 rounded-xl p-4 space-y-4 shadow-sm">
-              <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+            <div className="lg:col-span-7 bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 space-y-4 shadow-sm">
+              <div className="flex items-center justify-between border-b border-[#1C2C35] pb-2">
                 <div className="flex items-center gap-2">
                   <Sliders size={16} className="text-[#38BDF8]" />
                   <span className="text-xs font-bold text-white uppercase">Active Well Parameter Simulator</span>
@@ -796,7 +796,7 @@ export default function AnalyticsPage() {
                 <button
                   onClick={runMlPrediction}
                   disabled={mlLoading}
-                  className="w-full py-2.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer disabled:opacity-50"
+                  className="w-full py-2.5 rounded-lg bg-[#0D5C75] hover:bg-[#0F6D8A] text-white font-semibold text-xs flex items-center justify-center gap-2 shadow-sm transition-all cursor-pointer disabled:opacity-50"
                 >
                   <Zap size={14} />
                   <span>{mlLoading ? 'Evaluating Ensemble Model...' : 'Run ML Risk Assessment'}</span>
@@ -804,24 +804,24 @@ export default function AnalyticsPage() {
               </div>
 
               {/* Feature Importance Bar */}
-              <div className="pt-2 border-t border-slate-800 space-y-2">
-                <span className="text-[10px] text-slate-400 uppercase font-bold block">
+              <div className="pt-2 border-t border-[#1C2C35] space-y-2">
+                <span className="text-[10px] text-slate-400 uppercase font-semibold block">
                   Top Feature Weights Learned by Random Forest:
                 </span>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-[10px] font-mono">
-                  <div className="p-2 rounded bg-[#0D1419] border border-slate-800">
+                  <div className="p-2 rounded bg-[#0D1419] border border-[#1C2C35]">
                     <span className="text-slate-400 block">Depth (MD)</span>
                     <span className="text-[#38BDF8] font-bold">14.4% weight</span>
                   </div>
-                  <div className="p-2 rounded bg-[#0D1419] border border-slate-800">
+                  <div className="p-2 rounded bg-[#0D1419] border border-[#1C2C35]">
                     <span className="text-slate-400 block">RPM</span>
                     <span className="text-emerald-300 font-bold">11.6% weight</span>
                   </div>
-                  <div className="p-2 rounded bg-[#0D1419] border border-slate-800">
+                  <div className="p-2 rounded bg-[#0D1419] border border-[#1C2C35]">
                     <span className="text-slate-400 block">Mud Weight</span>
                     <span className="text-amber-300 font-bold">11.5% weight</span>
                   </div>
-                  <div className="p-2 rounded bg-[#0D1419] border border-slate-800">
+                  <div className="p-2 rounded bg-[#0D1419] border border-[#1C2C35]">
                     <span className="text-slate-400 block">WOB</span>
                     <span className="text-white font-bold">11.5% weight</span>
                   </div>
@@ -834,18 +834,18 @@ export default function AnalyticsPage() {
             <div className="lg:col-span-5 space-y-4">
               
               {/* Prediction Results Card */}
-              <div className="bg-[#0D1419] border border-slate-800 rounded-xl p-4 space-y-3 shadow-sm">
-                <div className="flex items-center justify-between border-b border-slate-800 pb-2">
+              <div className="bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 space-y-3 shadow-sm">
+                <div className="flex items-center justify-between border-b border-[#1C2C35] pb-2">
                   <div className="flex items-center gap-2">
-                    <BarChart3 size={16} className="text-emerald-400" />
+                    <BarChart3 size={16} className="text-[#38BDF8]" />
                     <span className="text-xs font-bold text-white uppercase">Predicted Hazard Probabilities</span>
                   </div>
                   {mlPrediction && (
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase ${
-                      mlPrediction.top_risk === 'stuck_pipe' ? 'bg-amber-950 text-amber-300 border border-amber-800' :
-                      mlPrediction.top_risk === 'kick' ? 'bg-rose-950 text-rose-300 border border-rose-800 ' :
-                      mlPrediction.top_risk === 'mud_loss' ? 'bg-cyan-950 text-[#38BDF8] border border-cyan-800' :
-                      'bg-emerald-950 text-emerald-300 border border-emerald-800'
+                    <span className={`px-2 py-0.5 rounded text-[10px] font-semibold uppercase tracking-wide ${
+                      mlPrediction.top_risk === 'stuck_pipe' ? 'bg-amber-500/10 text-amber-300 border border-amber-500/30' :
+                      mlPrediction.top_risk === 'kick' ? 'bg-rose-500/10 text-rose-300 border border-rose-500/30' :
+                      mlPrediction.top_risk === 'mud_loss' ? 'bg-cyan-500/10 text-[#38BDF8] border border-cyan-500/30' :
+                      'bg-emerald-500/10 text-emerald-300 border border-emerald-500/30'
                     }`}>
                       TOP RISK: {mlPrediction.top_risk.replace('_', ' ')} ({(mlPrediction.confidence * 100).toFixed(0)}%)
                     </span>
@@ -870,7 +870,7 @@ export default function AnalyticsPage() {
                             <span className="text-slate-300">{item.label}</span>
                             <span className="font-mono font-bold text-white">{pct}%</span>
                           </div>
-                          <div className="w-full bg-[#0D1419] h-2 rounded-full overflow-hidden border border-slate-800">
+                          <div className="w-full bg-[#0D1419] h-2 rounded-full overflow-hidden border border-[#1C2C35]">
                             <div className={`h-full ${item.color} transition-all duration-300`} style={{ width: `${pct}%` }} />
                           </div>
                         </div>
@@ -885,7 +885,7 @@ export default function AnalyticsPage() {
 
                 {/* Recommended Mitigation Protocol */}
                 {mlPrediction && mlPrediction.recommended_actions && (
-                  <div className="p-3 bg-[#0D1419] rounded-lg border border-slate-800 space-y-1.5 mt-3">
+                  <div className="p-3 bg-[#0D1419] rounded-lg border border-[#1C2C35] space-y-1.5 mt-3">
                     <span className="text-[10px] text-amber-300 font-bold uppercase flex items-center gap-1.5">
                       <ShieldCheck size={13} className="text-emerald-400" />
                       Recommended OISD-STD-174 Action Protocol:

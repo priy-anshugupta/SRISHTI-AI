@@ -234,7 +234,7 @@ export default function ReportPage() {
     <div className="space-y-3 font-sans text-slate-200 max-w-[1500px] mx-auto pb-12 select-none">
       
       {/* 1. Header Toolbar */}
-      <div className="print:hidden bg-[#0D1419] border border-slate-800 rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+      <div className="print:hidden bg-[#0D1419] border border-[#1C2C35] rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
             <h1 className="text-sm font-bold text-white tracking-wide uppercase font-mono">
@@ -273,25 +273,25 @@ export default function ReportPage() {
 
       {/* 2. Top 4 Metric Cards */}
       <div className="print:hidden grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-[#0D1419] border border-slate-800 rounded-lg p-3 space-y-0.5">
+        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg p-3 space-y-0.5">
           <span className="text-[10px] font-mono uppercase text-slate-400 block">TOTAL INCIDENTS</span>
           <div className="text-lg font-bold font-mono text-white">{stats.total} <span className="text-xs text-slate-400 font-normal">Events</span></div>
           <p className="text-[11px] text-slate-400">Within {radius} km offset corridor</p>
         </div>
 
-        <div className="bg-[#0D1419] border border-slate-800 rounded-lg p-3 space-y-0.5">
+        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg p-3 space-y-0.5">
           <span className="text-[10px] font-mono uppercase text-slate-400 block">CRITICAL THREATS</span>
           <div className="text-lg font-bold font-mono text-rose-400">{stats.critical} <span className="text-xs text-slate-400 font-normal">Gas Kicks</span></div>
           <p className="text-[11px] text-slate-400">Overpressure influx events</p>
         </div>
 
-        <div className="bg-[#0D1419] border border-slate-800 rounded-lg p-3 space-y-0.5">
+        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg p-3 space-y-0.5">
           <span className="text-[10px] font-mono uppercase text-slate-400 block">HIGH RISK WARNINGS</span>
           <div className="text-lg font-bold font-mono text-amber-300">{stats.high} <span className="text-xs text-slate-400 font-normal">Stuck Pipe / Loss</span></div>
           <p className="text-[11px] text-slate-400">Swelling clay & circulation losses</p>
         </div>
 
-        <div className="bg-[#0D1419] border border-slate-800 rounded-lg p-3 space-y-0.5">
+        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg p-3 space-y-0.5">
           <span className="text-[10px] font-mono uppercase text-slate-400 block">FIRST HAZARD DEPTH</span>
           <div className="text-lg font-bold font-mono text-emerald-400">{stats.closestDepth ? `${stats.closestDepth}m` : 'None'}</div>
           <p className="text-[11px] text-slate-400">Girujan Clay swelling zone</p>
@@ -299,7 +299,7 @@ export default function ReportPage() {
       </div>
 
       {/* 3. Controls & Filter Bar */}
-      <div className="print:hidden bg-[#0D1419] border border-slate-800 rounded-lg px-3 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+      <div className="print:hidden bg-[#0D1419] border border-[#1C2C35] rounded-lg px-3 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
         
         {/* Left: Well & Radius */}
         <div className="flex flex-wrap items-center gap-3 font-mono">
@@ -391,14 +391,14 @@ export default function ReportPage() {
       {/* 4. Streamlined Incident List (Simplified, Jargon-Free, No Nested Boxes) */}
       <div className="space-y-2">
         {loading && (
-          <div className="p-8 text-center bg-[#0D1419] border border-slate-800 rounded-lg space-y-2">
+          <div className="p-8 text-center bg-[#0D1419] border border-[#1C2C35] rounded-lg space-y-2">
             <RefreshCw size={20} className="animate-spin mx-auto text-[#38BDF8]" />
             <div className="text-xs font-mono text-slate-400">LOADING OFFSET INCIDENTS...</div>
           </div>
         )}
 
         {!loading && filteredEvents.length === 0 && (
-          <div className="p-8 text-center bg-[#0D1419] border border-slate-800 rounded-lg space-y-1">
+          <div className="p-8 text-center bg-[#0D1419] border border-[#1C2C35] rounded-lg space-y-1">
             <div className="text-sm font-semibold text-white">No Matching Incidents</div>
             <p className="text-xs text-slate-400">Try expanding the search radius or clearing filters.</p>
           </div>
@@ -412,17 +412,17 @@ export default function ReportPage() {
           return (
             <div
               key={index}
-              className="bg-[#0D1419] border border-slate-800 hover:border-slate-700 rounded-lg p-3 space-y-2 transition-colors"
+              className="bg-[#0D1419] border border-[#1C2C35] hover:border-slate-700 rounded-lg p-3 space-y-2 transition-colors"
             >
               {/* Header Line */}
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-bold uppercase tracking-wider ${
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-semibold uppercase tracking-wider ${
                     isCritical 
-                      ? 'bg-rose-950/60 text-rose-300 border border-rose-800' 
+                      ? 'bg-rose-500/10 text-rose-300 border border-rose-500/30' 
                       : isHigh 
-                        ? 'bg-amber-950/60 text-amber-300 border border-amber-800' 
-                        : 'bg-slate-800 text-slate-300 border border-slate-700'
+                        ? 'bg-amber-500/10 text-amber-300 border border-amber-500/30' 
+                        : 'bg-slate-500/10 text-slate-300 border border-slate-500/30'
                   }`}>
                     {item.severity}
                   </span>
@@ -443,7 +443,7 @@ export default function ReportPage() {
               </div>
 
               {/* Clean 2-Column Summary (No nested boxes!) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1.5 border-t border-slate-800/80">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1.5 border-t border-[#1C2C35]/80">
                 <div>
                   <span className="text-[10px] font-mono text-slate-400 uppercase font-semibold block mb-0.5">
                     WHAT HAPPENED:

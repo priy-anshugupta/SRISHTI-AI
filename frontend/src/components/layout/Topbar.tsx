@@ -121,10 +121,10 @@ export default function Topbar() {
         {/* Rig Air-Gap / Edge Server vs Cloud Mode Toggle */}
         <button
           onClick={toggleNetworkMode}
-          className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer ${
+          className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer shadow-sm ${
             isAirGapped
-              ? 'bg-amber-950/40 hover:bg-amber-900/40 border-amber-700/60 text-amber-300'
-              : 'bg-emerald-950/30 hover:bg-emerald-900/40 border-emerald-700/50 text-emerald-300'
+              ? 'bg-[#0D1419] hover:bg-[#111B21] border-amber-500/40 text-amber-300'
+              : 'bg-[#0D1419] hover:bg-[#111B21] border-[#1C2C35] hover:border-slate-500 text-slate-300'
           }`}
           title={
             isAirGapped
@@ -135,12 +135,12 @@ export default function Topbar() {
           {isAirGapped ? (
             <>
               <WifiOff size={13} className="text-amber-400 shrink-0" />
-              <span className="text-[11px] font-semibold text-amber-200">Local AI (Offline)</span>
+              <span className="text-[11px] font-medium text-amber-300">Local AI (Offline)</span>
             </>
           ) : (
             <>
-              <Wifi size={13} className="text-emerald-400 shrink-0" />
-              <span className="text-[11px] font-semibold text-emerald-200">Cloud AI</span>
+              <Wifi size={13} className="text-[#38BDF8] shrink-0" />
+              <span className="text-[11px] font-medium text-slate-200">Cloud AI</span>
             </>
           )}
         </button>

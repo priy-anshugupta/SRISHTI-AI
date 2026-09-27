@@ -244,7 +244,7 @@ export default function AskSRISHTIPage() {
                 <span className="text-sm font-bold text-white tracking-wide">Drilling Intelligence Copilot</span>
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 {isAirGapped && (
-                  <span className="text-xs px-2 py-0.5 rounded bg-amber-950/70 text-amber-300 border border-amber-600/70 font-semibold">
+                  <span className="text-xs px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30 font-semibold">
                     OFFLINE EDGE
                   </span>
                 )}
@@ -478,7 +478,7 @@ export default function AskSRISHTIPage() {
               Historical Records
             </h2>
           </div>
-          <span className="text-xs font-mono font-bold px-2 py-0.5 rounded bg-[#0D2430] text-[#38BDF8] border border-[#163847]">
+          <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-[#0D5C75]/20 text-[#38BDF8] border border-[#0D5C75]/40">
             {selectedEvidence.length} {selectedEvidence.length === 1 ? 'Record' : 'Records'}
           </span>
         </div>
@@ -516,7 +516,7 @@ export default function AskSRISHTIPage() {
                   ocr_confidence: 96.8,
                   reviewed_by: 'P. Saikia (Chief Drilling Specialist, Oil India Ltd.)'
                 })}
-                className="p-3.5 bg-[#0D1419] hover:bg-[#0D1D24] border border-[#1C2C35] hover:border-cyan-500/50 rounded-lg space-y-2 text-xs transition-all cursor-pointer group shadow-sm"
+                className="p-3.5 bg-[#0D1419] hover:bg-[#111B21] border border-[#1C2C35] hover:border-slate-500 rounded-lg space-y-2 text-xs transition-all cursor-pointer group shadow-sm"
                 title="Click to view original scanned report excerpt"
               >
                 {/* Top Row: Well Name + Depth + Hazard Tag */}
@@ -526,10 +526,10 @@ export default function AskSRISHTIPage() {
                     <span>{ev.well}</span>
                     <span className="text-xs text-slate-400 font-normal">· {ev.depth_from_md_m}m</span>
                   </div>
-                  <span className={`px-2 py-0.5 rounded text-[11px] font-bold ${
+                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide ${
                     ev.severity === 'CRITICAL' || ev.event_type.toLowerCase().includes('kick')
-                      ? 'bg-red-950/60 text-red-300 border border-red-800/60'
-                      : 'bg-amber-950/60 text-amber-300 border border-amber-800/60'
+                      ? 'bg-red-500/10 text-red-400 border border-red-500/30'
+                      : 'bg-amber-500/10 text-amber-300 border border-amber-500/30'
                   }`}>
                     {ev.event_type}
                   </span>
@@ -547,7 +547,7 @@ export default function AskSRISHTIPage() {
 
                 {/* Solution Box */}
                 {ev.mitigation && (
-                  <div className="text-xs text-slate-300 border-l-2 border-emerald-500 pl-2 py-0.5 leading-relaxed bg-[#061814]/40 rounded-r">
+                  <div className="text-xs text-slate-300 border-l-2 border-emerald-500 pl-2 py-0.5 leading-relaxed bg-emerald-500/5 rounded-r">
                     <span className="text-emerald-400 font-semibold">Solution: </span>
                     {ev.mitigation}
                   </div>

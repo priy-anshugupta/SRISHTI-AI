@@ -123,7 +123,9 @@ html:not(.light) .bg-\[\#0A0F12\] {
 
 /* Standard card borders */
 html.dark .border-\[\#1C2C35\],
-html:not(.light) .border-\[\#1C2C35\] {
+html:not(.light) .border-\[\#1C2C35\],
+html.dark .border-slate-800,
+html:not(.light) .border-slate-800 {
   border-color: #243542 !important;
 }
 

@@ -41,7 +41,6 @@ interface NavItem {
 interface NavGroup {
   title: string;
   subtitle: string;
-  dotColor: string;
   items: NavItem[];
 }
 
@@ -49,28 +48,25 @@ const navGroups: NavGroup[] = [
   {
     title: 'RIG OPERATIONS',
     subtitle: 'Live',
-    dotColor: '#ef4444', // Red
     items: [
       { name: 'Well Profile & Dossier', href: '/well/MOR-29', icon: FileText, shortcut: 'Alt+1' },
-      { name: 'Early Safety Alerts', href: '/alerts', icon: AlertTriangle, shortcut: 'Alt+2', badge: 'LIVE', badgeColor: 'bg-red-950 text-red-300 border border-red-800/80 font-bold' },
-      { name: 'Rig Floor View', href: '/doghouse', icon: Monitor, shortcut: 'Alt+3', badge: 'Rig', badgeColor: 'bg-emerald-950 text-emerald-300 border border-emerald-800/80 font-bold' },
+      { name: 'Early Safety Alerts', href: '/alerts', icon: AlertTriangle, shortcut: 'Alt+2', badge: 'LIVE', badgeColor: 'bg-red-500/10 text-red-400 border border-red-500/25 font-semibold' },
+      { name: 'Rig Floor View', href: '/doghouse', icon: Monitor, shortcut: 'Alt+3', badge: 'Rig', badgeColor: 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/25 font-semibold' },
     ],
   },
   {
     title: 'OFFSET INTELLIGENCE',
     subtitle: 'Historical Memory',
-    dotColor: '#38bdf8', // Blue/Cyan
     items: [
       { name: 'Nearby Well Map', href: '/map', icon: Globe, shortcut: 'Alt+4' },
       { name: 'Compare Nearby Wells', href: '/compare', icon: GitCompare, shortcut: 'Alt+5' },
       { name: 'Past Incident Memory', href: '/knowledge', icon: Share2, shortcut: 'Alt+6' },
-      { name: 'Ask SRISHTI', href: '/ask', icon: MessageSquare, shortcut: 'Alt+7', badge: 'AI Chat', badgeColor: 'bg-amber-950 text-amber-300 border border-amber-800/80 font-bold' },
+      { name: 'Ask SRISHTI', href: '/ask', icon: MessageSquare, shortcut: 'Alt+7', badge: 'AI Chat', badgeColor: 'bg-cyan-500/10 text-cyan-400 border border-cyan-500/25 font-semibold' },
     ],
   },
   {
     title: 'ENGINEERING & DATA',
     subtitle: 'Planning',
-    dotColor: '#10b981', // Green
     items: [
       { name: 'Rock Layer Analysis', href: '/analytics', icon: BarChart3, shortcut: 'Alt+8' },
       { name: 'Pre-Drill Safety Brief', href: '/report', icon: ClipboardList, shortcut: 'Alt+9' },
@@ -177,20 +173,12 @@ export default function Sidebar() {
                 <div className="pt-2 border-t border-[#1C2C35] my-1" />
               )}
 
-              {/* Group Header with Sleek Colored Gradient Line */}
+              {/* Group Header */}
               {expanded ? (
-                <div className="px-2.5 pt-1 pb-1.5 flex items-center gap-2">
-                  <span 
-                    className="w-2 h-2 rounded-full shrink-0 shadow-sm" 
-                    style={{ backgroundColor: group.dotColor }}
-                  />
-                  <span className="text-[10px] uppercase tracking-wider font-extrabold text-slate-300 whitespace-nowrap">
+                <div className="px-2.5 pt-2 pb-1 flex items-center justify-between">
+                  <span className="text-[10px] uppercase tracking-wider font-semibold text-slate-400 select-none">
                     {group.title}
                   </span>
-                  <div 
-                    className="flex-1 h-[1px] ml-1.5 opacity-40" 
-                    style={{ background: `linear-gradient(to right, ${group.dotColor}, transparent)` }}
-                  />
                 </div>
               ) : (
                 groupIdx > 0 && <div className="border-t border-[#1C2C35] my-2" />
@@ -209,9 +197,8 @@ export default function Sidebar() {
                         size={16}
                         className={cn(
                           "shrink-0 transition-colors",
-                          isItemLocked ? "text-slate-600" : (active ? "text-white" : "text-slate-400 group-hover:text-cyan-300")
+                          isItemLocked ? "text-slate-600" : (active ? "text-[#38BDF8]" : "text-slate-400 group-hover:text-slate-200")
                         )}
-                        style={!isItemLocked && active ? { color: group.dotColor } : undefined}
                       />
                       
                       {expanded && (
@@ -238,14 +225,13 @@ export default function Sidebar() {
 
                       {/* Collapsed Tooltip */}
                       {!expanded && (
-                        <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-[#09151A] border border-cyan-800/80 text-white text-xs rounded-lg shadow-2xl opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
+                        <div className="absolute left-full ml-2 px-2.5 py-1.5 bg-[#131D24] border border-[#243542] text-white text-xs rounded-lg shadow-md opacity-0 pointer-events-none group-hover:opacity-100 transition-opacity z-50 whitespace-nowrap">
                           <div className="font-bold flex items-center gap-1.5">
                             {isItemLocked && <Lock size={12} className="text-amber-400" />}
                             <span>{item.name}</span>
                             {isItemLocked && <span className="text-amber-400 text-[10px]">(Rig Locked)</span>}
                           </div>
                           <div className="text-[10px] text-slate-400 flex items-center gap-1 mt-0.5">
-                            <span className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: group.dotColor }} />
                             <span>{group.title}</span> · <span>{item.shortcut}</span>
                           </div>
                         </div>
@@ -273,7 +259,7 @@ export default function Sidebar() {
                         "flex items-center gap-2.5 px-2.5 py-2 rounded-xl text-xs transition-all group relative cursor-pointer",
                         active
                           ? "bg-[#0D5C75]/15 text-[#38BDF8] border border-[#0D5C75]/40 font-semibold shadow-sm"
-                          : "text-slate-400 hover:text-slate-200 hover:bg-[#071318] border border-transparent font-medium"
+                          : "text-slate-400 hover:text-slate-200 hover:bg-[#111B21] border border-transparent font-medium"
                       )}
                     >
                       {content}
@@ -376,20 +362,20 @@ export default function Sidebar() {
               ))}
             </div>
 
-            <div className="pt-2 border-t border-slate-800 flex gap-2">
+            <div className="pt-2 border-t border-[#1C2C35] flex gap-2">
               <button
                 onClick={() => {
                   setShowUserModal(false);
                   logout();
                 }}
-                className="flex-1 py-2 bg-red-950/60 hover:bg-red-900 border border-red-800 text-red-300 text-xs font-semibold rounded transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
+                className="flex-1 py-2 bg-red-500/10 hover:bg-red-500/20 border border-red-500/30 text-red-300 text-xs font-semibold rounded-lg transition-colors flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 <LogOut size={12} />
                 <span>Log Out</span>
               </button>
               <button
                 onClick={() => setShowUserModal(false)}
-                className="flex-1 py-2 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-medium rounded transition-colors cursor-pointer"
+                className="flex-1 py-2 bg-[#111B21] hover:bg-[#1A2732] border border-[#1C2C35] text-slate-200 text-xs font-medium rounded-lg transition-colors cursor-pointer"
               >
                 Close
               </button>
@@ -428,7 +414,7 @@ export default function Sidebar() {
               </div>
             </div>
 
-            <div className="bg-[#060D10] border border-slate-800/80 rounded-xl p-3.5 text-xs text-slate-300 space-y-2">
+            <div className="bg-[#0A1115] border border-[#1C2C35] rounded-xl p-3.5 text-xs text-slate-300 space-y-2">
               <p className="text-slate-300 leading-relaxed text-[11px]">
                 Under <strong className="text-amber-300">OISD-STD-174 Well Control Guidelines</strong>, active rig floor touchscreens are restricted strictly to real-time mud telemetry, gas kick detection, and emergency shut-in procedures.
               </p>

@@ -663,18 +663,18 @@ export default function AlertsPage() {
 
                 {/* 2. MEDIUM RISK: DRILLING SPEED BENCHMARK (NO DISTANCE BAR) */}
                 {isRopAlert && (
-                  <div className="p-3 bg-[#0D1419] border border-amber-900/40 rounded-xl grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono">
-                    <div className="p-2.5 rounded-lg bg-[#0D1419] border border-slate-800 space-y-0.5">
+                  <div className="p-3 bg-[#0D1419] border border-[#1C2C35] rounded-xl grid grid-cols-1 sm:grid-cols-3 gap-2 text-xs font-mono">
+                    <div className="p-2.5 rounded-lg bg-[#0D1419] border border-[#1C2C35] space-y-0.5">
                       <span className="text-[10px] text-slate-400 uppercase block font-sans">Current Speed</span>
                       <div className="text-base font-bold text-amber-400 font-mono">6.8 m/hour</div>
                       <span className="text-[10px] text-slate-500 block">Our Active Rig (OIL-RIG-04)</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-[#0D1419] border border-slate-800 space-y-0.5">
+                    <div className="p-2.5 rounded-lg bg-[#0D1419] border border-[#1C2C35] space-y-0.5">
                       <span className="text-[10px] text-slate-400 uppercase block font-sans">Target Speed</span>
                       <div className="text-base font-bold text-emerald-400 font-mono">8.3 m/hour</div>
                       <span className="text-[10px] text-slate-500 block">Nearby Well (Nahorkatiya-162)</span>
                     </div>
-                    <div className="p-2.5 rounded-lg bg-[#0D1419] border border-slate-800 space-y-0.5">
+                    <div className="p-2.5 rounded-lg bg-[#0D1419] border border-[#1C2C35] space-y-0.5">
                       <span className="text-[10px] text-slate-400 uppercase block font-sans">Speed Difference</span>
                       <div className="text-base font-bold text-rose-400 font-mono">18% Slower</div>
                       <span className="text-[10px] text-slate-400 block font-sans">Action: Press bit harder</span>

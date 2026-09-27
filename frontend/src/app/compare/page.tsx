@@ -237,14 +237,14 @@ export default function ComparePage() {
 
       {/* 2.5 Dynamic Time Warping (DTW) Stratigraphic Alignment Panel */}
       {dtwData && dtwData.dtw_metrics && (
-        <div className="bg-[#0D1419] border border-cyan-800/60 rounded-xl p-4 space-y-3 shadow-sm">
+        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 space-y-3 shadow-sm">
           <div className="flex flex-wrap items-center justify-between gap-3 border-b border-[#1C2C35] pb-2.5">
             <div className="flex items-center gap-2">
               <Zap size={16} className="text-[#38BDF8]" />
               <h2 className="text-xs font-bold text-white uppercase tracking-wider">
                 Dynamic Time Warping (DTW) Cross-Well Stratigraphic Alignment
               </h2>
-              <span className="px-2 py-0.5 rounded text-xs font-mono bg-cyan-950 text-[#38BDF8] border border-cyan-800 font-bold">
+              <span className="px-2 py-0.5 rounded text-xs font-mono bg-[#0D5C75]/20 text-[#38BDF8] border border-[#0D5C75]/40 font-semibold">
                 PRD §16.2
               </span>
             </div>
@@ -289,9 +289,9 @@ export default function ComparePage() {
                     <th className="py-1.5 px-2">Grade</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#162D38]/50 text-xs">
+                <tbody className="divide-y divide-[#1C2C35] text-xs">
                   {dtwData.correlated_horizons.slice(0, 5).map((h: any, i: number) => (
-                    <tr key={i} className="hover:bg-[#08151c]">
+                    <tr key={i} className="hover:bg-[#111B21]">
                       <td className="py-1.5 px-2 font-medium text-slate-200">{h.formation}</td>
                       <td className="py-1.5 px-2 font-mono text-[#38BDF8]">{h.well_a_top_md_m}m</td>
                       <td className="py-1.5 px-2 font-mono text-slate-300">{h.well_b_top_md_m}m</td>
@@ -299,8 +299,8 @@ export default function ComparePage() {
                         {h.depth_delta_m > 0 ? `+${h.depth_delta_m}m` : `${h.depth_delta_m}m`}
                       </td>
                       <td className="py-1.5 px-2">
-                        <span className={`px-1.5 py-0.5 rounded text-[11px] font-bold ${
-                          h.structural_direction === 'DOWNDIP' ? 'bg-cyan-950 text-[#38BDF8]' : 'bg-amber-950 text-amber-300'
+                        <span className={`px-1.5 py-0.5 rounded text-[11px] font-semibold ${
+                          h.structural_direction === 'DOWNDIP' ? 'bg-cyan-500/10 text-[#38BDF8] border border-cyan-500/30' : 'bg-amber-500/10 text-amber-300 border border-amber-500/30'
                         }`}>
                           {h.structural_direction}
                         </span>
@@ -325,7 +325,7 @@ export default function ComparePage() {
             <div
               key={well.id}
               className={`bg-[#0D1419] border rounded-xl p-4 font-sans text-xs space-y-3.5 shadow-sm transition-all ${
-                isTargetWell ? 'border-cyan-500/80 shadow-cyan-950/40 ring-1 ring-cyan-500/20' : 'border-[#1C2C35]'
+                isTargetWell ? 'border-[#0D5C75] ring-1 ring-[#0D5C75]/40' : 'border-[#1C2C35]'
               }`}
             >
               {/* Card Header */}
@@ -340,8 +340,8 @@ export default function ComparePage() {
                   <p className="text-slate-400 text-xs mt-0.5">{well.field} Field · {well.block || 'MOR-III'}</p>
                 </div>
 
-                <span className={`px-2.5 py-0.5 rounded-lg text-xs font-bold ${
-                  (well.status || '').toUpperCase().includes('ACTIVE') ? 'bg-cyan-950/70 text-[#38BDF8] border border-cyan-800 ' :
+                <span className={`px-2.5 py-0.5 rounded-lg text-xs font-semibold ${
+                  (well.status || '').toUpperCase().includes('ACTIVE') ? 'bg-[#0D5C75]/20 text-[#38BDF8] border border-[#0D5C75]/40' :
                   'bg-[#0A1115] text-slate-300 border border-[#1C2C35]'
                 }`}>
                   {isTargetWell ? 'ACTIVE' : 'COMPLETED'}
@@ -432,10 +432,10 @@ export default function ComparePage() {
               <div className="pt-2 border-t border-[#1C2C35]">
                 <Link
                   href={`/well/${well.id}`}
-                  className={`flex items-center justify-center gap-1.5 w-full py-2.5 font-semibold rounded-xl transition-colors text-xs shadow-md ${
+                  className={`flex items-center justify-center gap-1.5 w-full py-2.5 font-semibold rounded-xl transition-colors text-xs shadow-sm ${
                     well.id === 'MOR-29'
-                      ? 'bg-[#0D5C75] hover:bg-[#147695] text-white border border-cyan-400/40'
-                      : 'bg-[#071922] hover:bg-[#0D2D3E] text-cyan-200 border border-[#1C2C35]'
+                      ? 'bg-[#0D5C75] hover:bg-[#0F6D8A] text-white border border-[#0D5C75]/40'
+                      : 'bg-[#111B21] hover:bg-[#1A2732] text-slate-200 border border-[#1C2C35]'
                   }`}
                 >
                   <span>{well.id === 'MOR-29' ? 'View Active Rig (MOR-29)' : `View Dossier (${well.name})`}</span>

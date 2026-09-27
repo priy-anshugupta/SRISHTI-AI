@@ -82,7 +82,7 @@ function ShellContent({ children }: { children: React.ReactNode }) {
                     </p>
                   </div>
 
-                  <div className="bg-[#050C0E] border border-slate-800 rounded-xl p-3.5 text-left text-xs text-slate-400 space-y-1.5">
+                  <div className="bg-[#0A1115] border border-[#1C2C35] rounded-xl p-3.5 text-left text-xs text-slate-400 space-y-1.5">
                     <p className="text-[11px] font-semibold text-slate-300 uppercase tracking-wider font-mono">
                       Rig Floor Safety Directives:
                     </p>
