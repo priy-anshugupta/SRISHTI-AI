@@ -33,7 +33,7 @@ app.include_router(reports.router)
 app.include_router(graph.router)
 app.include_router(telemetry.router)
 
-@app.get("/")
+@app.api_route("/", methods=["GET", "HEAD"])
 def root():
     return {
         "system": "SRISHTI·AI",
@@ -52,7 +52,7 @@ def root():
 
 from backend.core.config import get_settings
 
-@app.get("/health")
+@app.api_route("/health", methods=["GET", "HEAD"])
 def health_check():
     settings = get_settings()
     wells_count = len(db_service.get_wells())
