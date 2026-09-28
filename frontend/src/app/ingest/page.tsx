@@ -245,13 +245,17 @@ export default function IngestPage() {
               <span className="text-xs font-mono font-bold uppercase tracking-wider text-secondary">
                 Quick Load Benchmark Datasets:
               </span>
-              <div className="flex items-center gap-3 text-xs font-mono text-accent">
-                <a href="/demo-files/Sample_WCR_Moran_7.pdf" download className="hover:underline flex items-center gap-1">
-                  <span>Sample WCR.pdf</span>
+              <div className="flex flex-wrap items-center gap-3 text-xs font-mono text-accent">
+                <a href="/demo-files/Sample_WCR_Moran_7.pdf" download className="hover:underline flex items-center gap-1 font-semibold">
+                  <span>📥 Moran-7 WCR.pdf</span>
                 </a>
                 <span className="text-muted">·</span>
-                <a href="/demo-files/Sample_DDR_Moran_29.pdf" download className="hover:underline flex items-center gap-1">
-                  <span>Sample DDR.pdf</span>
+                <a href="/demo-files/Sample_DDR_Moran_29.pdf" download className="hover:underline flex items-center gap-1 font-semibold text-warning">
+                  <span>📥 Moran-29 DDR.pdf</span>
+                </a>
+                <span className="text-muted">·</span>
+                <a href="/demo-files/Sample_WCR_Naharkatiya_162.pdf" download className="hover:underline flex items-center gap-1 font-semibold text-success">
+                  <span>📥 Naharkatiya-162 WCR.pdf</span>
                 </a>
               </div>
             </div>
@@ -289,16 +293,16 @@ export default function IngestPage() {
 
               <button
                 type="button"
-                onClick={() => loadPresetSample('geomech_baghjan', 'Geomech Study Baghjan')}
+                onClick={() => loadPresetSample('wcr_naharkatiya_162', 'WCR NAHARKATIYA-162')}
                 disabled={uploading}
-                className="p-2.5 rounded bg-surface hover:bg-surface-muted border border-line hover:border-accent/25 text-left transition-colors cursor-pointer group disabled:opacity-50"
+                className="p-2.5 rounded bg-surface hover:bg-surface-muted border border-line hover:border-success/25 text-left transition-colors cursor-pointer group disabled:opacity-50"
               >
-                <div className="flex items-center justify-between text-xs font-bold text-ink group-hover:text-accent font-sans">
-                  <span>Baghjan-5 (Study)</span>
-                  <span className="text-xs font-mono text-accent">42 pgs</span>
+                <div className="flex items-center justify-between text-xs font-bold text-ink group-hover:text-success font-sans">
+                  <span>Naharkatiya-162 (WCR)</span>
+                  <span className="text-xs font-mono text-success">82 pgs</span>
                 </div>
                 <p className="text-xs text-muted mt-0.5 truncate">
-                  Overpressured gas kick pore pressure calibration
+                  Tipam TS-3 permeable lost circulation (2,540m)
                 </p>
               </button>
             </div>

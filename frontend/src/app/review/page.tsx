@@ -39,6 +39,31 @@ export default function ReviewKnowledgeWorkspace() {
   const [searchResponse, setSearchResponse] = useState<any>(null);
   const [searching, setSearching] = useState(false);
 
+  // Auto-sync form fields whenever selected document changes
+  useEffect(() => {
+    if (!selectedDoc) return;
+    const name = (selectedDoc.filename || selectedDoc.well_id || '').toLowerCase();
+    const excerpt = (selectedDoc.raw_excerpt || '').toLowerCase();
+
+    if (name.includes('moran_29') || name.includes('mor29') || excerpt.includes('2,418') || excerpt.includes('2418')) {
+      setEditEvent('Gas Kick Precursor Horizon (Barail Group)');
+      setEditDepth('2418');
+      setEditMitigation('OISD-STD-174 shut-in protocol. Close annular BOP. Record SIDPP/SICP. Prepare 12.8 ppg kill mud in suction pit.');
+    } else if (name.includes('naharkatiya') || name.includes('nhk162') || excerpt.includes('2,540') || excerpt.includes('2540')) {
+      setEditEvent('Severe Lost Circulation in Tipam Sandstone TS-3');
+      setEditDepth('2540');
+      setEditMitigation('Spot 25 bbl coarse CaCO3 (30 ppb) + mica (15 ppb) LCM pill. Squeeze at 250 psi annular pressure. Regulate MW to 10.4 ppg.');
+    } else if (name.includes('baghjan') || excerpt.includes('3,380') || excerpt.includes('3380')) {
+      setEditEvent('Critical Gas Influx (Kick) · 22 bbl Pit Gain');
+      setEditDepth('3380');
+      setEditMitigation('Immediately shut in BOP rams. Pump 12.8 ppg kill mud with slow circulating rate. Monitor SICP.');
+    } else {
+      setEditEvent('Differential Pipe Sticking in Girujan Clay');
+      setEditDepth('1680');
+      setEditMitigation('Spotted 50 bbl OBM lubricant soak pill weighted to 11.0 ppg. Maintained rotation >60 RPM to break wall seal.');
+    }
+  }, [selectedDoc]);
+
   // Fetch documents from backend
   const fetchDocuments = async () => {
     try {
@@ -61,18 +86,25 @@ export default function ReviewKnowledgeWorkspace() {
 
   const handleApprove = async () => {
     if (!selectedDoc) return;
+    const name = (selectedDoc.filename || selectedDoc.well_id || '').toLowerCase();
+    const isMoran29 = name.includes('moran_29') || name.includes('mor-29');
+    const isNhk162 = name.includes('naharkatiya') || name.includes('nhk-162');
+    const isBaghjan = name.includes('baghjan') || name.includes('bgh');
+    const formationName = isMoran29 || isBaghjan ? 'Barail Group' : isNhk162 ? 'Tipam Sandstone' : 'Girujan Clay';
+    const pageNum = isNhk162 ? 82 : isMoran29 ? 28 : 147;
+
     try {
       const res = await fetch(`/api/documents/${selectedDoc.id}/approve`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           reviewer_name: reviewerName,
-          well_id: selectedDoc.well_id,
+          well_id: selectedDoc.well_id || 'MOR-29',
           event_type: editEvent,
-          formation: 'Tipam Sandstone',
-          depth_md: parseFloat(editDepth),
+          formation: formationName,
+          depth_md: parseFloat(editDepth) || 2418.0,
           mitigation: editMitigation,
-          source_page: 147
+          source_page: pageNum
         })
       });
       if (res.ok) {

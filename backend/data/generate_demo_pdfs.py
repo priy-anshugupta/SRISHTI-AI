@@ -170,6 +170,80 @@ def generate_ddr_moran():
         doc.build(story)
     print("Generated Sample_DDR_Moran_29.pdf successfully.")
 
+def generate_wcr_naharkatiya():
+    for out_dir in DEMO_DIRS:
+        pdf_path = os.path.join(out_dir, "Sample_WCR_Naharkatiya_162.pdf")
+        doc = SimpleDocTemplate(pdf_path, pagesize=letter, rightMargin=36, leftMargin=36, topMargin=36, bottomMargin=36)
+        story = []
+
+        # Header
+        story.append(Paragraph("OIL INDIA LIMITED — DRILLING DIRECTORATE", title_style))
+        story.append(Paragraph("DULIAJAN, ASSAM · WELL COMPLETION REPORT (WCR) · SECTION 8", subtitle_style))
+        story.append(HRFlowable(width="100%", thickness=1.5, color=colors.HexColor('#0284C7'), spaceAfter=10))
+
+        # Well Info Table
+        well_data = [
+            ["Well Name:", "NAHARKATIYA-162 (NHK-162)", "Field / Block:", "Naharkatiya PML (NHK-II)"],
+            ["Spud Date:", "14-JAN-2019", "TD Reached:", "19-JUN-2019 (3,620.0m MD)"],
+            ["Rig Assigned:", "OIL-RIG-02 (2000 HP AC-SCR)", "Status:", "COMPLETED OIL PRODUCER"],
+            ["Target Horizon:", "Tipam Sandstone TS-3 & Barail", "Classification:", "RESTRICTED SUBSURFACE ASSET"]
+        ]
+        t = Table(well_data, colWidths=[110, 160, 110, 160])
+        t.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,-1), colors.HexColor('#F8FAFC')),
+            ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#CBD5E1')),
+            ('FONTNAME', (0,0), (-1,-1), 'Helvetica-Bold'),
+            ('FONTSIZE', (0,0), (-1,-1), 8),
+            ('TEXTCOLOR', (0,0), (-1,-1), colors.HexColor('#334155')),
+        ]))
+        story.append(t)
+        story.append(Spacer(1, 12))
+
+        # Section 4: Stratigraphy
+        story.append(Paragraph("SECTION 4: GEOLOGICAL STRATIGRAPHY & FORMATION TOPS", section_style))
+        strat_data = [
+            ["Formation Name", "Depth Top (m MD)", "Depth Base (m MD)", "Lithology & Characteristics"],
+            ["Alluvium / Dihing", "0.0 m", "310.0 m", "Unconsolidated sands and pebble gravel beds"],
+            ["Dhekiajuli Formation", "310.0 m", "820.0 m", "Loose porous sandstone, freshwater aquifer"],
+            ["Girujan Clay Formation", "820.0 m", "2,240.0 m", "Reactive swelling bentonitic claystone"],
+            ["Tipam Sandstone (TS-1 to TS-6)", "2,240.0 m", "3,010.0 m", "High permeability channel pay sands. Depleted pressure."],
+            ["Barail Group", "3,010.0 m", "3,620.0 m", "Overpressured coal-shale sequences and gas sands."]
+        ]
+        st = Table(strat_data, colWidths=[130, 85, 85, 240])
+        st.setStyle(TableStyle([
+            ('BACKGROUND', (0,0), (-1,0), colors.HexColor('#0284C7')),
+            ('TEXTCOLOR', (0,0), (-1,0), colors.white),
+            ('GRID', (0,0), (-1,-1), 0.5, colors.HexColor('#CBD5E1')),
+            ('FONTNAME', (0,0), (-1,-1), 'Helvetica'),
+            ('FONTSIZE', (0,0), (-1,-1), 8),
+        ]))
+        story.append(st)
+        story.append(Spacer(1, 12))
+
+        # Section 8: Incident Excerpt
+        story.append(Paragraph("SECTION 8: HISTORICAL DRILLING HAZARDS & NPT LOG (PAGE 82)", section_style))
+        story.append(Paragraph("<b>INCIDENT: SEVERE LOST CIRCULATION AT 2,540m MD (TIPAM SANDSTONE TS-3)</b>", body_style))
+        story.append(Paragraph(
+            "Upon penetrating the micro-fractured porous Tipam Sandstone TS-3 interval at 2,540m MD, rig experienced sudden loss of mud returns "
+            "with loss rate measuring 60 bbl/hr. Active suction pit volume dropped rapidly by 38 bbl. "
+            "Standpipe pressure dropped from 2,600 psi to 1,850 psi due to loss of annular hydrostatic head.",
+            highlight_style
+        ))
+        story.append(Spacer(1, 6))
+        story.append(Paragraph(
+            "<b>FIELD-PROVEN MITIGATION & SOP:</b> Immediately hoisted drillstring off-bottom to 2,500m to prevent differential sticking. "
+            "Spotted 25 bbl coarse calcium carbonate (30 ppb) + medium mica (15 ppb) LCM pill across thief zone. "
+            "Held 250 psi hesitation squeeze for 30 minutes. Reduced drilling mud weight from 11.2 ppg to 10.4 ppg. Full circulation restored at 14:00 hrs. "
+            "Recommendation: In Tipam TS-3 intervals, maintain mud weight strictly within 10.2–10.6 ppg safe window. Keep 150 bags of coarse LCM staged on rig floor.",
+            body_style
+        ))
+        story.append(Spacer(1, 14))
+
+        # Statutory Sign-off
+        story.append(Paragraph("<b>STATUTORY SIGN-OFF:</b> Verified by B. Borah (Lead Mud Engineer, Oil India Ltd.) · OISD-STD-174 Compliant", subtitle_style))
+        doc.build(story)
+    print("Generated Sample_WCR_Naharkatiya_162.pdf successfully.")
+
 def copy_las_sample():
     sample_las_content = """~VERSION INFORMATION
  VERS.                          2.0 :   CWLS LOG ASCII STANDARD - VERSION 2.0
@@ -218,5 +292,6 @@ def copy_las_sample():
 if __name__ == "__main__":
     generate_wcr_moran()
     generate_ddr_moran()
+    generate_wcr_naharkatiya()
     copy_las_sample()
     print("All authentic demo files created across all targets.")

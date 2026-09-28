@@ -34,41 +34,69 @@ def extract_drilling_entities(text: str) -> Dict[str, Any]:
         "source_page": 147
     }
 
-    # Extract well name
-    well_match = re.search(r'(?:WELL|RIG|WELL NO\.?|WELL NAME|LOCATION)\s*[:\-]?\s*([A-Z]{2,}[A-Z0-9_\-\s#]+?\b)', text, re.IGNORECASE)
-    if well_match:
-        candidate = well_match.group(1).strip().upper()
-        if len(candidate) <= 25 and not any(w in candidate for w in ["COMPLETION", "REPORT", "DRILLING", "INCIDENT"]):
-            extracted["well_name"] = candidate
+    # Extract well name directly if known or by regex
+    for wn in ["NAHARKATIYA-162", "MORAN-29", "MORAN-7", "BAGHJAN-5", "BAGHJAN-9", "RUDRASAGAR-25", "LAKWA-112"]:
+        if wn.lower() in text.lower() or wn.replace("-", " ").lower() in text.lower() or wn.replace("-", "").lower() in text.lower():
+            extracted["well_name"] = wn
+            break
+    else:
+        well_match = re.search(r'(?:WELL|RIG|WELL NO\.?|WELL NAME|LOCATION)\s*[:\-]?\s*([A-Z]{2,}[A-Z0-9_\-\s#]+?\b)', text, re.IGNORECASE)
+        if well_match:
+            candidate = well_match.group(1).strip().upper()
+            if len(candidate) <= 25 and not any(w in candidate for w in ["COMPLETION", "REPORT", "DRILLING", "INCIDENT"]):
+                extracted["well_name"] = candidate
 
-    # Extract depth (e.g. 2,450 m, 1840m, 2418.5 m MD)
-    depth_match = re.search(r'(\d{1,2}[,\.]?\d{2,3}(?:\.\d+)?)\s*m(?:eters)?\s*(?:MD)?', text, re.IGNORECASE)
-    if depth_match:
+    # Extract incident depth specifically (look near INCIDENT ... AT or AT ... m)
+    inc_depth_match = re.search(r'INCIDENT[\w\s\(\):\-]*?AT\s*(\d{1,2}[,\.]?\d{2,3}(?:\.\d+)?)\s*m', text, re.IGNORECASE)
+    if not inc_depth_match:
+        inc_depth_match = re.search(r'(?:INCIDENT|HORIZON|HAZARD)[\w\s:]*?(\d{1,2}[,\.]?\d{2,3}(?:\.\d+)?)\s*m', text, re.IGNORECASE)
+    if inc_depth_match:
         try:
-            val_str = depth_match.group(1).replace(",", "")
+            val_str = inc_depth_match.group(1).replace(",", "")
             extracted["depth_md"] = float(val_str)
         except Exception:
             pass
+    else:
+        depth_match = re.search(r'(\d{1,2}[,\.]?\d{2,3}(?:\.\d+)?)\s*m(?:eters)?\s*(?:MD)?', text, re.IGNORECASE)
+        if depth_match:
+            try:
+                val_str = depth_match.group(1).replace(",", "")
+                extracted["depth_md"] = float(val_str)
+            except Exception:
+                pass
 
     # Extract formation
-    for form in ["Girujan", "Tipam", "Barail", "Namsang", "Alluvium", "Kopili", "Basement"]:
+    for form in ["Tipam", "Girujan", "Barail", "Namsang", "Alluvium", "Kopili", "Basement"]:
         if form.lower() in text.lower():
             extracted["formation"] = f"{form} Formation" if "formation" not in form.lower() else form
             break
 
     # Extract event type & mitigation
-    if "stuck pipe" in text.lower() or "differential sticking" in text.lower() or "pack-off" in text.lower():
-        extracted["event_type"] = "Stuck Pipe (Differential)"
-        extracted["severity"] = "HIGH"
-        extracted["mitigation"] = "Work string with maximum safe overpull. Spot oil-based lubricant soaking pill. Reduce mud hydrostatic overbalance."
-    elif "loss" in text.lower() or "lost circulation" in text.lower():
+    if "loss" in text.lower() or "lost circulation" in text.lower() or "mud loss" in text.lower():
         extracted["event_type"] = "Lost Circulation"
         extracted["severity"] = "MEDIUM"
-        extracted["mitigation"] = "Pump 25 bbl coarse CaCO3 pill with mica. Maintain MW < 10.8 ppg. Monitor pit volumes."
+        extracted["mitigation"] = "Spot 25 bbl coarse CaCO3 (30 ppb) + mica LCM pill. Squeeze at 250 psi annular pressure. Maintain MW within safe operating window."
+    elif "stuck pipe" in text.lower() or "differential sticking" in text.lower() or "pack-off" in text.lower():
+        extracted["event_type"] = "Stuck Pipe (Differential)"
+        extracted["severity"] = "HIGH"
+        extracted["mitigation"] = "Work string with maximum safe overpull. Spot oil-based lubricant soaking pill. Maintain rotation >60 RPM."
     elif "kick" in text.lower() or "influx" in text.lower() or "gas cut" in text.lower():
         extracted["event_type"] = "Gas Kick / Influx"
         extracted["severity"] = "CRITICAL"
         extracted["mitigation"] = "OISD-STD-174 shut-in protocol. Close annular BOP. Record SIDPP/SICP. Circulate out influx using Wait & Weight method."
+
+    # Extract mitigation excerpt if directly in text
+    mit_match = re.search(r'(?:FIELD-PROVEN MITIGATION & SOP:|MITIGATION:)\s*([^\n\r]+)', text, re.IGNORECASE)
+    if mit_match:
+        extracted["mitigation"] = mit_match.group(1).strip()[:180]
+
+    # Extract page number
+    page_match = re.search(r'(?:PAGE|PG\.?)\s*(\d+)', text, re.IGNORECASE)
+    if page_match:
+        try:
+            extracted["source_page"] = int(page_match.group(1))
+        except Exception:
+            pass
 
     return extracted
 
@@ -200,6 +228,7 @@ def load_sample_document(sample_name: str = Query("wcr_moran_7")):
     sample_files = {
         "wcr_moran_7": ("Sample_WCR_Moran_7.pdf", "MORAN-7", "Tipam Sandstone", 1840.0, "Lost Circulation"),
         "ddr_moran_29": ("Sample_DDR_Moran_29.pdf", "MORAN-29", "Barail Group", 2418.0, "Gas Kick / Influx"),
+        "wcr_naharkatiya_162": ("Sample_WCR_Naharkatiya_162.pdf", "NHK-162", "Tipam Sandstone", 2540.0, "Lost Circulation"),
         "geomech_baghjan": ("GeomechStudy_Baghjan_2018.txt", "BAGHJAN-5", "Barail Group", 3380.0, "Gas Kick / Influx")
     }
 

@@ -1766,6 +1766,335 @@
       ],
       "id": "DOC-026",
       "uploaded_at": "2026-09-26T12:46:29.998663+00:00"
+    },
+    {
+      "filename": "Sample_WCR_Moran_7.pdf",
+      "doc_type": "Well Completion Report (WCR)",
+      "well_id": "MORAN-7",
+      "pages": 312,
+      "status": "NEEDS_REVIEW",
+      "confidence": 60.2,
+      "entities_count": 4,
+      "processing_time_s": 2.1,
+      "raw_excerpt": "HISTORICAL DRILLING INCIDENT EXCERPT (Sample_WCR_Moran_7.pdf \u00b7 Page 147):\nWell: MORAN-7 | Horizon: Tipam Sandstone | Depth: 1840.0m MD\nEvent: Lost Circulation encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed.",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-7",
+          "confidence": 59.0,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Tipam Sandstone",
+          "confidence": 56.6,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "1840.0m MD",
+          "confidence": 57.8,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Lost Circulation",
+          "confidence": 54.8,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "OISD-STD-174 well control protocol and barrier restoration",
+          "confidence": 53.0,
+          "verified": false
+        }
+      ],
+      "id": "DOC-027",
+      "uploaded_at": "2026-09-28T16:14:23.256091+00:00"
+    },
+    {
+      "filename": "Sample_WCR_Naharkatiya_162.pdf",
+      "doc_type": "Well Completion Report (WCR)",
+      "well_id": "NHK-162",
+      "pages": 312,
+      "status": "NEEDS_REVIEW",
+      "confidence": 60.2,
+      "entities_count": 4,
+      "processing_time_s": 2.1,
+      "raw_excerpt": "HISTORICAL DRILLING INCIDENT EXCERPT (Sample_WCR_Naharkatiya_162.pdf \u00b7 Page 147):\nWell: NHK-162 | Horizon: Tipam Sandstone | Depth: 2540.0m MD\nEvent: Lost Circulation encountered during rotary drilling. Standard OISD-STD-174 well control shut-in executed.",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "NHK-162",
+          "confidence": 59.0,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Tipam Sandstone",
+          "confidence": 56.6,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "2540.0m MD",
+          "confidence": 57.8,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Lost Circulation",
+          "confidence": 54.8,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "OISD-STD-174 well control protocol and barrier restoration",
+          "confidence": 53.0,
+          "verified": false
+        }
+      ],
+      "id": "DOC-028",
+      "uploaded_at": "2026-09-28T16:14:49.745607+00:00"
+    },
+    {
+      "filename": "Sample_WCR_Naharkatiya_162.pdf",
+      "doc_type": "Well Completion Report (WCR)",
+      "well_id": "MORAN-7",
+      "pages": 1,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.5,
+      "entities_count": 6,
+      "processing_time_s": 3.4,
+      "raw_excerpt": "OIL INDIA LIMITED \u2014 DRILLING DIRECTORATE\nDULIAJAN, ASSAM \u00b7 WELL COMPLETION REPORT (WCR) \u00b7 SECTION 8\nWell Name:\nNAHARKATIYA-162 (NHK-162)\nField / Block:\nNaharkatiya PML (NHK-II)\nSpud Date:\n14-JAN-2019\nTD Reached:\n19-JUN-2019 (3,620.0m MD)\nRig Assigned:\nOIL-RIG-02 (2000 HP AC-SCR)\nStatus:\nCOMPLETED OIL PRODUCER\nTarget Horizon:\nTipam Sandstone TS-3 & Barail\nClassification:\nRESTRICTED SUBSURFACE ASSET\nSECTION 4: GEOLOGICAL STRATIGRAPHY & FORMATION TOPS\nFormation Name\nDepth Top (m MD)\nDepth Base (m MD)\nLithology & Characteristics\nAlluvium / Dihing\n0.0 m\n310.0 m\nUnconsolidated sands and pebble grave",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-7",
+          "confidence": 95.6,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Girujan Formation",
+          "confidence": 91.7,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "3620.0m MD",
+          "confidence": 93.6,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Stuck Pipe (Differential)",
+          "confidence": 88.8,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "Work string with maximum safe overpull. Spot oil-based lubricant soaking pill. Reduce mud hydrostatic overbalance.",
+          "confidence": 85.8,
+          "verified": false
+        }
+      ],
+      "id": "DOC-029",
+      "uploaded_at": "2026-09-28T16:14:58.156049+00:00"
+    },
+    {
+      "filename": "Sample_WCR_Naharkatiya_162.pdf",
+      "doc_type": "Well Completion Report (WCR)",
+      "well_id": "NAHARKATIYA-162",
+      "pages": 1,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.5,
+      "entities_count": 6,
+      "processing_time_s": 3.4,
+      "raw_excerpt": "OIL INDIA LIMITED \u2014 DRILLING DIRECTORATE\nDULIAJAN, ASSAM \u00b7 WELL COMPLETION REPORT (WCR) \u00b7 SECTION 8\nWell Name:\nNAHARKATIYA-162 (NHK-162)\nField / Block:\nNaharkatiya PML (NHK-II)\nSpud Date:\n14-JAN-2019\nTD Reached:\n19-JUN-2019 (3,620.0m MD)\nRig Assigned:\nOIL-RIG-02 (2000 HP AC-SCR)\nStatus:\nCOMPLETED OIL PRODUCER\nTarget Horizon:\nTipam Sandstone TS-3 & Barail\nClassification:\nRESTRICTED SUBSURFACE ASSET\nSECTION 4: GEOLOGICAL STRATIGRAPHY & FORMATION TOPS\nFormation Name\nDepth Top (m MD)\nDepth Base (m MD)\nLithology & Characteristics\nAlluvium / Dihing\n0.0 m\n310.0 m\nUnconsolidated sands and pebble grave",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "NAHARKATIYA-162",
+          "confidence": 95.6,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Tipam Formation",
+          "confidence": 91.7,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "310.0m MD",
+          "confidence": 93.6,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Lost Circulation",
+          "confidence": 88.8,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "Immediately hoisted drillstring off-bottom to 2,500m to prevent differential sticking. Spotted",
+          "confidence": 85.8,
+          "verified": false
+        }
+      ],
+      "id": "DOC-030",
+      "uploaded_at": "2026-09-28T16:15:59.100225+00:00"
+    },
+    {
+      "filename": "Sample_WCR_Naharkatiya_162.pdf",
+      "doc_type": "Well Completion Report (WCR)",
+      "well_id": "NAHARKATIYA-162",
+      "pages": 1,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.5,
+      "entities_count": 6,
+      "processing_time_s": 3.4,
+      "raw_excerpt": "OIL INDIA LIMITED \u2014 DRILLING DIRECTORATE\nDULIAJAN, ASSAM \u00b7 WELL COMPLETION REPORT (WCR) \u00b7 SECTION 8\nWell Name:\nNAHARKATIYA-162 (NHK-162)\nField / Block:\nNaharkatiya PML (NHK-II)\nSpud Date:\n14-JAN-2019\nTD Reached:\n19-JUN-2019 (3,620.0m MD)\nRig Assigned:\nOIL-RIG-02 (2000 HP AC-SCR)\nStatus:\nCOMPLETED OIL PRODUCER\nTarget Horizon:\nTipam Sandstone TS-3 & Barail\nClassification:\nRESTRICTED SUBSURFACE ASSET\nSECTION 4: GEOLOGICAL STRATIGRAPHY & FORMATION TOPS\nFormation Name\nDepth Top (m MD)\nDepth Base (m MD)\nLithology & Characteristics\nAlluvium / Dihing\n0.0 m\n310.0 m\nUnconsolidated sands and pebble grave",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "NAHARKATIYA-162",
+          "confidence": 95.6,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Tipam Formation",
+          "confidence": 91.7,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "2540.0m MD",
+          "confidence": 93.6,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Lost Circulation",
+          "confidence": 88.8,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "Immediately hoisted drillstring off-bottom to 2,500m to prevent differential sticking. Spotted",
+          "confidence": 85.8,
+          "verified": false
+        }
+      ],
+      "id": "DOC-031",
+      "uploaded_at": "2026-09-28T16:16:39.439449+00:00"
+    },
+    {
+      "filename": "Sample_WCR_Moran_7.pdf",
+      "doc_type": "Well Completion Report (WCR)",
+      "well_id": "MORAN-7",
+      "pages": 1,
+      "status": "NEEDS_REVIEW",
+      "confidence": 97.5,
+      "entities_count": 6,
+      "processing_time_s": 3.4,
+      "raw_excerpt": "OIL INDIA LIMITED \u2014 DRILLING DIRECTORATE\nDULIAJAN, ASSAM \u00b7 WELL COMPLETION REPORT (WCR) \u00b7 SECTION 8\nWell Name:\nMORAN-7 (MOR-07)\nField / Block:\nMoran PML (MOR-I)\nSpud Date:\n10-MAR-2018\nTD Reached:\n22-AUG-2018 (3,450.0m MD)\nRig Assigned:\nOIL-RIG-01 (2000 HP AC-SCR)\nStatus:\nCOMPLETED PRODUCER\nTarget Horizon:\nBarail Group / Tipam Sandstone\nClassification:\nRESTRICTED SUBSURFACE ASSET\nSECTION 4: GEOLOGICAL STRATIGRAPHY & FORMATION TOPS\nFormation Name\nDepth Top (m MD)\nDepth Base (m MD)\nLithology & Characteristics\nAlluvium / Dihing\n0.0 m\n290.0 m\nUnconsolidated sand, gravel, surface water table\nDhekiaj",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-7",
+          "confidence": 95.6,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Tipam Formation",
+          "confidence": 91.7,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "1680.0m MD",
+          "confidence": 93.6,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Lost Circulation",
+          "confidence": 88.7,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "Mixed and spotted 50 bbl Oil-Based Mud (OBM) lubricant soak pill weighted to 11.0 ppg with",
+          "confidence": 85.8,
+          "verified": false
+        }
+      ],
+      "id": "DOC-032",
+      "uploaded_at": "2026-09-28T16:16:44.870403+00:00"
+    },
+    {
+      "filename": "Sample_DDR_Moran_29.pdf",
+      "doc_type": "Daily Drilling Report (DDR)",
+      "well_id": "MORAN-29",
+      "pages": 1,
+      "status": "NEEDS_REVIEW",
+      "confidence": 96.3,
+      "entities_count": 6,
+      "processing_time_s": 3.4,
+      "raw_excerpt": "OIL INDIA LIMITED \u2014 DAILY DRILLING REPORT (DDR)\n24-HOUR OPERATIONAL LOG \u00b7 REPORT NO: 28 \u00b7 DATE: 12-SEP-2026\nWell Name:\nMORAN-29 (MOR-29)\nRig:\nOIL-RIG-04 (2000 HP AC-SCR)\nCurrent Depth:\n2,418.0m MD (TVD: 2,396.2m)\n24-hr Progress:\n+12.0m drilled\nFormation:\nBarail Group (Tikak Parbat member)\nROP Avg:\n6.8 m/hr\nMud Weight:\n10.8 ppg (KCl-Polymer)\nStandpipe Press:\n2,440 psi @ 650 GPM\n24-HOUR DRILLING TIMELINE & PARAMETERS\nTime\nOperation & Subsurface Observation\n06:00 - 10:00\nRotary drilling 8-1/2\" hole from 2,406m to 2,412m. WOB: 18.5 klbs, RPM: 120. ROP 1.5 m/hr.\n10:00 - 10:30\nConnection gas check. ",
+      "reviewer_status": "PENDING",
+      "reviewed_by": null,
+      "extracted_facts": [
+        {
+          "field": "Target Well",
+          "value": "MORAN-29",
+          "confidence": 94.4,
+          "verified": false
+        },
+        {
+          "field": "Formation",
+          "value": "Barail Formation",
+          "confidence": 90.6,
+          "verified": false
+        },
+        {
+          "field": "Incident Depth",
+          "value": "2418.0m MD",
+          "confidence": 92.5,
+          "verified": false
+        },
+        {
+          "field": "Event Class",
+          "value": "Gas Kick / Influx",
+          "confidence": 87.7,
+          "verified": false
+        },
+        {
+          "field": "Mitigation SOP",
+          "value": "OISD-STD-174 shut-in protocol. Close annular BOP. Record SIDPP/SICP. Circulate out influx using Wait & Weight method.",
+          "confidence": 84.8,
+          "verified": false
+        }
+      ],
+      "id": "DOC-033",
+      "uploaded_at": "2026-09-28T16:16:49.764862+00:00"
     }
   ],
   "alerts": [
@@ -1788,7 +2117,7 @@
       "acknowledged_by": "DR-8429 (OIL-RIG-04 Driller)",
       "action_taken": "Prepared heavy drilling fluid in suction pit and tested emergency shut-off valves",
       "timestamp": "2026-09-18T18:00:00Z",
-      "acknowledged_at": "2026-09-28T06:04:54.707357+00:00"
+      "acknowledged_at": "2026-09-28T16:27:05.240199+00:00"
     },
     {
       "id": "ALT-102",
@@ -1887,6 +2216,78 @@
     }
   ],
   "audit_logs": [
+    {
+      "id": "AUD-038",
+      "timestamp": "2026-09-28T16:27:05.250527+00:00",
+      "actor": "DR-8429 (OIL-RIG-04 Driller)",
+      "action": "ALERT_ACKNOWLEDGED",
+      "entity_type": "ALERT",
+      "entity_id": "ALT-101",
+      "details": "Driller DR-8429 (OIL-RIG-04 Driller) acknowledged Approaching 2,450m \u2014 Barail Gas Precursor Horizon. Action recorded: Prepared heavy drilling fluid in suction pit and tested emergency shut-off valves."
+    },
+    {
+      "id": "AUD-037",
+      "timestamp": "2026-09-28T16:16:49.771075+00:00",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-033",
+      "details": "Uploaded and queued: Sample_DDR_Moran_29.pdf (1 pages)."
+    },
+    {
+      "id": "AUD-036",
+      "timestamp": "2026-09-28T16:16:44.874480+00:00",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-032",
+      "details": "Uploaded and queued: Sample_WCR_Moran_7.pdf (1 pages)."
+    },
+    {
+      "id": "AUD-035",
+      "timestamp": "2026-09-28T16:16:39.445416+00:00",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-031",
+      "details": "Uploaded and queued: Sample_WCR_Naharkatiya_162.pdf (1 pages)."
+    },
+    {
+      "id": "AUD-034",
+      "timestamp": "2026-09-28T16:15:59.104421+00:00",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-030",
+      "details": "Uploaded and queued: Sample_WCR_Naharkatiya_162.pdf (1 pages)."
+    },
+    {
+      "id": "AUD-033",
+      "timestamp": "2026-09-28T16:14:58.161587+00:00",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-029",
+      "details": "Uploaded and queued: Sample_WCR_Naharkatiya_162.pdf (1 pages)."
+    },
+    {
+      "id": "AUD-032",
+      "timestamp": "2026-09-28T16:14:49.749592+00:00",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-028",
+      "details": "Uploaded and queued: Sample_WCR_Naharkatiya_162.pdf (312 pages)."
+    },
+    {
+      "id": "AUD-031",
+      "timestamp": "2026-09-28T16:14:23.261079+00:00",
+      "actor": "SYSTEM",
+      "action": "DOCUMENT_UPLOAD",
+      "entity_type": "DOCUMENT",
+      "entity_id": "DOC-027",
+      "details": "Uploaded and queued: Sample_WCR_Moran_7.pdf (312 pages)."
+    },
     {
       "id": "AUD-030",
       "timestamp": "2026-09-28T06:04:54.715463+00:00",

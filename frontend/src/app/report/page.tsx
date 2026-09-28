@@ -233,6 +233,40 @@ export default function ReportPage() {
   return (
     <div className="space-y-3 font-sans text-secondary max-w-[1500px] mx-auto pb-12 select-none">
 
+      {/* Print-Only Official PSU Directorate Header */}
+      <div className="hidden print:block border-b-2 border-black pb-4 mb-6">
+        <div className="flex items-center justify-between">
+          <div>
+            <div className="text-xl font-extrabold text-black tracking-wider uppercase">
+              OIL INDIA LIMITED
+            </div>
+            <div className="text-xs font-semibold text-gray-700 tracking-wider">
+              (A Government of India Enterprise) · DRILLING DIRECTORATE · DULIAJAN, ASSAM
+            </div>
+          </div>
+          <div className="text-right">
+            <div className="text-xs font-mono font-bold text-black border border-black px-2 py-0.5 inline-block">
+              OISD-STD-174 COMPLIANT
+            </div>
+            <div className="text-[10px] text-gray-600 font-mono mt-1">
+              REPORT REF: OIL/DUL/ERTMAC/PRE-DRILL/{radius}KM
+            </div>
+          </div>
+        </div>
+
+        <div className="mt-4 pt-3 border-t border-gray-300">
+          <h2 className="text-sm font-bold text-black uppercase tracking-wide">
+            OPERATIONAL PRE-DRILL SAFETY & OFFSET DRILLING HAZARDS BRIEF
+          </h2>
+          <div className="grid grid-cols-4 gap-2 text-xs font-mono mt-2 bg-gray-100 p-2.5 border border-gray-300">
+            <div><strong className="text-gray-600">TARGET WELL:</strong> <span className="text-black font-bold">{wells.find(w => w.id === wellId)?.name || wellId}</span></div>
+            <div><strong className="text-gray-600">FIELD / BLOCK:</strong> <span className="text-black font-bold">{wells.find(w => w.id === wellId)?.field || 'Moran'}</span></div>
+            <div><strong className="text-gray-600">CORRIDOR RADIUS:</strong> <span className="text-black font-bold">{radius} KM</span></div>
+            <div><strong className="text-gray-600">OFFSET INCIDENTS:</strong> <span className="text-black font-bold">{filteredEvents.length} Events</span></div>
+          </div>
+        </div>
+      </div>
+
       {/* 1. Header Toolbar */}
       <div className="print:hidden bg-surface border border-line rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
         <div>
@@ -412,12 +446,12 @@ export default function ReportPage() {
           return (
             <div
               key={index}
-              className="bg-surface border border-line hover:border-line rounded-lg p-3 space-y-2 transition-colors"
+              className="bg-surface border border-line hover:border-line rounded-lg p-3 space-y-2 transition-colors print:bg-white print:border-gray-400 print:text-black print:break-inside-avoid print:shadow-none print:mb-3 print:p-3.5"
             >
               {/* Header Line */}
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className={`px-2 py-0.5 rounded text-xs font-mono font-semibold uppercase tracking-wider ${
+                  <span className={`px-2 py-0.5 rounded text-xs font-mono font-semibold uppercase tracking-wider print:border-gray-800 print:text-black ${
                     isCritical
                       ? 'bg-danger-soft text-danger border border-danger/25'
                       : isHigh
@@ -427,37 +461,37 @@ export default function ReportPage() {
                     {item.severity}
                   </span>
 
-                  <h3 className="text-xs sm:text-sm font-bold text-ink font-sans">
+                  <h3 className="text-xs sm:text-sm font-bold text-ink font-sans print:text-black">
                     {info.title}
                   </h3>
                 </div>
 
                 {/* Metadata Tags */}
-                <div className="flex items-center gap-2 text-xs font-mono">
-                  <span className="text-accent font-semibold">{item.wells?.name ?? 'Offset Well'}</span>
+                <div className="flex items-center gap-2 text-xs font-mono print:text-gray-700">
+                  <span className="text-accent font-semibold print:text-black">{item.wells?.name ?? 'Offset Well'}</span>
                   <span className="text-muted">·</span>
-                  <span className="text-accent">{item.formations?.canonical_name ?? 'Barail Group'}</span>
+                  <span className="text-accent print:text-black">{item.formations?.canonical_name ?? 'Barail Group'}</span>
                   <span className="text-muted">·</span>
-                  <span className="text-success font-semibold">{item.depth_from_md_m}m MD</span>
+                  <span className="text-success font-semibold print:text-black">{item.depth_from_md_m}m MD</span>
                 </div>
               </div>
 
               {/* Clean 2-Column Summary (No nested boxes!) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1.5 border-t border-line/80">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1.5 border-t border-line/80 print:border-gray-300">
                 <div>
-                  <span className="text-xs font-mono text-muted uppercase font-semibold block mb-0.5">
+                  <span className="text-xs font-mono text-muted uppercase font-semibold block mb-0.5 print:text-gray-600">
                     WHAT HAPPENED:
                   </span>
-                  <p className="text-secondary leading-relaxed font-sans">
+                  <p className="text-secondary leading-relaxed font-sans print:text-gray-900">
                     {info.occurrence}
                   </p>
                 </div>
 
                 <div>
-                  <span className="text-xs font-mono text-success uppercase font-semibold block mb-0.5">
+                  <span className="text-xs font-mono text-success uppercase font-semibold block mb-0.5 print:text-black">
                     PREVENTION & ACTION:
                   </span>
-                  <p className="text-secondary leading-relaxed font-sans">
+                  <p className="text-secondary leading-relaxed font-sans print:text-gray-900">
                     {info.precaution}
                   </p>
                 </div>
@@ -465,6 +499,30 @@ export default function ReportPage() {
             </div>
           );
         })}
+      </div>
+
+      {/* Print-Only Official Statutory Sign-off & Verification Block */}
+      <div className="hidden print:block mt-8 pt-6 border-t-2 border-black break-inside-avoid font-sans">
+        <div className="text-xs text-gray-700 italic mb-4">
+          Statutory Compliance Notice: This document contains offset drilling hazard intelligence compiled autonomously by SRISHTI·AI for Oil India Limited operations. All precautionary mud weights, barrier verification checklists, and shut-in protocols comply with OISD-STD-174 safety mandates.
+        </div>
+        <div className="grid grid-cols-3 gap-6 pt-4 text-center">
+          <div className="border-t border-gray-500 pt-2">
+            <div className="font-bold text-xs text-black">P. Saikia</div>
+            <div className="text-[10px] text-gray-600 uppercase font-mono">Drilling Engineer (Planning)</div>
+            <div className="text-[9px] text-gray-500 font-mono">OIL Corporate HQ (Duliajan)</div>
+          </div>
+          <div className="border-t border-gray-500 pt-2">
+            <div className="font-bold text-xs text-black">K. Sarma</div>
+            <div className="text-[10px] text-gray-600 uppercase font-mono">Toolpusher / Rig Superintendent</div>
+            <div className="text-[9px] text-gray-500 font-mono">OIL-RIG-04 (Moran Field)</div>
+          </div>
+          <div className="border-t border-gray-500 pt-2">
+            <div className="font-bold text-xs text-black">Dr. M. Bordoloi</div>
+            <div className="text-[10px] text-gray-600 uppercase font-mono">Safety Directorate Inspector</div>
+            <div className="text-[9px] text-gray-500 font-mono">OISD Petroleum Safety Wing</div>
+          </div>
+        </div>
       </div>
 
     </div>
