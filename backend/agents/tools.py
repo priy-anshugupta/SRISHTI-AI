@@ -324,9 +324,9 @@ AGENT_TOOLS_DEFINITIONS = [
             "parameters": {
                 "type": "object",
                 "properties": {
-                    "formation": {"type": "string", "description": "Optional formation name"},
-                    "event_type": {"type": "string", "description": "Optional event type (e.g., Stuck Pipe, Lost Circulation, Gas Kick)"},
-                    "well_id": {"type": "string", "description": "Optional well ID"}
+                    "formation": {"type": ["string", "null"], "description": "Optional formation name"},
+                    "event_type": {"type": ["string", "null"], "description": "Optional event type (e.g., Stuck Pipe, Lost Circulation, Gas Kick)"},
+                    "well_id": {"type": ["string", "null"], "description": "Optional well ID"}
                 }
             }
         }

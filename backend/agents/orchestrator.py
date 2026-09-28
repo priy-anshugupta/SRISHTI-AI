@@ -21,9 +21,10 @@ from backend.agents.tools import (
 )
 
 try:
-    from backend.agents.langgraph_pipeline import run_langgraph_pipeline, HAS_LANGGRAPH
+    from backend.agents.langgraph_pipeline import run_langgraph_pipeline, HAS_LANGGRAPH, _generate_rich_fallback_answer
 except ImportError:
     HAS_LANGGRAPH = False
+    _generate_rich_fallback_answer = None
 
 logger = logging.getLogger(__name__)
 
@@ -220,42 +221,22 @@ class HybridAgentOrchestrator:
             matched_events = [e for e in events if "girujan" in e["formation"].lower() or "stuck" in e["event_type"].lower()]
         elif "kick" in q or "gas" in q or "barail" in q or "bop" in q:
             matched_events = [e for e in events if "barail" in e["formation"].lower() or "kick" in e["event_type"].lower()]
+        elif "baghjan" in q or "blowout" in q:
+            matched_events = [e for e in events if "bgh" in e["well_id"].lower() or "blowout" in e["event_type"].lower()]
         else:
             matched_events = events[:2]
 
         if not matched_events:
             matched_events = events[:2]
 
-        primary_evt = matched_events[0]
-
-        if is_assamese:
-            answer_text = (
-                f"**মূল উত্তৰ (Direct Answer)**: {target_well} ৰ ওচৰত {primary_evt['formation']} স্তৰত ড্ৰিলিং কৰাৰ সময়ত প্ৰায় {primary_evt['depth_md']} মিটাৰ গভীৰতাত {primary_evt['event_type']} ৰ আশংকা থাকে।\n\n"
-                f"**ঐতিহাসিক তথ্য (Past Record)**: ওচৰৰ কুঁৱা {primary_evt['well_id']} ত {primary_evt['description']}\n\n"
-                f"**অইল ইণ্ডিয়াৰ পদক্ষেপ (Action Taken)**: {primary_evt['mitigation']} সুৰক্ষা নিৰ্দেশনা (OISD-STD-174) অনুসৰি বোকাৰ ওজন (Mud Weight) ১০.২ ৰ পৰা ১০.৬ ppg ৰ ভিতৰত ৰাখিব লাগে।"
-            )
-        elif is_hindi:
-            answer_text = (
-                f"**सीधा उत्तर (Direct Answer)**: {target_well} के पास {primary_evt['formation']} लेयर में लगभग {primary_evt['depth_md']} मीटर की गहराई पर {primary_evt['event_type']} का जोखिम रहता है।\n\n"
-                f"**ऐतिहासिक रिकॉर्ड (Past Record)**: पास के कुएं {primary_evt['well_id']} में: {primary_evt['description']}\n\n"
-                f"**ऑयल इंडिया द्वारा समाधान (Action Taken)**: {primary_evt['mitigation']} सुरक्षा नियमों (OISD-STD-174) के तहत मड वेट को 10.2 से 10.6 ppg के बीच बनाए रखना जरूरी है।"
-            )
-        else:
-            answer_text = (
-                f"**Direct Answer**: In the {primary_evt['formation']} formation near {target_well}, drilling logs show a historical risk of {primary_evt['event_type']} at depths around {primary_evt['depth_md']} meters.\n\n"
-                f"**Past Well Record**: In nearby well {primary_evt['well_id']} at {primary_evt['depth_md']}m: {primary_evt['description']}\n\n"
-                f"**Action Taken by Oil India**: {primary_evt['mitigation']} Under standard safety guidelines (OISD-STD-174), maintain mud weight between 10.2 and 10.6 ppg to ensure smooth drilling."
-            )
-
         evidence_cards = []
         clean_rep = {"\u2013": "-", "\u2014": "--", "\u2018": "'", "\u2019": "'", "\u201c": '"', "\u201d": '"'}
-        for u_ch, a_ch in clean_rep.items():
-            answer_text = answer_text.replace(u_ch, a_ch)
-
         for evt in matched_events:
             clean_mitigation = evt["mitigation"] or ""
+            clean_desc = evt["description"] or ""
             for u_ch, a_ch in clean_rep.items():
                 clean_mitigation = clean_mitigation.replace(u_ch, a_ch)
+                clean_desc = clean_desc.replace(u_ch, a_ch)
 
             evidence_cards.append({
                 "event_id": evt["id"],
@@ -264,13 +245,29 @@ class HybridAgentOrchestrator:
                 "event_type": evt["event_type"],
                 "severity": evt["severity"],
                 "depth_from_md_m": evt["depth_md"],
-                "description": evt["description"],
+                "description": clean_desc,
                 "mitigation": clean_mitigation,
                 "source_file": evt["source_doc"],
                 "source_page": evt["source_page"],
                 "reviewer_status": evt.get("reviewer_status", "APPROVED"),
                 "verified_by": evt.get("verified_by", "Chief Drilling Engineer, OIL")
             })
+
+        if _generate_rich_fallback_answer:
+            answer_text = _generate_rich_fallback_answer(
+                query=query,
+                target_well=target_well,
+                current_depth_md=current_depth_md,
+                language=language,
+                citations=evidence_cards
+            )
+        else:
+            primary_evt = matched_events[0]
+            answer_text = (
+                f"**Direct Answer**: In the {primary_evt['formation']} formation near {target_well}, drilling logs show a historical risk of {primary_evt['event_type']} at depths around {primary_evt['depth_md']} meters.\n\n"
+                f"**Past Well Record**: In nearby well {primary_evt['well_id']} at {primary_evt['depth_md']}m: {primary_evt['description']}\n\n"
+                f"**Action Taken by Oil India**: {primary_evt['mitigation']} Under standard safety guidelines (OISD-STD-174), maintain mud weight between 10.2 and 10.6 ppg to ensure smooth drilling."
+            )
 
         model_label = "SRISHTI Evidence Engine · Verified Local Records"
         mode_label = "DETERMINISTIC_OFFLINE"
@@ -311,7 +308,13 @@ class HybridAgentOrchestrator:
         # Attempt to run LangGraph if available and explicitly requested or by default
         if HAS_LANGGRAPH:
             try:
-                lg_result = run_langgraph_pipeline(query, target_well=target_well, current_depth_md=current_depth_md)
+                lg_result = run_langgraph_pipeline(
+                    query,
+                    target_well=target_well,
+                    current_depth_md=current_depth_md,
+                    language=language,
+                    mode=mode
+                )
                 if "error" not in lg_result and "final_response" in lg_result:
                     return lg_result["final_response"]
             except Exception as e:
