@@ -223,7 +223,7 @@ The platform organizes drilling intelligence into **3 color-coded operational do
 ### 🔵 Offset Intelligence
 - **`/map` (3D Geospatial Well Map)**: Interactive GIS radar displaying Upper Assam wells, dynamic search radius (5–50km), and spatial hazard corridor overlays.
 - **`/compare` (Multi-Well Offset Comparator)**: Side-by-side stratigraphic columns, lithology matching, and historical incident timelines.
-- **`/plan` (Offset Intelligence Radar)**: Multi-factor subsurface similarity matching ranked by spatial distance, lithology match, and kick severity.
+- **Legacy `/plan`**: Retired; permanently redirects to `/map`. Offset analysis is available through the map and comparator, with safety briefs under `/report`.
 - **`/knowledge` (Causal Bow-Tie Safety Graph)**: Interactive NetworkX graph modeling hazard precursor relationships and barrier integrity.
 
 ### 🟢 Engineering & Data

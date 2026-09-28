@@ -132,7 +132,7 @@ flowchart LR
 * **USP 2: 🔍 Clickable Source Evidence Inspector Modal (Zero Hallucination)**:
   * Every citation in `/ask` and `/alerts` is a clickable interactive chip opening the scanned historical report with **yellow verbatim highlighting**, **98.4% OCR confidence score**, and the **Chief Drilling Engineer statutory audit stamp**.
 * **USP 3: 📋 Statutory OIL Printable Pre-Spud Dossier with 3-Way Physical Sign-Off**:
-  * 1-Click high-contrast A4 print view (`/plan`) with official **Oil India Limited Directorate of Drilling letterhead**, OISD-STD-174 well-control checklist, and **3-way physical signature blocks** (Site Engineer, Field Geologist, GM Drilling).
+  * 1-Click high-contrast A4 print view (`/report`) with official **Oil India Limited Directorate of Drilling letterhead**, OISD-STD-174 well-control checklist, and **3-way physical signature blocks** (Site Engineer, Field Geologist, GM Drilling).
 * **USP 4: 🧮 Deterministic Geomechanics Physics Engines (Math, Not Guesswork)**:
   * All pore pressures ($P_p$), corrected $d$-exponents ($d_{cs}$), Mechanical Specific Energy (MSE), and ECD hydraulics are calculated deterministically via Python equations on every 1 Hz telemetry frame. The LLM is barred from inventing numbers.
 * **USP 5: 📱 Glove-Friendly Drill Floor Touch Cockpit (`/doghouse`)**:
@@ -207,7 +207,7 @@ flowchart TD
         CLOUD & EDGE & DET --> UI1["/doghouse: Rig Floor Touch HUD (7-Segment & 30m Countdown)"]
         CLOUD & EDGE & DET --> UI2["/map: 3D Geospatial Well Offset Radar (1-25km Proximity)"]
         CLOUD & EDGE & DET --> UI3["/ask: Bilingual Copilot (English & Hindi with Page Citations)"]
-        CLOUD & EDGE & DET --> UI4["/plan: Statutory Pre-Spud Print Dossier (3-Way Sign-Off)"]
+        CLOUD & EDGE & DET --> UI4["/report: Statutory Pre-Spud Print Dossier (3-Way Sign-Off)"]
         CLOUD & EDGE & DET --> UI5["/analytics: Pressure Corridors & Safe Drilling Limits"]
     end
 

@@ -231,12 +231,9 @@ SRISHTI·AI has 15 specialized, interconnected interfaces. Here is what every sc
   - **Zero-Hallucination Guardrail**: The AI is strictly barred from inventing numbers; every answer cites specific offset wells, depths, and OISD standards.
   - Every answer includes clickable **Evidence Source Cards** with provenance links.
 
-### 14. Offset Well Similarity Radar (`/plan`)
-- **Who uses it**: Well Planning Engineers.
-- **Why it exists**: Identifies which historical wells are the most relevant analogues to the well being planned.
-- **What it does**:
-  - Uses a multi-factor similarity algorithm combining distance (Haversine formula), formation presence, and incident severity.
-  - Ranks offset wells by similarity score (e.g., Well MORAN-7 is 94% similar at 2.4 km).
+### 14. Retired Well Planning Screen (`/plan`)
+- The separate screen has been removed; old links permanently redirect to `/map`.
+- Use `/map` to find nearby wells, `/compare` for offset comparisons, and `/report` for pre-drill safety briefs.
 
 ### 15. Role-Based Access Control (`/login`)
 - **Who uses it**: All system users.
