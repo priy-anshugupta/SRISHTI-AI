@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState, FormEvent, useRef, useEffect } from 'react';
-import { 
-  MessageSquare, Send, BookOpenCheck, ShieldAlert, Sparkles, 
-  Languages, FileText, CheckCircle2, ChevronRight, CornerDownLeft, 
+import {
+  MessageSquare, Send, BookOpenCheck, ShieldAlert, Sparkles,
+  Languages, FileText, CheckCircle2, ChevronRight, CornerDownLeft,
   Bot, User, ShieldCheck, Flame, RefreshCw, Layers, Database,
   Mic, MicOff, MapPin
 } from 'lucide-react';
@@ -43,23 +43,23 @@ interface ChatMessage {
 }
 
 const starterQuestions = [
-  { 
-    en: "Tipam Mud Weight in Moran", 
+  {
+    en: "Tipam Mud Weight in Moran",
     hi: "Moran mein Tipam ka mud weight",
     as: "মৰাণত টিপাম বোকাৰ ওজন"
   },
-  { 
-    en: "Barail Gas Kick Depths", 
+  {
+    en: "Barail Gas Kick Depths",
     hi: "Barail mein gas kick ki gehrai",
     as: "বৰাইল গেছ কিক গভীৰতা"
   },
-  { 
-    en: "Freeing Stuck Pipe in Girujan", 
+  {
+    en: "Freeing Stuck Pipe in Girujan",
     hi: "Girujan Clay mein phasi pipe ka upaay",
     as: "গিৰুজানত লাগি ধৰা পাইপ সমাধান"
   },
-  { 
-    en: "Baghjan-5 Safety Lessons", 
+  {
+    en: "Baghjan-5 Safety Lessons",
     hi: "Baghjan-5 se seekhe gaye safety niyam",
     as: "বাঘজান-৫ সুৰক্ষা শিক্ষা"
   }
@@ -151,7 +151,8 @@ export default function AskSRISHTIPage() {
   };
 
   useEffect(() => {
-    chatEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    const stream = chatEndRef.current?.parentElement;
+    stream?.scrollTo({ top: stream.scrollHeight, behavior: 'smooth' });
   }, [messages, loading]);
 
   const handleSend = async (queryText?: string) => {
@@ -228,39 +229,39 @@ export default function AskSRISHTIPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-6.5rem)] flex flex-col xl:flex-row gap-4 font-sans overflow-hidden">
-      
+    <div className="chat-layout font-sans">
+
       {/* LEFT: Main Chat Stream Area (Primary Interactive Workspace) */}
-      <div className="flex-1 flex flex-col bg-[#0D1419] border border-[#1C2C35] rounded-xl overflow-hidden shadow-sm">
-        
+      <section aria-label="Drilling intelligence conversation" className="chat-stream dashboard-panel flex-1 min-w-0 flex flex-col bg-surface border border-line rounded-lg overflow-hidden shadow-sm">
+
         {/* Simple & Clean Header */}
-        <div className="px-5 py-3.5 bg-[#0D1419] border-b border-[#1C2C35] flex items-center justify-between">
+        <div className="chat-header px-5 py-3.5 bg-surface border-b border-line flex items-center justify-between gap-3">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-lg bg-[#0D2430] border border-[#163847] flex items-center justify-center text-[#38BDF8]">
+            <div className="w-8 h-8 rounded-lg bg-accent-soft border border-line flex items-center justify-center text-accent">
               <Bot size={18} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-white tracking-wide">Drilling Intelligence Copilot</span>
-                <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="text-sm font-bold text-ink tracking-wide">Drilling Intelligence Copilot</span>
+                <span className="w-2 h-2 rounded-full bg-success " />
                 {isAirGapped && (
-                  <span className="text-xs px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30 font-semibold">
+                  <span className="text-xs px-2 py-0.5 rounded bg-warning-soft text-warning border border-warning/25 font-semibold">
                     OFFLINE EDGE
                   </span>
                 )}
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-muted">
                 Grounded in 60 years of official Oil India well records
               </p>
             </div>
           </div>
 
           {/* Simple Language Switcher */}
-          <div className="flex items-center gap-1 bg-[#0D1419] border border-[#1C2C35] p-1 rounded-lg text-xs">
+          <div className="flex items-center gap-1 bg-surface border border-line p-1 rounded-lg text-xs">
             <button
               onClick={() => setLanguage('en')}
               className={`px-3 py-1 rounded text-xs font-semibold transition-all ${
-                language === 'en' ? 'bg-[#0D2430] text-[#38BDF8] border border-[#163847]' : 'text-slate-400 hover:text-white'
+                language === 'en' ? 'bg-accent-soft text-accent border border-line' : 'text-muted hover:text-ink'
               }`}
             >
               English
@@ -268,7 +269,7 @@ export default function AskSRISHTIPage() {
             <button
               onClick={() => setLanguage('hi')}
               className={`px-3 py-1 rounded text-xs font-semibold transition-all ${
-                language === 'hi' ? 'bg-[#0D2430] text-[#38BDF8] border border-[#163847]' : 'text-slate-400 hover:text-white'
+                language === 'hi' ? 'bg-accent-soft text-accent border border-line' : 'text-muted hover:text-ink'
               }`}
             >
               हिंदी
@@ -276,7 +277,7 @@ export default function AskSRISHTIPage() {
             <button
               onClick={() => setLanguage('as')}
               className={`px-3 py-1 rounded text-xs font-semibold transition-all ${
-                language === 'as' ? 'bg-[#0D2430] text-[#38BDF8] border border-[#163847]' : 'text-slate-400 hover:text-white'
+                language === 'as' ? 'bg-accent-soft text-accent border border-line' : 'text-muted hover:text-ink'
               }`}
             >
               অসমীয়া
@@ -285,54 +286,54 @@ export default function AskSRISHTIPage() {
         </div>
 
         {/* Chat Stream History */}
-        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4">
+        <div className="chat-history flex-1 min-h-0 overflow-y-auto p-4 sm:p-6 space-y-4">
           {messages.map((msg) => (
             <div
               key={msg.id}
               className={`flex gap-3 ${msg.sender === 'user' ? 'justify-end' : 'justify-start'}`}
             >
               {msg.sender === 'assistant' && (
-                <div className="w-8 h-8 rounded-lg bg-[#0D2430] border border-[#163847] flex items-center justify-center text-[#38BDF8] shrink-0 mt-0.5">
+                <div className="w-8 h-8 rounded-lg bg-accent-soft border border-line flex items-center justify-center text-accent shrink-0 mt-0.5">
                   <Bot size={16} />
                 </div>
               )}
 
               <div className={`max-w-2xl space-y-1.5 ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
                 <div
-                  className={`p-4 rounded-xl text-xs sm:text-sm leading-relaxed shadow-md ${
+                  className={`chat-message p-4 rounded-lg text-xs sm:text-sm leading-relaxed shadow-md ${
                     msg.sender === 'user'
-                      ? 'bg-[#0D2430] border border-[#163847] text-white rounded-tr-none'
-                      : 'bg-[#0D1419] border border-[#1C2C35] text-slate-200 rounded-tl-none'
+                      ? 'bg-accent-soft border border-line text-ink rounded-tr-none'
+                      : 'bg-surface border border-line text-secondary rounded-tl-none'
                   }`}
                 >
                   {msg.sender === 'user' ? (
                     <p className="whitespace-pre-wrap">{msg.text}</p>
                   ) : (
-                    <div className="space-y-2 text-slate-200 leading-relaxed font-sans text-xs sm:text-sm">
+                    <div className="space-y-2 text-secondary leading-relaxed font-sans text-xs sm:text-sm">
                       <ReactMarkdown
                         components={{
-                          h1: ({ ...props }) => <h1 className="text-sm sm:text-base font-bold text-cyan-200 mt-2 mb-1.5 pb-1 border-b border-[#1C2C35]" {...props} />,
-                          h2: ({ ...props }) => <h2 className="text-xs sm:text-sm font-bold text-[#38BDF8] mt-2 mb-1" {...props} />,
-                          h3: ({ ...props }) => <h3 className="text-xs sm:text-sm font-semibold text-[#38BDF8] mt-2 mb-1" {...props} />,
-                          h4: ({ ...props }) => <h4 className="text-xs font-semibold text-[#38BDF8] mt-1 mb-0.5" {...props} />,
-                          p: ({ ...props }) => <p className="mb-2 last:mb-0 leading-relaxed text-slate-200" {...props} />,
-                          strong: ({ ...props }) => <strong className="font-semibold text-cyan-100" {...props} />,
-                          em: ({ ...props }) => <em className="italic text-slate-300" {...props} />,
-                          ul: ({ ...props }) => <ul className="list-disc pl-4 space-y-1 mb-2 text-slate-200" {...props} />,
-                          ol: ({ ...props }) => <ol className="list-decimal pl-4 space-y-1 mb-2 text-slate-200" {...props} />,
+                          h1: ({ ...props }) => <h1 className=" sm: font-bold text-accent mt-2 mb-1.5 pb-1 border-b border-line page-title" {...props} />,
+                          h2: ({ ...props }) => <h2 className="text-xs sm:text-sm font-bold text-accent mt-2 mb-1" {...props} />,
+                          h3: ({ ...props }) => <h3 className="text-xs sm:text-sm font-semibold text-accent mt-2 mb-1" {...props} />,
+                          h4: ({ ...props }) => <h4 className="text-xs font-semibold text-accent mt-1 mb-0.5" {...props} />,
+                          p: ({ ...props }) => <p className="mb-2 last:mb-0 leading-relaxed text-secondary" {...props} />,
+                          strong: ({ ...props }) => <strong className="font-semibold text-accent" {...props} />,
+                          em: ({ ...props }) => <em className="italic text-secondary" {...props} />,
+                          ul: ({ ...props }) => <ul className="list-disc pl-4 space-y-1 mb-2 text-secondary" {...props} />,
+                          ol: ({ ...props }) => <ol className="list-decimal pl-4 space-y-1 mb-2 text-secondary" {...props} />,
                           li: ({ ...props }) => <li className="pl-0.5 leading-relaxed" {...props} />,
                           blockquote: ({ ...props }) => (
-                            <blockquote className="border-l-2 border-cyan-500 bg-[#06141B] pl-3 py-1 my-2 text-xs italic text-slate-300 rounded-r" {...props} />
+                            <blockquote className="border-l-2 border-accent/25 bg-surface-muted pl-3 py-1 my-2 text-xs italic text-secondary rounded-r" {...props} />
                           ),
                           code: ({ className, children, ...props }: any) => {
                             const match = /language-(\w+)/.exec(className || '');
                             const isInline = !match && !String(children).includes('\n');
                             return isInline ? (
-                              <code className="px-1.5 py-0.5 rounded bg-[#03090C] border border-[#163847] text-[#38BDF8] font-mono text-xs" {...props}>
+                              <code className="px-1.5 py-0.5 rounded bg-canvas border border-line text-accent font-mono text-xs" {...props}>
                                 {children}
                               </code>
                             ) : (
-                              <div className="my-2 rounded-lg bg-[#0A1115] border border-[#1C2C35] p-3 overflow-x-auto text-xs font-mono text-[#38BDF8] shadow-inner">
+                              <div className="my-2 rounded-lg bg-surface-muted border border-line p-3 overflow-x-auto text-xs font-mono text-accent shadow-inner">
                                 <code className={className} {...props}>
                                   {children}
                                 </code>
@@ -340,14 +341,14 @@ export default function AskSRISHTIPage() {
                             );
                           },
                           table: ({ ...props }) => (
-                            <div className="overflow-x-auto my-2 border border-[#1C2C35] rounded-lg">
-                              <table className="min-w-full text-xs text-left text-slate-300 border-collapse" {...props} />
+                            <div className="overflow-x-auto my-2 border border-line rounded-lg">
+                              <table className="min-w-full text-xs text-left text-secondary border-collapse" {...props} />
                             </div>
                           ),
-                          thead: ({ ...props }) => <thead className="bg-[#0D2430] text-[#38BDF8] border-b border-[#1C2C35]" {...props} />,
-                          th: ({ ...props }) => <th className="px-3 py-1.5 font-semibold text-[11px] uppercase tracking-wider" {...props} />,
-                          td: ({ ...props }) => <td className="px-3 py-1.5 border-t border-[#12242E] text-slate-300" {...props} />,
-                          hr: ({ ...props }) => <hr className="my-2.5 border-[#1C2C35]" {...props} />,
+                          thead: ({ ...props }) => <thead className="bg-accent-soft text-accent border-b border-line" {...props} />,
+                          th: ({ ...props }) => <th className="px-3 py-1.5 font-semibold text-xs uppercase tracking-wider" {...props} />,
+                          td: ({ ...props }) => <td className="px-3 py-1.5 border-t border-line text-secondary" {...props} />,
+                          hr: ({ ...props }) => <hr className="my-2.5 border-line" {...props} />,
                         }}
                       >
                         {msg.text}
@@ -357,12 +358,12 @@ export default function AskSRISHTIPage() {
                 </div>
 
                 {/* Minimal Metadata for Assistant */}
-                <div className="flex items-center gap-3 text-xs text-slate-400 px-1 font-sans">
+                <div className="flex items-center gap-3 text-xs text-muted px-1 font-sans">
                   <span>{msg.timestamp}</span>
                   {msg.model && (
                     <>
                       <span>·</span>
-                      <span className="text-[#38BDF8] font-medium">{msg.model}</span>
+                      <span className="text-accent font-medium">{msg.model}</span>
                     </>
                   )}
                   {msg.evidence && msg.evidence.length > 0 && (
@@ -370,7 +371,7 @@ export default function AskSRISHTIPage() {
                       <span>·</span>
                       <button
                         onClick={() => setSelectedEvidence(msg.evidence || [])}
-                        className="text-amber-400 hover:underline flex items-center gap-1 font-bold cursor-pointer"
+                        className="text-warning hover:underline flex items-center gap-1 font-bold cursor-pointer"
                       >
                         <BookOpenCheck size={12} />
                         <span>{msg.evidence.length} {msg.evidence.length === 1 ? 'Historical Record' : 'Historical Records'}</span>
@@ -381,7 +382,7 @@ export default function AskSRISHTIPage() {
               </div>
 
               {msg.sender === 'user' && (
-                <div className="w-8 h-8 rounded-lg bg-[#0D2430] border border-[#163847] flex items-center justify-center text-[#38BDF8] shrink-0 mt-0.5 font-bold text-xs">
+                <div className="w-8 h-8 rounded-lg bg-accent-soft border border-line flex items-center justify-center text-accent shrink-0 mt-0.5 font-bold text-xs">
                   PS
                 </div>
               )}
@@ -390,11 +391,11 @@ export default function AskSRISHTIPage() {
 
           {loading && (
             <div className="flex gap-3 justify-start items-center">
-              <div className="w-8 h-8 rounded-lg bg-[#0D2430] border border-[#163847] flex items-center justify-center text-[#38BDF8] shrink-0">
-                <RefreshCw size={14} className="animate-spin text-[#38BDF8]" />
+              <div className="w-8 h-8 rounded-lg bg-accent-soft border border-line flex items-center justify-center text-accent shrink-0">
+                <RefreshCw size={14} className="animate-spin text-accent" />
               </div>
-              <div className="px-4 py-3 bg-[#0D1419] border border-[#1C2C35] rounded-xl text-xs text-slate-400 flex items-center gap-2 font-sans">
-                <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-ping" />
+              <div className="px-4 py-3 bg-surface border border-line rounded-lg text-xs text-muted flex items-center gap-2 font-sans">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent animate-ping" />
                 <span>Checking historical logs and preparing answer...</span>
               </div>
             </div>
@@ -404,15 +405,15 @@ export default function AskSRISHTIPage() {
         </div>
 
         {/* Suggested Starter Prompt Chips */}
-        <div className="px-4 py-2.5 bg-[#0D1419] border-t border-[#1C2C35] flex items-center gap-2 overflow-x-auto text-xs font-sans">
-          <span className="text-slate-500 uppercase tracking-wider shrink-0 text-xs font-bold">SUGGESTIONS:</span>
+        <div className="chat-suggestions px-4 py-2.5 bg-surface border-t border-line flex items-center gap-2 overflow-x-auto text-xs font-sans">
+          <span className="text-muted uppercase tracking-wider shrink-0 text-xs font-bold">SUGGESTIONS:</span>
           {starterQuestions.map((q, idx) => {
             const promptText = language === 'as' ? (q.as || q.en) : language === 'hi' ? q.hi : q.en;
             return (
               <button
                 key={idx}
                 onClick={() => handleSend(promptText)}
-                className="px-3 py-1 rounded-full bg-[#0D1419] hover:bg-[#0D2430] border border-[#1C2C35] hover:border-cyan-500/50 text-slate-300 hover:text-[#38BDF8] whitespace-nowrap transition-colors shrink-0 text-xs font-medium cursor-pointer"
+                className="px-3 py-1 rounded-full bg-surface hover:bg-accent-soft border border-line hover:border-accent/25 text-secondary hover:text-accent whitespace-nowrap transition-colors shrink-0 text-xs font-medium cursor-pointer"
               >
                 {promptText}
               </button>
@@ -421,22 +422,23 @@ export default function AskSRISHTIPage() {
         </div>
 
         {/* Input Bar with Push-to-Talk */}
-        <form onSubmit={onFormSubmit} className="p-3 sm:p-4 bg-[#0D1419] border-t border-[#1C2C35] flex items-center gap-2.5">
+        <form onSubmit={onFormSubmit} className="chat-composer p-3 sm:p-4 bg-surface border-t border-line flex items-center gap-2.5">
           <input
             type="text"
             value={inputQuery}
             onChange={(e) => setInputQuery(e.target.value)}
             placeholder={
               isListening
-                ? `🎙️ Listening (${language === 'hi' ? 'Hindi' : language === 'as' ? 'Assamese' : 'English'})… Speak into microphone`
+                ? ` Listening (${language === 'hi' ? 'Hindi' : language === 'as' ? 'Assamese' : 'English'})… Speak into microphone`
                 : language === 'hi'
                 ? 'Moran ya drilling ke baare mein koi sawaal poochhein (jaise mud weight, stuck pipe)...'
                 : language === 'as'
                 ? 'মৰাণ বা ড্ৰিলিং সম্পৰ্কীয় প্ৰশ্ন সোধক...'
                 : 'Ask a question (e.g. mud weight for Moran, gas kicks, stuck pipe)...'
             }
-            className={`flex-1 bg-[#0D1419] border text-white text-xs sm:text-sm rounded-lg px-4 py-2.5 outline-none transition-colors ${
-              isListening ? 'border-red-500 shadow-md shadow-red-950/30' : 'border-[#1C2C35] focus:border-cyan-500'
+            aria-label="Question for the drilling copilot"
+            className={`chat-input flex-1 bg-surface border text-ink text-xs sm:text-sm rounded-lg px-4 py-2.5 outline-none transition-colors ${
+              isListening ? 'border-danger/25 shadow-md ' : 'border-line focus:border-accent/25'
             }`}
           />
 
@@ -447,8 +449,8 @@ export default function AskSRISHTIPage() {
             title={isListening ? 'Stop listening' : 'Push-to-Talk Voice Input'}
             className={`px-3.5 py-2.5 rounded-lg border text-xs font-semibold transition-all flex items-center gap-1.5 cursor-pointer ${
               isListening
-                ? 'bg-red-600 border-red-500 text-white  shadow-lg'
-                : 'bg-[#0D1419] border-[#1C2C35] hover:border-cyan-500 text-slate-300 hover:text-[#38BDF8]'
+                ? 'bg-danger border-danger/25 text-ink  shadow-lg'
+                : 'bg-surface border-line hover:border-accent/25 text-secondary hover:text-accent'
             }`}
           >
             {isListening ? <MicOff size={15} /> : <Mic size={15} />}
@@ -458,41 +460,41 @@ export default function AskSRISHTIPage() {
           <button
             type="submit"
             disabled={loading || !inputQuery.trim()}
-            className="px-5 py-2.5 bg-[#0D5C75] hover:bg-[#116F8C] active:bg-[#0A4A5E] disabled:opacity-40 text-white text-xs font-bold rounded-lg border border-[#38BDF8]/40 hover:border-[#38BDF8]/80 transition-all flex items-center gap-2 shadow-sm cursor-pointer"
+            className="px-5 py-2.5 bg-brand hover:bg-brand-hover active:bg-brand-hover disabled:opacity-40 text-ink text-xs font-bold rounded-lg border border-accent/40 hover:border-accent/80 transition-all flex items-center gap-2 shadow-sm cursor-pointer"
           >
             <span>Ask</span>
             <Send size={14} />
           </button>
         </form>
 
-      </div>
+      </section>
 
       {/* RIGHT: Compact Verified Historical Evidence Panel */}
-      <div className="w-full xl:w-[350px] shrink-0 bg-[#0D1419] border border-[#1C2C35] rounded-xl p-4 flex flex-col shadow-sm space-y-3">
-        
+      <aside aria-label="Historical evidence" className="chat-evidence dashboard-panel w-full xl:w-[350px] shrink-0 bg-surface border border-line rounded-lg flex flex-col overflow-hidden shadow-sm">
+
         {/* Panel Header */}
-        <div className="flex items-center justify-between border-b border-[#1C2C35] pb-3">
-          <div className="flex items-center gap-2 text-[#38BDF8]">
+        <div className="evidence-header flex items-center justify-between gap-2 border-b border-line p-4">
+          <div className="flex items-center gap-2 text-accent">
             <BookOpenCheck size={16} />
-            <h2 className="text-xs font-bold text-white uppercase tracking-wider">
+            <h2 className="text-xs font-bold text-ink uppercase tracking-wider">
               Historical Records
             </h2>
           </div>
-          <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-[#0D5C75]/20 text-[#38BDF8] border border-[#0D5C75]/40">
+          <span className="text-xs font-mono font-semibold px-2 py-0.5 rounded bg-brand/20 text-accent border border-accent/40">
             {selectedEvidence.length} {selectedEvidence.length === 1 ? 'Record' : 'Records'}
           </span>
         </div>
 
         {/* Citations List */}
-        <div className="flex-1 overflow-y-auto space-y-3 pr-1">
+        <div className="evidence-list flex-1 min-h-0 overflow-y-auto space-y-3 p-4">
           {selectedEvidence.length === 0 ? (
-            <div className="h-56 flex flex-col items-center justify-center text-center text-slate-500 text-xs space-y-2.5 font-sans px-4">
-              <div className="w-10 h-10 rounded-full bg-[#08151B] border border-[#1C2C35] flex items-center justify-center text-slate-500">
-                <Database size={18} className="text-slate-400" />
+            <div className="h-56 flex flex-col items-center justify-center text-center text-muted text-xs space-y-2.5 font-sans px-4">
+              <div className="w-10 h-10 rounded-full bg-surface-muted border border-line flex items-center justify-center text-muted">
+                <Database size={18} className="text-muted" />
               </div>
               <div>
-                <p className="text-slate-300 font-medium">No Offset Records Required</p>
-                <p className="text-xs text-slate-500 mt-1 max-w-[210px] leading-relaxed">
+                <p className="text-secondary font-medium">No Offset Records Required</p>
+                <p className="text-xs text-muted mt-1 max-w-[210px] leading-relaxed">
                   Historical well logs & OISD guidelines are cited automatically whenever you ask drilling or geological questions.
                 </p>
               </div>
@@ -516,47 +518,47 @@ export default function AskSRISHTIPage() {
                   ocr_confidence: 96.8,
                   reviewed_by: 'P. Saikia (Chief Drilling Specialist, Oil India Ltd.)'
                 })}
-                className="p-3.5 bg-[#0D1419] hover:bg-[#111B21] border border-[#1C2C35] hover:border-slate-500 rounded-lg space-y-2 text-xs transition-all cursor-pointer group shadow-sm"
+                className="evidence-card p-3.5 bg-surface hover:bg-surface-muted border border-line hover:border-accent rounded-lg space-y-2 text-xs transition-all cursor-pointer group shadow-sm"
                 title="Click to view original scanned report excerpt"
               >
                 {/* Top Row: Well Name + Depth + Hazard Tag */}
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-1.5 font-bold text-white text-xs">
-                    <MapPin size={13} className="text-amber-400" />
+                <div className="flex flex-wrap items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 font-bold text-ink text-xs">
+                    <MapPin size={13} className="text-warning" />
                     <span>{ev.well}</span>
-                    <span className="text-xs text-slate-400 font-normal">· {ev.depth_from_md_m}m</span>
+                    <span className="text-xs text-muted font-normal">· {ev.depth_from_md_m}m</span>
                   </div>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-semibold tracking-wide ${
+                  <span className={`px-2 py-0.5 rounded text-xs font-semibold tracking-wide ${
                     ev.severity === 'CRITICAL' || ev.event_type.toLowerCase().includes('kick')
-                      ? 'bg-red-500/10 text-red-400 border border-red-500/30'
-                      : 'bg-amber-500/10 text-amber-300 border border-amber-500/30'
+                      ? 'bg-danger-soft text-danger border border-danger/25'
+                      : 'bg-warning-soft text-warning border border-warning/25'
                   }`}>
                     {ev.event_type}
                   </span>
                 </div>
 
                 {/* Formation Name */}
-                <div className="text-xs text-[#38BDF8] font-medium">
+                <div className="text-xs text-accent font-medium">
                   {ev.formation || 'Barail Group'}
                 </div>
 
                 {/* Clean Plain Summary */}
-                <p className="text-slate-300 text-xs leading-relaxed line-clamp-3">
+                <p className="text-secondary text-xs leading-relaxed line-clamp-3">
                   {ev.description}
                 </p>
 
                 {/* Solution Box */}
                 {ev.mitigation && (
-                  <div className="text-xs text-slate-300 border-l-2 border-emerald-500 pl-2 py-0.5 leading-relaxed bg-emerald-500/5 rounded-r">
-                    <span className="text-emerald-400 font-semibold">Solution: </span>
+                  <div className="text-xs text-secondary border-l-2 border-success/25 pl-2 py-0.5 leading-relaxed bg-success-soft rounded-r">
+                    <span className="text-success font-semibold">Solution: </span>
                     {ev.mitigation}
                   </div>
                 )}
 
                 {/* Document Footer Bar with Scan Link */}
-                <div className="flex items-center justify-between pt-1.5 border-t border-[#1C2C35] text-xs text-slate-400">
+                <div className="flex items-center justify-between pt-1.5 border-t border-line text-xs text-muted">
                   <span className="truncate max-w-[170px]">{ev.source_file || 'WCR Archive'}</span>
-                  <span className="text-[#38BDF8] group-hover:underline flex items-center gap-1 font-semibold">
+                  <span className="text-accent group-hover:underline flex items-center gap-1 font-semibold">
                     <span>Page {ev.source_page || '—'} Scan</span>
                     <ChevronRight size={11} />
                   </span>
@@ -566,7 +568,7 @@ export default function AskSRISHTIPage() {
           )}
         </div>
 
-      </div>
+      </aside>
 
       {/* Source Evidence Inspector Modal */}
       <EvidenceModal
