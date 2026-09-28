@@ -2,12 +2,11 @@
 
 import React, { useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import {
-  Network, RefreshCw, ZoomIn, ZoomOut, Search,
+  Network, RefreshCw, ZoomIn, ZoomOut,
   RotateCcw, ShieldCheck, AlertTriangle, X,
-  ArrowRight, Wrench, Flame, BookOpen, Layers,
+  Wrench, Flame,
   ShieldAlert, Maximize2, Sparkles,
   ExternalLink, Eye, MapPin, ChevronRight, CheckCircle2, Move,
-  Filter
 } from 'lucide-react';
 import { api } from '@/lib/api';
 import Link from 'next/link';
@@ -108,9 +107,28 @@ function friendlyEdgeLabel(type: string): string {
   return map[type] || type.toLowerCase().replace(/_/g, ' ');
 }
 
-function truncateLabel(text: string, maxLen = 20): string {
-  if (!text) return '';
-  return text.length > maxLen ? text.slice(0, maxLen - 1) + '…' : text;
+function labelLines(text: string, maxLength = 24): string[] {
+  const words = text.split(/\s+/);
+  const lines: string[] = [];
+  for (const word of words) {
+    const last = lines.length - 1;
+    if (last >= 0 && `${lines[last]} ${word}`.length <= maxLength) lines[last] += ` ${word}`;
+    else lines.push(word);
+  }
+  return lines.length ? lines : ['Unnamed record'];
+}
+
+const MIN_ZOOM = 0.35;
+const MAX_ZOOM = 2.5;
+
+function fitGraph(nodes: Node[], width: number, height: number) {
+  if (!nodes.length || !width || !height) return { x: 0, y: 0, scale: 1 };
+  const minX = Math.min(...nodes.map(n => n.x - Math.max(n.radius, 22) - 120));
+  const maxX = Math.max(...nodes.map(n => n.x + Math.max(n.radius, 22) + 120));
+  const minY = Math.min(...nodes.map(n => n.y - Math.max(n.radius, 22) - 18));
+  const maxY = Math.max(...nodes.map(n => n.y + Math.max(n.radius, 22) + 44));
+  const scale = Math.min(1.25, Math.max(MIN_ZOOM, Math.min((width - 64) / (maxX - minX), (height - 128) / (maxY - minY))));
+  return { scale, x: (width - (minX + maxX) * scale) / 2, y: (height - (minY + maxY) * scale) / 2 };
 }
 
 /* ─── PLAIN ENGLISH INCIDENT SIMPLIFIER (NO HEAVY JARGON) ─── */
@@ -210,8 +228,8 @@ function getSimplifiedIncident(item: BowtiePathway): { summary: string; fix: str
   }
 
   return {
-    summary: item.top_event.description.length > 110 
-      ? item.top_event.description.slice(0, 105) + '…' 
+    summary: item.top_event.description.length > 110
+      ? item.top_event.description.slice(0, 105) + '…'
       : item.top_event.description,
     fix: item.mitigation_sop.action_summary.length > 110
       ? item.mitigation_sop.action_summary.slice(0, 105) + '…'
@@ -231,7 +249,7 @@ export default function KnowledgePage() {
   // Bow-Tie data & Registry display mode
   const [showBaghjanModal, setShowBaghjanModal] = useState(false);
   const [bowtieData, setBowtieData] = useState<BowtiePathway[]>([]);
-  const [registrySearch, setRegistrySearch] = useState('');
+  const [registrySearch] = useState('');
   const [severityFilter, setSeverityFilter] = useState<'ALL' | 'CRITICAL' | 'HIGH' | 'MEDIUM'>('ALL');
   const [showAllCards, setShowAllCards] = useState(false);
 
@@ -244,7 +262,9 @@ export default function KnowledgePage() {
   const [isPanningCanvas, setIsPanningCanvas] = useState(false);
 
   // Pan & Zoom
-  const [transform, setTransform] = useState({ x: 0, y: 0, scale: 0.95 });
+  const [transform, setTransform] = useState({ x: 0, y: 0, scale: 1 });
+  const [canvasSize, setCanvasSize] = useState({ width: 0, height: 0 });
+  const graphContainerRef = useRef<HTMLDivElement>(null);
   const panStateRef = useRef<{ isPanning: boolean; startX: number; startY: number; initX: number; initY: number }>({
     isPanning: false,
     startX: 0,
@@ -263,6 +283,16 @@ export default function KnowledgePage() {
   } | null>(null);
 
   const svgRef = useRef<SVGSVGElement>(null);
+
+  useEffect(() => {
+    const container = graphContainerRef.current;
+    if (!container) return;
+    const resizeObserver = new ResizeObserver(([entry]) => {
+      setCanvasSize({ width: entry.contentRect.width, height: entry.contentRect.height });
+    });
+    resizeObserver.observe(container);
+    return () => resizeObserver.disconnect();
+  }, []);
 
   /* ─── 1. FETCH GRAPH & BOWTIE DATA ─── */
   const loadGraph = useCallback(async () => {
@@ -290,7 +320,8 @@ export default function KnowledgePage() {
   }, []);
 
   useEffect(() => {
-    loadGraph();
+    const frame = requestAnimationFrame(() => { void loadGraph(); });
+    return () => cancelAnimationFrame(frame);
   }, [loadGraph]);
 
   /* ─── 2. BUILD GRAPH ADJACENCY & LOOKUPS ─── */
@@ -335,7 +366,7 @@ export default function KnowledgePage() {
       const targetWell = nodeMap.get(selectedWellId);
       if (targetWell) {
         const hop1Ids = Array.from(adjMap.get(selectedWellId) || []);
-        
+
         // Find hop 2 nodes
         const hop2Ids = new Set<string>();
         hop1Ids.forEach(h1 => {
@@ -397,13 +428,11 @@ export default function KnowledgePage() {
     }
 
     // SCENARIO B: ALL BASIN WELLS (Spacious 5-Oilfield Regional Clusters)
-    const fieldCenters: Record<string, { x: number; y: number; label: string }> = {
-      'Moran': { x: 340, y: 220, label: 'Moran Field' },
-      'Baghjan': { x: 920, y: 220, label: 'Baghjan Field' },
-      'Nahorkatiya': { x: 920, y: 440, label: 'Nahorkatiya Field' },
-      'Lakwa': { x: 340, y: 440, label: 'Lakwa Field' },
-      'Rudrasagar': { x: 630, y: 520, label: 'Rudrasagar & Others' },
-    };
+    const fieldNames = Array.from(new Set(rawNodes.filter(n => n.type === 'well').map(n => n.field || 'Unassigned'))).sort();
+    const fieldCenters = new Map(fieldNames.map((field, index) => [field, {
+      x: 300 + (index % 4) * 400,
+      y: 240 + Math.floor(index / 4) * 420,
+    }]));
 
     const positionedNodes: Node[] = [];
     const placedIds = new Set<string>();
@@ -411,15 +440,15 @@ export default function KnowledgePage() {
     // 1. Place wells in their oilfield hubs
     const wellsByField: Record<string, Node[]> = {};
     rawNodes.filter(n => n.type === 'well').forEach(w => {
-      const f = w.field && fieldCenters[w.field] ? w.field : 'Rudrasagar';
+      const f = w.field || 'Unassigned';
       wellsByField[f] = wellsByField[f] || [];
       wellsByField[f].push(w);
     });
 
     Object.entries(wellsByField).forEach(([f, wList]) => {
-      const center = fieldCenters[f] || fieldCenters['Rudrasagar'];
+      const center = fieldCenters.get(f)!;
       const count = wList.length;
-      const hubRadius = count > 1 ? 85 : 0;
+      const hubRadius = count > 1 ? 112 : 0;
       wList.forEach((w, i) => {
         const ang = (i / Math.max(count, 1)) * Math.PI * 2 - Math.PI / 2;
         positionedNodes.push({
@@ -444,8 +473,8 @@ export default function KnowledgePage() {
         const ang = (idx % 6) * (Math.PI / 3) + 0.3;
         positionedNodes.push({
           ...evt,
-          x: parentWell.x + Math.cos(ang) * 95,
-          y: parentWell.y + Math.sin(ang) * 95,
+          x: parentWell.x + Math.cos(ang) * 118,
+          y: parentWell.y + Math.sin(ang) * 118,
           radius: evt.severity === 'CRITICAL' ? 22 : 18,
         });
       } else {
@@ -459,22 +488,11 @@ export default function KnowledgePage() {
       placedIds.add(evt.id);
     });
 
-    // 3. Place remaining nodes (Formations, Hazards, Barriers, SOPs, Standards) in logical center arcs
-    const remaining = rawNodes.filter(n => !placedIds.has(n.id));
-    const sharedCenter = { x: 630, y: 320 };
-    const remCount = remaining.length;
-    remaining.forEach((n, i) => {
-      const ang = (i / Math.max(remCount, 1)) * Math.PI * 2;
-      const dist = n.type === 'formation' ? 190 : n.type === 'hazard' ? 250 : 310;
-      positionedNodes.push({
-        ...n,
-        x: sharedCenter.x + Math.cos(ang) * dist,
-        y: sharedCenter.y + Math.sin(ang) * dist,
-        radius: 16,
-      });
-    });
-
-    return { baseNodes: positionedNodes, baseEdges: rawEdges };
+    // Overview intentionally shows only source-backed well → incident relationships.
+    // Selecting a well reveals its formations, hazards, barriers, SOPs and reports.
+    const visibleIds = new Set(positionedNodes.map(n => n.id));
+    const overviewEdges = rawEdges.filter(e => e.type === 'RECORDED_INCIDENT' && visibleIds.has(e.source) && visibleIds.has(e.target));
+    return { baseNodes: positionedNodes, baseEdges: overviewEdges };
   }, [rawNodes, rawEdges, selectedWellId, nodeMap, adjMap]);
 
   // Merge with any custom dragged node positions
@@ -489,6 +507,57 @@ export default function KnowledgePage() {
   }, [baseNodes, customNodePositions]);
 
   const displayEdges = baseEdges;
+
+  // Keep labels at a readable screen size, then place them around nodes without overlaps.
+  const nodeLabels = useMemo(() => {
+    const placed: Array<{ left: number; right: number; top: number; bottom: number }> = [];
+    const labels = new Map<string, { x: number; y: number }>();
+    const scale = transform.scale || 1;
+    const visible = displayNodes.filter(n => selectedWellId !== 'ALL' || n.type === 'well' || n.id === selectedNode?.id || n.id === hoveredNode?.id);
+    const nodeBoxes = displayNodes.map(n => ({
+      id: n.id,
+      x: n.x * scale + transform.x,
+      y: n.y * scale + transform.y,
+      r: n.radius * scale + 5,
+    }));
+    const overlaps = (a: { left: number; right: number; top: number; bottom: number }, b: typeof a) =>
+      a.left < b.right && a.right > b.left && a.top < b.bottom && a.bottom > b.top;
+
+    for (const node of visible) {
+      const sx = node.x * scale + transform.x;
+      const sy = node.y * scale + transform.y;
+      const r = node.radius * scale;
+      const labelHeight = labelLines(node.label).length * 16 + 12;
+      const candidates = [
+        [0, r + labelHeight / 2 + 10], [0, -r - labelHeight / 2 - 10],
+        [r + 98, 0], [-r - 98, 0],
+        [r + 98, labelHeight + 8], [-r - 98, labelHeight + 8],
+        [r + 98, -labelHeight - 8], [-r - 98, -labelHeight - 8],
+        [0, r + labelHeight + 24], [0, -r - labelHeight - 24],
+      ];
+      let choice = candidates[0];
+      let bestPenalty = Infinity;
+      for (const candidate of candidates) {
+        const cx = sx + candidate[0];
+        const cy = sy + candidate[1];
+        const box = { left: cx - 90, right: cx + 90, top: cy - labelHeight / 2, bottom: cy + labelHeight / 2 };
+        const collisionCount = placed.filter(p => overlaps(box, p)).length;
+        const nodeCollisionCount = nodeBoxes.filter(p => p.id !== node.id && overlaps(box, {
+          left: p.x - p.r, right: p.x + p.r, top: p.y - p.r, bottom: p.y + p.r,
+        })).length;
+        const outOfView = canvasSize.width && canvasSize.height &&
+          (box.left < 8 || box.right > canvasSize.width - 8 || box.top < 62 || box.bottom > canvasSize.height - 54);
+        const penalty = collisionCount * 100 + nodeCollisionCount * 30 + (outOfView ? 200 : 0) + Math.abs(candidate[0]) / 200 + Math.abs(candidate[1]) / 200;
+        if (penalty < bestPenalty) { bestPenalty = penalty; choice = candidate; }
+        if (penalty < 1) break;
+      }
+      const cx = sx + choice[0];
+      const cy = sy + choice[1];
+      placed.push({ left: cx - 90, right: cx + 90, top: cy - labelHeight / 2, bottom: cy + labelHeight / 2 });
+      labels.set(node.id, { x: choice[0] / scale, y: choice[1] / scale });
+    }
+    return labels;
+  }, [displayNodes, transform, canvasSize, selectedWellId, selectedNode?.id, hoveredNode?.id]);
 
   /* ─── 4. CONNECTIVITY HIGHLIGHTING ─── */
   const nodePositionMap = useMemo(() => {
@@ -512,14 +581,13 @@ export default function KnowledgePage() {
 
   // Reset transform and custom positions when changing view mode
   useEffect(() => {
-    setCustomNodePositions(new Map());
-    if (selectedWellId === 'ALL') {
-      setTransform({ x: -20, y: 0, scale: 0.78 });
-    } else {
-      setTransform({ x: 0, y: 0, scale: 0.95 });
-    }
-    setSelectedNode(null);
-  }, [selectedWellId]);
+    const frame = requestAnimationFrame(() => {
+      setCustomNodePositions(new Map());
+      setTransform(fitGraph(baseNodes, canvasSize.width, canvasSize.height));
+      setSelectedNode(null);
+    });
+    return () => cancelAnimationFrame(frame);
+  }, [selectedWellId, baseNodes, canvasSize.width, canvasSize.height]);
 
   /* ─── 5. BULLETPROOF POINTER-BASED CANVAS PANNING & DRAGGING ─── */
   const handleSvgPointerDown = (e: React.PointerEvent<SVGSVGElement>) => {
@@ -581,6 +649,14 @@ export default function KnowledgePage() {
     }
 
     if (nodeDragRef.current) {
+      const dragged = nodeDragRef.current;
+      if (!dragged.hasMoved) {
+        const node = nodePositionMap.get(dragged.id);
+        if (node) {
+          if (node.type === 'well' && selectedWellId === 'ALL') setSelectedWellId(node.id);
+          else setSelectedNode(node);
+        }
+      }
       nodeDragRef.current = null;
       try {
         e.currentTarget.releasePointerCapture(e.pointerId);
@@ -593,7 +669,7 @@ export default function KnowledgePage() {
       e.preventDefault();
       const factor = e.deltaY > 0 ? 0.92 : 1.08;
       setTransform(prev => {
-        const newScale = Math.min(Math.max(0.35, prev.scale * factor), 2.5);
+        const newScale = Math.min(Math.max(MIN_ZOOM, prev.scale * factor), MAX_ZOOM);
         if (!svgRef.current) return { ...prev, scale: newScale };
         const rect = svgRef.current.getBoundingClientRect();
         const mx = e.clientX - rect.left;
@@ -607,15 +683,17 @@ export default function KnowledgePage() {
     }
   };
 
-  const zoomIn = () => setTransform(p => ({ ...p, scale: Math.min(p.scale * 1.2, 2.5) }));
-  const zoomOut = () => setTransform(p => ({ ...p, scale: Math.max(p.scale * 0.8, 0.35) }));
+  const zoomAroundCenter = (factor: number) => setTransform(p => {
+    const scale = Math.min(MAX_ZOOM, Math.max(MIN_ZOOM, p.scale * factor));
+    const cx = canvasSize.width / 2;
+    const cy = canvasSize.height / 2;
+    return { scale, x: cx - (cx - p.x) * scale / p.scale, y: cy - (cy - p.y) * scale / p.scale };
+  });
+  const zoomIn = () => zoomAroundCenter(1.2);
+  const zoomOut = () => zoomAroundCenter(1 / 1.2);
   const resetView = () => {
     setCustomNodePositions(new Map());
-    if (selectedWellId === 'ALL') {
-      setTransform({ x: -20, y: 0, scale: 0.78 });
-    } else {
-      setTransform({ x: 0, y: 0, scale: 0.95 });
-    }
+    setTransform(fitGraph(baseNodes, canvasSize.width, canvasSize.height));
   };
 
   /* ─── 6. FILTERED REGISTRY CARDS BELOW THE GRAPH (CLEAN & NON-CLUTTERED) ─── */
@@ -646,40 +724,40 @@ export default function KnowledgePage() {
   }, [bowtieData, selectedWellId, selectedWellLabel, showAllCards, severityFilter, registrySearch, nodeMap]);
 
   return (
-    <div className="space-y-4 font-sans text-slate-100 min-h-full pb-16">
+    <div className="space-y-4 font-sans text-secondary min-h-full pb-16">
 
       {/* ─── 1. TOP HEADER TOOLBAR ─── */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#0D1419] border border-[#1C2C35] rounded-xl shadow-sm">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-surface border border-line rounded-lg shadow-sm">
         <div>
           <div className="flex items-center gap-2 mb-1">
-            <span className="w-2.5 h-2.5 rounded-full bg-cyan-400 animate-pulse" />
-            <h1 className="text-lg font-bold tracking-tight text-white flex items-center gap-2">
-              <Network className="text-[#38BDF8]" size={22} />
+            <span className="w-2.5 h-2.5 rounded-full bg-accent " />
+            <h1 className=" font-bold tracking-tight text-ink flex items-center gap-2 page-title">
+              <Network className="text-accent" size={22} />
               <span>Drilling Safety Knowledge Map</span>
             </h1>
           </div>
-          <p className="text-xs text-slate-400">
-            Institutional drilling memory across 18 wells — linking rock layers, hazards, past incidents, and verified engineering fixes
+          <p className="text-xs text-muted">
+            Explore recorded links between wells, rock layers, incidents, hazards, and mitigation notes. Layout shows relationships, not physical distance or depth.
           </p>
         </div>
 
         <div className="flex items-center gap-2 text-xs">
-          <span className="hidden sm:inline-flex items-center px-3 py-1.5 rounded-xl bg-[#0A1115] border border-[#1C2C35] text-slate-300 font-mono text-[11px]">
+          <span className="hidden sm:inline-flex items-center px-3 py-1.5 rounded-lg bg-surface-muted border border-line text-secondary font-mono text-xs">
             {displayNodes.length} nodes · {displayEdges.length} links
           </span>
 
           <button
             onClick={() => setShowBaghjanModal(true)}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-red-950/60 hover:bg-red-900/80 border border-red-700/80 text-red-200 text-xs font-bold transition-all shadow-sm cursor-pointer"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-danger-soft hover:bg-danger-soft border border-danger/25 text-danger text-xs font-bold transition-all shadow-sm cursor-pointer"
           >
-            <Flame size={14} className="text-red-400" />
+            <Flame size={14} className="text-danger" />
             <span>Baghjan-5 Case Study</span>
           </button>
 
           <button
             onClick={loadGraph}
             disabled={loading}
-            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-[#0D5C75] hover:bg-[#147695] text-white rounded-xl font-semibold text-xs transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
+            className="flex items-center gap-1.5 px-3.5 py-1.5 bg-brand hover:bg-brand-hover text-ink rounded-lg font-semibold text-xs transition-colors disabled:opacity-50 cursor-pointer shadow-sm"
           >
             <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
             <span>Refresh</span>
@@ -688,10 +766,10 @@ export default function KnowledgePage() {
       </div>
 
       {/* ─── 2. QUICK WELL SELECTOR TOOLBAR ─── */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#0D1419] border border-[#1C2C35] rounded-xl text-xs shadow-md">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-surface border border-line rounded-lg text-xs shadow-md">
         <div className="flex flex-wrap items-center gap-2">
-          <span className="text-slate-400 text-xs font-bold flex items-center gap-1.5 shrink-0">
-            <Eye size={14} className="text-[#38BDF8]" />
+          <span className="text-muted text-xs font-bold flex items-center gap-1.5 shrink-0">
+            <Eye size={14} className="text-accent" />
             <span>Focus Well:</span>
           </span>
 
@@ -701,14 +779,14 @@ export default function KnowledgePage() {
             onChange={(e) => {
               if (e.target.value) setSelectedWellId(e.target.value);
             }}
-            className="px-3 py-1.5 rounded-xl bg-[#0A1115] border border-[#1C2C35] hover:border-cyan-500/60 text-[#38BDF8] font-bold text-xs focus:outline-none focus:border-cyan-400 cursor-pointer shadow-inner min-w-[200px]"
+            className="px-3 py-1.5 rounded-lg bg-surface-muted border border-line hover:border-accent/25 text-accent font-bold text-xs focus:outline-none focus:border-accent/25 cursor-pointer shadow-inner min-w-[200px]"
           >
-            <option value="ALL">🌐 View All 18 Basin Wells</option>
+            <option value="ALL"> View All 18 Basin Wells</option>
             <optgroup label="Active Drilling Asset">
-              <option value="well:MOR-29">⭐ MORAN-29 (Active Rig · Moran Field)</option>
+              <option value="well:MOR-29">MORAN-29 (Active Rig · Moran Field)</option>
             </optgroup>
             <optgroup label="Blowout Lesson">
-              <option value="well:BGH-05">🔥 BAGHJAN-5 (Blowout Lesson · Baghjan)</option>
+              <option value="well:BGH-05"> BAGHJAN-5 (Blowout Lesson · Baghjan)</option>
             </optgroup>
             <optgroup label="All Offset Wells">
               {wellList
@@ -724,22 +802,22 @@ export default function KnowledgePage() {
           {/* Quick Shortcuts */}
           <button
             onClick={() => setSelectedWellId('well:MOR-29')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               selectedWellId === 'well:MOR-29'
-                ? 'bg-cyan-500 text-black shadow-lg shadow-cyan-500/30 font-extrabold ring-2 ring-cyan-300'
-                : 'bg-[#0A1115] text-[#38BDF8] border border-cyan-800/60 hover:bg-cyan-950/40'
+                ? 'bg-accent text-black shadow-lg  font-extrabold ring-2 ring-accent/25'
+                : 'bg-surface-muted text-accent border border-accent/25 hover:bg-accent-soft'
             }`}
           >
             <Sparkles size={12} />
-            <span>MORAN-29 ★</span>
+            <span>MORAN-29 </span>
           </button>
 
           <button
             onClick={() => setSelectedWellId('well:BGH-05')}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               selectedWellId === 'well:BGH-05'
-                ? 'bg-red-500 text-white shadow-lg shadow-red-500/30 font-bold'
-                : 'bg-[#0A1115] text-red-300 border border-red-800/60 hover:bg-red-950/40'
+                ? 'bg-danger text-ink shadow-lg  font-bold'
+                : 'bg-surface-muted text-danger border border-danger/25 hover:bg-danger-soft'
             }`}
           >
             <Flame size={12} />
@@ -749,73 +827,76 @@ export default function KnowledgePage() {
           {/* Full Basin Map Button (Always fully visible, never clipped) */}
           <button
             onClick={() => setSelectedWellId('ALL')}
-            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+            className={`flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
               selectedWellId === 'ALL'
-                ? 'bg-amber-500 text-black font-extrabold shadow-lg shadow-amber-500/20'
-                : 'bg-[#0A1115] text-amber-300 border border-amber-800/60 hover:bg-amber-950/40'
+                ? 'bg-warning text-black font-extrabold shadow-lg '
+                : 'bg-surface-muted text-warning border border-warning/25 hover:bg-warning-soft'
             }`}
           >
             <Maximize2 size={12} />
-            <span>All 18 Wells Basin Map</span>
+            <span>All 18 Wells Relationship Map</span>
           </button>
         </div>
 
         {/* Compact Action Hint */}
-        <div className="flex items-center gap-1.5 text-xs text-slate-400 shrink-0">
-          <Move size={13} className="text-[#38BDF8]" />
+        <div className="flex items-center gap-1.5 text-xs text-muted shrink-0">
+          <Move size={13} className="text-accent" />
           <span>Click & hold to drag graph</span>
         </div>
       </div>
 
       {/* ─── 3. THE KNOWLEDGE GRAPH CANVAS (SMOOTH DRAG & PAN ENABLED) ─── */}
-      <div className="relative bg-[#0A1115] border border-[#1C2C35] rounded-xl overflow-hidden shadow-sm h-[580px] w-full">
-        
+      <div ref={graphContainerRef} className="relative bg-surface-muted border border-line rounded-lg overflow-hidden shadow-sm h-[min(740px,82vh)] min-h-[520px] w-full">
+
         {loading && (
-          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#0A1115]/80 backdrop-blur-sm pointer-events-none">
-            <RefreshCw size={28} className="animate-spin text-[#38BDF8] mb-2" />
-            <p className="text-xs text-slate-300 font-medium">Constructing Subsurface Knowledge Graph…</p>
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-surface-muted/80 backdrop-blur-sm pointer-events-none">
+            <RefreshCw size={28} className="animate-spin text-accent mb-2" />
+            <p className="text-xs text-secondary font-medium">Constructing Subsurface Knowledge Graph…</p>
           </div>
         )}
 
         {error && (
-          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-[#0A1115]/90 p-4">
-            <AlertTriangle size={32} className="text-red-400 mb-2" />
-            <p className="text-xs text-red-300 mb-3">{error}</p>
-            <button onClick={loadGraph} className="px-4 py-1.5 bg-cyan-700 hover:bg-cyan-600 text-white rounded-lg text-xs font-semibold">
+          <div className="absolute inset-0 z-30 flex flex-col items-center justify-center bg-surface-muted/90 p-4">
+            <AlertTriangle size={32} className="text-danger mb-2" />
+            <p className="text-xs text-danger mb-3">{error}</p>
+            <button onClick={loadGraph} className="px-4 py-1.5 bg-brand hover:bg-accent text-ink rounded-lg text-xs font-semibold">
               Retry Loading
             </button>
           </div>
         )}
 
         {/* Top-Left View Badge */}
-        <div className="absolute top-3.5 left-3.5 z-10 bg-[#0D1419]/95 backdrop-blur-md border border-[#1C2C35] rounded-xl px-3.5 py-1.5 shadow-lg flex items-center gap-2 pointer-events-none">
-          <MapPin size={14} className="text-[#38BDF8]" />
-          <span className="text-xs font-bold text-white">
+        <div className="absolute top-3.5 left-3.5 z-10 bg-surface/95 backdrop-blur-md border border-line rounded-lg px-3.5 py-1.5 shadow-lg flex items-center gap-2 pointer-events-none">
+          <MapPin size={14} className="text-accent" />
+          <span className="text-xs font-bold text-ink">
             {selectedWellId === 'ALL'
-              ? 'Full Regional Knowledge Map (Upper Assam Basin)'
-              : `${nodeMap.get(selectedWellId)?.label || 'Well'} Safety Chain & Connected Hazards`}
+              ? 'Well-to-incident overview · select a well for its full safety chain'
+              : `${nodeMap.get(selectedWellId)?.label || 'Well'} · connected safety records`}
           </span>
         </div>
 
         {/* Top-Right Floating Zoom Controls */}
-        <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1.5 bg-[#0D1419]/95 backdrop-blur-md border border-[#1C2C35] rounded-xl p-1.5 shadow-lg">
+        <div className="absolute top-3.5 right-3.5 z-10 flex items-center gap-1.5 bg-surface/95 backdrop-blur-md border border-line rounded-lg p-1.5 shadow-lg">
           <button
             onClick={zoomIn}
-            className="p-1.5 rounded-lg hover:bg-[#162D38] text-slate-300 hover:text-white transition-colors cursor-pointer"
+            aria-label="Zoom graph in"
+            className="p-1.5 rounded-lg hover:bg-surface-muted text-secondary hover:text-ink transition-colors cursor-pointer"
             title="Zoom In"
           >
             <ZoomIn size={15} />
           </button>
           <button
             onClick={zoomOut}
-            className="p-1.5 rounded-lg hover:bg-[#162D38] text-slate-300 hover:text-white transition-colors cursor-pointer"
+            aria-label="Zoom graph out"
+            className="p-1.5 rounded-lg hover:bg-surface-muted text-secondary hover:text-ink transition-colors cursor-pointer"
             title="Zoom Out"
           >
             <ZoomOut size={15} />
           </button>
           <button
             onClick={resetView}
-            className="p-1.5 rounded-lg hover:bg-[#162D38] text-slate-300 hover:text-white transition-colors cursor-pointer"
+            aria-label="Fit graph to view"
+            className="p-1.5 rounded-lg hover:bg-surface-muted text-secondary hover:text-ink transition-colors cursor-pointer"
             title="Reset View"
           >
             <RotateCcw size={15} />
@@ -823,8 +904,8 @@ export default function KnowledgePage() {
         </div>
 
         {/* Bottom Helper Instruction */}
-        <div className="absolute bottom-3 right-3.5 z-10 hidden md:block text-[10px] text-slate-400 bg-[#0D1419]/90 px-3 py-1 rounded-xl border border-[#1C2C35] pointer-events-none">
-          Left-click & hold anywhere to move graph · Drag nodes · Ctrl + Scroll to zoom
+        <div className="absolute bottom-3 right-3.5 z-10 hidden md:block text-xs text-muted bg-surface/90 px-3 py-1 rounded-lg border border-line pointer-events-none">
+          Drag canvas to pan · Drag nodes to rearrange · Ctrl + wheel to zoom · Scroll normally elsewhere
         </div>
 
         {/* SVG CANVAS WITH BULLETPROOF POINTER DRAGGING */}
@@ -835,28 +916,31 @@ export default function KnowledgePage() {
           onPointerUp={handleSvgPointerUp}
           onPointerCancel={handleSvgPointerUp}
           onWheel={handleWheel}
+          onPointerLeave={() => setHoveredNode(null)}
           style={{ cursor: isPanningCanvas ? 'grabbing' : 'grab', touchAction: 'none' }}
           className="w-full h-full select-none"
+          role="img"
+          aria-label={`Knowledge map showing ${displayNodes.length} entities and ${displayEdges.length} source relationships. Select a node to inspect its details.`}
         >
           <defs>
             {/* Arrow Markers for each category */}
-            <marker id="arrow-well" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#38bdf8" />
+            <marker id="arrow-well" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#64748b" />
             </marker>
-            <marker id="arrow-event" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <marker id="arrow-event" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
               <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#f87171" />
             </marker>
-            <marker id="arrow-hazard" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <marker id="arrow-hazard" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
               <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#fb923c" />
             </marker>
-            <marker id="arrow-barrier" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#facc15" />
+            <marker id="arrow-barrier" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#3b82f6" />
             </marker>
-            <marker id="arrow-mitigation" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+            <marker id="arrow-mitigation" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
               <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#34d399" />
             </marker>
-            <marker id="arrow-formation" viewBox="0 0 10 10" refX="28" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
-              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#c084fc" />
+            <marker id="arrow-formation" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+              <path d="M 0 1.5 L 9 5 L 0 8.5 z" fill="#64748b" />
             </marker>
 
           </defs>
@@ -864,8 +948,8 @@ export default function KnowledgePage() {
           {/* Transform Group */}
           <g transform={`translate(${transform.x}, ${transform.y}) scale(${transform.scale})`}>
             {/* Grid Pattern */}
-            <pattern id="bg-grid" width="70" height="70" patternUnits="userSpaceOnUse">
-              <circle cx="2" cy="2" r="0.9" fill="#334155" opacity="0.35" />
+            <pattern id="bg-grid" width="80" height="80" patternUnits="userSpaceOnUse">
+              <circle cx="2" cy="2" r="0.8" fill="var(--ui-muted)" opacity="0.22" />
             </pattern>
             <rect x="-4000" y="-4000" width="10000" height="10000" fill="url(#bg-grid)" />
 
@@ -880,7 +964,7 @@ export default function KnowledgePage() {
                   ? (edge.source === activeFocusId || edge.target === activeFocusId)
                   : false;
 
-                const opacity = connectedIds ? (isConnected ? 1.0 : 0.08) : 0.75;
+                const opacity = connectedIds ? (isConnected ? 1.0 : 0.14) : 0.55;
 
                 let strokeColor = '#475569';
                 let markerId = 'url(#arrow-well)';
@@ -903,28 +987,35 @@ export default function KnowledgePage() {
 
                 const midX = (src.x + tgt.x) / 2;
                 const midY = (src.y + tgt.y) / 2;
+                const dx = tgt.x - src.x;
+                const dy = tgt.y - src.y;
+                const distance = Math.hypot(dx, dy) || 1;
+                const startOffset = Math.min(src.radius + 3, distance / 3);
+                const endOffset = Math.min(tgt.radius + 8, distance / 3);
+                const edgeLabel = friendlyEdgeLabel(edge.type);
+                const edgeLabelWidth = Math.max(88, edgeLabel.length * 7.2 + 16);
 
                 return (
                   <g key={`edge-${idx}`} style={{ opacity, transition: 'opacity 0.2s ease' }}>
                     <line
-                      x1={src.x}
-                      y1={src.y}
-                      x2={tgt.x}
-                      y2={tgt.y}
+                      x1={src.x + dx * startOffset / distance}
+                      y1={src.y + dy * startOffset / distance}
+                      x2={tgt.x - dx * endOffset / distance}
+                      y2={tgt.y - dy * endOffset / distance}
                       stroke={strokeColor}
                       strokeWidth={isConnected ? 2.5 : 1.5}
                       markerEnd={markerId}
                     />
 
-                    {(isConnected || (selectedWellId !== 'ALL' && transform.scale > 0.8)) && (
-                      <g transform={`translate(${midX}, ${midY})`}>
+                    {isConnected && (
+                      <g transform={`translate(${midX}, ${midY}) scale(${1 / transform.scale})`}>
                         <rect
-                          x="-38"
-                          y="-9"
-                          width="76"
-                          height="16"
+                          x={-edgeLabelWidth / 2}
+                          y="-12"
+                          width={edgeLabelWidth}
+                          height="24"
                           rx="4"
-                          fill="#070D0F"
+                          fill="var(--ui-surface)"
                           stroke={strokeColor}
                           strokeWidth="1"
                           opacity="0.95"
@@ -933,11 +1024,11 @@ export default function KnowledgePage() {
                           textAnchor="middle"
                           dominantBaseline="central"
                           fill={strokeColor}
-                          fontSize="8.5"
-                          fontFamily="monospace"
+                          fontSize="12"
+                          fontFamily="sans-serif"
                           fontWeight="bold"
                         >
-                          {friendlyEdgeLabel(edge.type)}
+                          {edgeLabel}
                         </text>
                       </g>
                     )}
@@ -956,6 +1047,9 @@ export default function KnowledgePage() {
 
                 const config = getNodeConfig(node.type, node.severity);
                 const r = node.radius * (isSelected ? 1.25 : isHovered ? 1.15 : 1.0);
+                const labelPosition = nodeLabels.get(node.id);
+                const lines = labelLines(node.label);
+                const labelHeight = lines.length * 16 + 12;
 
                 return (
                   <g
@@ -982,20 +1076,10 @@ export default function KnowledgePage() {
                         } catch {}
                       }
                     }}
-                    onPointerUp={(e) => {
-                      e.stopPropagation();
-                      if (nodeDragRef.current && !nodeDragRef.current.hasMoved) {
-                        if (node.type === 'well' && selectedWellId === 'ALL') {
-                          setSelectedWellId(node.id);
-                        } else {
-                          setSelectedNode(node);
-                        }
-                      }
-                      nodeDragRef.current = null;
-                    }}
                     onMouseEnter={() => setHoveredNode(node)}
                     onMouseLeave={() => setHoveredNode(null)}
                   >
+                    <circle r={Math.max(r + 10, 28)} fill="transparent" pointerEvents="all" />
                     {(node.id === 'well:MOR-29' || node.severity === 'CRITICAL') && (
                       <circle
                         r={r + 8}
@@ -1039,14 +1123,14 @@ export default function KnowledgePage() {
                       {config.icon}
                     </text>
 
-                    <g transform={`translate(0, ${r + 14})`} pointerEvents="none">
+                    {labelPosition && <g transform={`translate(${labelPosition.x}, ${labelPosition.y}) scale(${1 / transform.scale})`} pointerEvents="none">
                       <rect
-                        x="-52"
-                        y="-8"
-                        width="104"
-                        height="16"
+                        x="-90"
+                        y={-labelHeight / 2}
+                        width="180"
+                        height={labelHeight}
                         rx="4"
-                        fill="#050C10"
+                        fill="var(--ui-surface)"
                         stroke={config.stroke}
                         strokeWidth={isSelected ? 1.5 : 0.8}
                         opacity="0.95"
@@ -1054,14 +1138,15 @@ export default function KnowledgePage() {
                       <text
                         textAnchor="middle"
                         dominantBaseline="central"
-                        fill={isSelected ? '#38bdf8' : '#f1f5f9'}
-                        fontSize="9"
+                        fill={isSelected ? 'var(--ui-accent)' : 'var(--ui-ink)'}
+                        fontSize="13"
                         fontWeight={isSelected ? 'bold' : '600'}
                         fontFamily="sans-serif"
+                        y={(1 - lines.length) * 8}
                       >
-                        {truncateLabel(node.label, 18)}
+                        {lines.map((line, index) => <tspan key={index} x="0" dy={index ? 16 : 0}>{line}</tspan>)}
                       </text>
-                    </g>
+                    </g>}
                   </g>
                 );
               })}
@@ -1072,107 +1157,92 @@ export default function KnowledgePage() {
 
         {/* ─── FLOATING HOVER TOOLTIP CARD ─── */}
         {hoveredNode && !selectedNode && (
-          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-[#0D1419]/95 backdrop-blur-md border border-cyan-500/50 rounded-xl px-4 py-2 shadow-sm pointer-events-none flex items-center gap-3 animate-in fade-in zoom-in-95 duration-100">
+          <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-surface/95 backdrop-blur-md border border-accent/25 rounded-lg px-4 py-2 shadow-sm pointer-events-none flex items-center gap-3 animate-in fade-in zoom-in-95 duration-100">
             <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: getNodeConfig(hoveredNode.type).stroke }} />
             <div>
-              <div className="text-[10px] uppercase font-bold text-[#38BDF8]">
+              <div className="text-xs uppercase font-bold text-accent">
                 {getNodeConfig(hoveredNode.type).label} {hoveredNode.field ? `· ${hoveredNode.field} Field` : ''}
               </div>
-              <div className="text-xs font-bold text-white">{hoveredNode.label}</div>
+              <div className="text-xs font-bold text-ink">{hoveredNode.label}</div>
             </div>
-            <span className="text-[10px] text-slate-400 border-l border-slate-700 pl-3 shrink-0">
+            <span className="text-xs text-muted border-l border-line pl-3 shrink-0">
               Click to inspect details
             </span>
           </div>
         )}
 
-        {/* ─── BOTTOM-LEFT LEGEND DOCK ─── */}
-        <div className="absolute bottom-3 left-3 z-10 bg-[#0D1419]/95 backdrop-blur-md border border-[#1C2C35] rounded-xl p-3 text-[11px] hidden sm:block shadow-sm pointer-events-none">
-          <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 flex items-center justify-between">
-            <span>Entity Legend</span>
-          </div>
-          <div className="grid grid-cols-2 gap-x-4 gap-y-1">
-            {Object.entries(TYPE_CONFIG).map(([type, cfg]) => (
-              <span key={type} className="flex items-center gap-1.5 text-slate-300 font-medium">
-                <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: cfg.stroke }} />
-                {cfg.label}
-              </span>
-            ))}
-          </div>
-        </div>
-
         {/* ─── RIGHT SLIDE-OVER DETAIL INSPECTOR PANEL ─── */}
         {selectedNode && (
-          <div className="absolute top-3 right-3 z-20 max-w-sm w-full bg-[#0D1419]/98 backdrop-blur-md border border-cyan-500/60 rounded-xl p-4 shadow-sm space-y-3 max-h-[92%] overflow-y-auto font-sans ring-1 ring-cyan-500/30 animate-in fade-in slide-in-from-right-4 duration-150">
-            <div className="flex items-start justify-between border-b border-[#1C2C35] pb-2">
+          <div className="absolute top-3 right-3 z-20 max-w-sm w-full bg-surface/98 backdrop-blur-md border border-accent/25 rounded-lg p-4 shadow-sm space-y-3 max-h-[92%] overflow-y-auto font-sans ring-1 ring-accent/25 animate-in fade-in slide-in-from-right-4 duration-150">
+            <div className="flex items-start justify-between border-b border-line pb-2">
               <div>
-                <span className="text-[10px] uppercase font-bold text-[#38BDF8] flex items-center gap-1">
+                <span className="text-xs uppercase font-bold text-accent flex items-center gap-1">
                   <Sparkles size={11} />
                   {getNodeConfig(selectedNode.type).label}
                 </span>
-                <h3 className="text-sm font-bold text-white mt-0.5">{selectedNode.label}</h3>
+                <h3 className="text-sm font-bold text-ink mt-0.5">{selectedNode.label}</h3>
               </div>
               <button
                 onClick={() => setSelectedNode(null)}
-                className="text-slate-400 hover:text-white p-1 rounded-lg hover:bg-slate-800 transition-colors cursor-pointer"
+                className="text-muted hover:text-ink p-1 rounded-lg hover:bg-surface-muted transition-colors cursor-pointer"
               >
                 <X size={15} />
               </button>
             </div>
 
-            <div className="p-2.5 bg-[#0A1115] rounded-lg border border-[#1C2C35] space-y-1.5 text-xs shadow-inner">
-              <div className="flex justify-between text-slate-400">
+            <div className="p-2.5 bg-surface-muted rounded-lg border border-line space-y-1.5 text-xs shadow-inner">
+              <div className="flex justify-between text-muted">
                 <span>ID:</span>
-                <span className="text-slate-200 font-mono text-[11px]">{selectedNode.id}</span>
+                <span className="text-secondary font-mono text-xs">{selectedNode.id}</span>
               </div>
               {selectedNode.severity && (
                 <div className="flex justify-between items-center">
                   <span>Severity:</span>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                    selectedNode.severity === 'CRITICAL' ? 'bg-red-950 text-red-300 border border-red-800' :
-                    selectedNode.severity === 'HIGH' ? 'bg-orange-950 text-orange-300 border border-orange-800' :
-                    'bg-amber-950 text-amber-300 border border-amber-800'
+                  <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                    selectedNode.severity === 'CRITICAL' ? 'bg-danger-soft text-danger border border-danger/25' :
+                    selectedNode.severity === 'HIGH' ? 'bg-warning-soft text-warning border border-warning/25' :
+                    'bg-warning-soft text-warning border border-warning/25'
                   }`}>
                     {selectedNode.severity}
                   </span>
                 </div>
               )}
               {selectedNode.depth_md && (
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-muted">
                   <span>Recorded Depth:</span>
-                  <span className="text-[#38BDF8] font-mono font-bold">{selectedNode.depth_md} meters</span>
+                  <span className="text-accent font-mono font-bold">{selectedNode.depth_md} meters</span>
                 </div>
               )}
               {selectedNode.field && (
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-muted">
                   <span>Oilfield:</span>
-                  <span className="text-white font-semibold">{selectedNode.field} Field</span>
+                  <span className="text-ink font-semibold">{selectedNode.field} Field</span>
                 </div>
               )}
               {selectedNode.system && (
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-muted">
                   <span>Barrier System:</span>
-                  <span className="text-amber-300 font-bold">{selectedNode.system}</span>
+                  <span className="text-warning font-bold">{selectedNode.system}</span>
                 </div>
               )}
               {selectedNode.organization && (
-                <div className="flex justify-between text-slate-400">
+                <div className="flex justify-between text-muted">
                   <span>Issuing Body:</span>
-                  <span className="text-blue-300 font-bold">{selectedNode.organization}</span>
+                  <span className="text-accent font-bold">{selectedNode.organization}</span>
                 </div>
               )}
             </div>
 
             {selectedNode.description && (
-              <div className="p-2.5 bg-[#0A1115] rounded-lg border border-[#1C2C35] text-xs text-slate-300 space-y-1 shadow-inner">
-                <div className="text-[10px] text-slate-400 uppercase font-bold">Operational Context:</div>
+              <div className="p-2.5 bg-surface-muted rounded-lg border border-line text-xs text-secondary space-y-1 shadow-inner">
+                <div className="text-xs text-muted uppercase font-bold">Operational Context:</div>
                 <p className="leading-relaxed">{selectedNode.description}</p>
               </div>
             )}
 
             {selectedNode.mitigation && (
-              <div className="p-2.5 bg-[#0A1115] rounded-lg border border-emerald-900/60 text-xs text-emerald-200 space-y-1 shadow-inner">
-                <div className="text-[10px] text-emerald-400 uppercase font-bold flex items-center gap-1">
+              <div className="p-2.5 bg-surface-muted rounded-lg border border-success/25 text-xs text-success space-y-1 shadow-inner">
+                <div className="text-xs text-success uppercase font-bold flex items-center gap-1">
                   <Wrench size={11} />
                   Verified Mitigation Procedure:
                 </div>
@@ -1180,8 +1250,8 @@ export default function KnowledgePage() {
               </div>
             )}
 
-            <div className="p-2.5 bg-[#0A1115] rounded-lg border border-[#1C2C35] space-y-1.5 shadow-inner">
-              <span className="text-[10px] font-bold uppercase text-slate-400">
+            <div className="p-2.5 bg-surface-muted rounded-lg border border-line space-y-1.5 shadow-inner">
+              <span className="text-xs font-bold uppercase text-muted">
                 Connected Relationships ({displayEdges.filter(e => e.source === selectedNode.id || e.target === selectedNode.id).length})
               </span>
               <div className="max-h-36 overflow-y-auto space-y-1 pr-1">
@@ -1194,12 +1264,12 @@ export default function KnowledgePage() {
                       <div
                         key={idx}
                         onClick={() => other && setSelectedNode(other)}
-                        className="flex items-center justify-between p-1.5 rounded-lg bg-[#0D1419] hover:bg-[#0c1c24] border border-[#1C2C35] hover:border-cyan-500/50 cursor-pointer text-[11px] transition-colors"
+                        className="flex items-center justify-between p-1.5 rounded-lg bg-surface hover:bg-surface-muted border border-line hover:border-accent/25 cursor-pointer text-xs transition-colors"
                       >
-                        <span className="text-[#38BDF8] font-bold truncate max-w-[150px]">
+                        <span className="text-accent font-bold truncate max-w-[150px]">
                           {other?.label ?? otherId}
                         </span>
-                        <span className="text-[9px] text-slate-400 font-mono px-1.5 py-0.5 rounded bg-[#0A1115] border border-[#1C2C35]">
+                        <span className="text-xs text-muted font-mono px-1.5 py-0.5 rounded bg-surface-muted border border-line">
                           {friendlyEdgeLabel(edge.type)}
                         </span>
                       </div>
@@ -1211,14 +1281,14 @@ export default function KnowledgePage() {
             <div className="pt-1 flex items-center gap-2">
               <Link
                 href="/ask"
-                className="flex-1 text-center py-2 rounded-lg bg-[#0D5C75] hover:bg-[#147695] text-white text-xs font-bold transition-colors shadow-md"
+                className="flex-1 text-center py-2 rounded-lg bg-brand hover:bg-brand-hover text-ink text-xs font-bold transition-colors shadow-md"
               >
                 Query in AI Copilot
               </Link>
               {selectedNode.type === 'well' && (
                 <Link
                   href={`/well/${selectedNode.id.replace('well:', '')}`}
-                  className="flex items-center justify-center gap-1 px-3 py-2 rounded-lg bg-slate-800 hover:bg-slate-700 text-white text-xs font-semibold transition-colors"
+                  className="flex items-center justify-center gap-1 px-3 py-2 rounded-lg bg-surface-muted hover:bg-surface-muted text-ink text-xs font-semibold transition-colors"
                 >
                   <span>Well Profile</span>
                   <ExternalLink size={11} />
@@ -1230,32 +1300,42 @@ export default function KnowledgePage() {
 
       </div>
 
+      <div className="flex flex-wrap items-center gap-x-5 gap-y-2 px-4 py-3 bg-surface border border-line rounded-lg text-xs shadow-sm" aria-label="Knowledge graph entity legend">
+        <span className="font-bold text-muted uppercase tracking-wider">Legend</span>
+        {Object.entries(TYPE_CONFIG).map(([type, cfg]) => (
+          <span key={type} className="flex items-center gap-1.5 text-secondary font-medium whitespace-nowrap">
+            <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: cfg.stroke }} />
+            {cfg.label}
+          </span>
+        ))}
+      </div>
+
       {/* ─── 4. SIMPLIFIED OFFSET INCIDENTS REGISTRY (CLEAN, JARGON-FREE) ─── */}
       <div className="space-y-3 pt-2">
-        <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-[#0D1419] border border-[#1C2C35] rounded-xl shadow-sm">
+        <div className="flex flex-wrap items-center justify-between gap-3 p-4 bg-surface border border-line rounded-lg shadow-sm">
           <div>
-            <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <ShieldAlert className="text-amber-400" size={18} />
+            <h2 className="text-base font-bold text-ink flex items-center gap-2">
+              <ShieldAlert className="text-warning" size={18} />
               <span>
-                {showAllCards 
+                {showAllCards
                   ? 'All Offset Well Incidents & Lessons Learned (15 Records)'
                   : `${selectedWellLabel} · Relevant Offset Incidents (${displayedRegistry.length})`}
               </span>
             </h2>
-            <p className="text-xs text-slate-400 mt-0.5">
+            <p className="text-xs text-muted mt-0.5">
               Simplified root causes and engineering solutions from offset wells in plain English
             </p>
           </div>
 
           <div className="flex flex-wrap items-center gap-2">
             {/* View scope toggle */}
-            <div className="flex items-center bg-[#0A1115] p-1 rounded-xl border border-[#1C2C35] text-xs">
+            <div className="flex items-center bg-surface-muted p-1 rounded-lg border border-line text-xs">
               <button
                 onClick={() => setShowAllCards(false)}
                 className={`px-3 py-1 rounded-lg font-bold transition-all text-xs cursor-pointer ${
                   !showAllCards
-                    ? 'bg-cyan-500 text-black shadow-md'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-accent text-black shadow-md'
+                    : 'text-muted hover:text-ink'
                 }`}
               >
                 {selectedWellLabel} Incidents
@@ -1264,8 +1344,8 @@ export default function KnowledgePage() {
                 onClick={() => setShowAllCards(true)}
                 className={`px-3 py-1 rounded-lg font-bold transition-all text-xs cursor-pointer ${
                   showAllCards
-                    ? 'bg-amber-500 text-black shadow-md'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-warning text-black shadow-md'
+                    : 'text-muted hover:text-ink'
                 }`}
               >
                 All 15 Basin Incidents
@@ -1273,18 +1353,18 @@ export default function KnowledgePage() {
             </div>
 
             {/* Severity Filter Pills */}
-            <div className="flex items-center gap-1 bg-[#0A1115] p-1 rounded-xl border border-[#1C2C35] text-xs">
+            <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-lg border border-line text-xs">
               {(['ALL', 'CRITICAL', 'HIGH', 'MEDIUM'] as const).map(sev => (
                 <button
                   key={sev}
                   onClick={() => setSeverityFilter(sev)}
-                  className={`px-2.5 py-1 rounded-lg font-bold transition-all text-[11px] cursor-pointer ${
+                  className={`px-2.5 py-1 rounded-lg font-bold transition-all text-xs cursor-pointer ${
                     severityFilter === sev
-                      ? sev === 'CRITICAL' ? 'bg-red-500 text-white' :
-                        sev === 'HIGH' ? 'bg-orange-500 text-black' :
-                        sev === 'MEDIUM' ? 'bg-amber-500 text-black' :
-                        'bg-cyan-500 text-black'
-                      : 'text-slate-400 hover:text-white'
+                      ? sev === 'CRITICAL' ? 'bg-danger text-ink' :
+                        sev === 'HIGH' ? 'bg-warning text-black' :
+                        sev === 'MEDIUM' ? 'bg-warning text-black' :
+                        'bg-accent text-black'
+                      : 'text-muted hover:text-ink'
                   }`}
                 >
                   {sev}
@@ -1304,64 +1384,64 @@ export default function KnowledgePage() {
             return (
               <div
                 key={item.pathway_id}
-                className={`p-4 rounded-xl border transition-all shadow-md flex flex-col justify-between space-y-2.5 ${
+                className={`p-4 rounded-lg border transition-all shadow-md flex flex-col justify-between space-y-2.5 ${
                   isCritical
-                    ? 'bg-[#0f0505] border-red-900/70 hover:border-red-600'
+                    ? 'bg-danger-soft border-danger/25 hover:border-danger/25'
                     : isHigh
-                    ? 'bg-[#0c0804] border-orange-900/70 hover:border-orange-600'
-                    : 'bg-[#0D1419] border-[#1C2C35] hover:border-cyan-600/70'
+                    ? 'bg-warning-soft border-warning/25 hover:border-warning/25'
+                    : 'bg-surface border-line hover:border-accent/25'
                 }`}
               >
                 <div>
                   {/* Card Header: Well & Severity Badge */}
-                  <div className="flex items-center justify-between pb-2 border-b border-[#1C2C35] mb-2">
+                  <div className="flex items-center justify-between pb-2 border-b border-line mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="font-bold text-white text-sm">{item.well.name}</span>
-                      <span className="text-[10px] text-slate-400 font-medium">({item.well.field} Field)</span>
+                      <span className="font-bold text-ink text-sm">{item.well.name}</span>
+                      <span className="text-xs text-muted font-medium">({item.well.field} Field)</span>
                     </div>
 
-                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold ${
-                      isCritical ? 'bg-red-950 text-red-300 border border-red-800' :
-                      isHigh ? 'bg-orange-950 text-orange-300 border border-orange-800' :
-                      'bg-amber-950 text-amber-300 border border-amber-800'
+                    <span className={`px-2 py-0.5 rounded text-xs font-bold ${
+                      isCritical ? 'bg-danger-soft text-danger border border-danger/25' :
+                      isHigh ? 'bg-warning-soft text-warning border border-warning/25' :
+                      'bg-warning-soft text-warning border border-warning/25'
                     }`}>
                       {item.top_event.severity}
                     </span>
                   </div>
 
                   {/* Incident Title & Depth */}
-                  <div className="text-sm font-bold text-[#38BDF8] mb-1 flex items-center justify-between">
+                  <div className="text-sm font-bold text-accent mb-1 flex items-center justify-between">
                     <span>{item.top_event.event_type}</span>
-                    <span className="text-xs font-mono text-slate-400">{item.top_event.depth_md}m MD</span>
+                    <span className="text-xs font-mono text-muted">{item.top_event.depth_md}m MD</span>
                   </div>
 
                   {/* Rock layer chip */}
-                  <div className="flex items-center gap-2 text-xs text-slate-400 mb-2">
-                    <span>Layer: <strong className="text-purple-300 font-semibold">{item.threat.formation}</strong></span>
+                  <div className="flex items-center gap-2 text-xs text-muted mb-2">
+                    <span>Layer: <strong className="text-accent font-semibold">{item.threat.formation}</strong></span>
                     <span>·</span>
-                    <span>Barrier: <strong className="text-amber-300 font-semibold">{item.preventive_barrier.name}</strong></span>
+                    <span>Barrier: <strong className="text-warning font-semibold">{item.preventive_barrier.name}</strong></span>
                   </div>
 
                   {/* 1-sentence Plain English Explanation */}
-                  <p className="text-xs text-slate-200 leading-relaxed mb-2.5">
+                  <p className="text-xs text-secondary leading-relaxed mb-2.5">
                     {summary}
                   </p>
 
                   {/* 1-sentence Verified Fix Box */}
-                  <div className="p-2.5 rounded-xl bg-emerald-950/30 border border-emerald-900/60 text-xs text-emerald-200 space-y-1">
-                    <div className="text-[10px] font-bold text-emerald-400 uppercase flex items-center gap-1">
+                  <div className="p-2.5 rounded-lg bg-success-soft border border-success/25 text-xs text-success space-y-1">
+                    <div className="text-xs font-bold text-success uppercase flex items-center gap-1">
                       <CheckCircle2 size={12} />
                       <span>Verified Fix:</span>
                     </div>
-                    <p className="text-xs text-emerald-200 font-medium leading-snug">
+                    <p className="text-xs text-success font-medium leading-snug">
                       {fix}
                     </p>
                   </div>
                 </div>
 
                 {/* Footer Standard Code & Focus on Graph Button */}
-                <div className="pt-2 border-t border-[#1C2C35] flex items-center justify-between text-xs">
-                  <span className="font-mono text-[10px] text-blue-300 bg-blue-950/60 px-2 py-0.5 rounded border border-blue-900/60 font-semibold">
+                <div className="pt-2 border-t border-line flex items-center justify-between text-xs">
+                  <span className="font-mono text-xs text-accent bg-accent-soft px-2 py-0.5 rounded border border-accent/25 font-semibold">
                     {item.regulatory_standard.code}
                   </span>
 
@@ -1371,7 +1451,7 @@ export default function KnowledgePage() {
                       setSelectedWellId(wellId);
                       window.scrollTo({ top: 0, behavior: 'smooth' });
                     }}
-                    className="flex items-center gap-1 text-[#38BDF8] hover:text-cyan-200 font-bold text-xs cursor-pointer"
+                    className="flex items-center gap-1 text-accent hover:text-accent font-bold text-xs cursor-pointer"
                   >
                     <span>Focus on Graph</span>
                     <ChevronRight size={13} />
@@ -1385,11 +1465,11 @@ export default function KnowledgePage() {
 
         {/* Empty state if filtered */}
         {displayedRegistry.length === 0 && (
-          <div className="p-8 text-center bg-[#0D1419] rounded-xl border border-[#1C2C35] text-slate-400 text-xs space-y-2">
+          <div className="p-8 text-center bg-surface rounded-lg border border-line text-muted text-xs space-y-2">
             <p>No incidents match the active filter.</p>
             <button
               onClick={() => { setShowAllCards(true); setSeverityFilter('ALL'); }}
-              className="px-3 py-1 bg-cyan-700 text-white rounded-lg text-xs font-semibold"
+              className="px-3 py-1 bg-brand text-ink rounded-lg text-xs font-semibold"
             >
               Show all 15 incidents
             </button>
@@ -1400,21 +1480,21 @@ export default function KnowledgePage() {
       {/* ─── 5. BAGHJAN-5 CASE STUDY MODAL ─── */}
       {showBaghjanModal && (
         <div className="fixed inset-0 z-50 bg-black/90 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto">
-          <div className="bg-[#0D1419] border border-red-700/80 rounded-xl max-w-3xl w-full p-6 space-y-4 shadow-sm my-6 ring-1 ring-red-500/20">
-            
-            <div className="flex items-start justify-between pb-3 border-b border-red-900/50">
+          <div className="bg-surface border border-danger/25 rounded-lg max-w-3xl w-full p-6 space-y-4 shadow-sm my-6 ring-1 ring-red-500/20">
+
+            <div className="flex items-start justify-between pb-3 border-b border-danger/25">
               <div className="flex items-center gap-3">
-                <div className="p-2.5 rounded-xl bg-red-950/80 border border-red-600 text-red-400">
+                <div className="p-2.5 rounded-lg bg-danger-soft border border-danger/25 text-danger">
                   <Flame size={24} className="" />
                 </div>
                 <div>
-                  <span className="text-[10px] uppercase font-bold text-red-400 tracking-wider">
+                  <span className="text-xs uppercase font-bold text-danger tracking-wider">
                     Institutional Drilling Lesson · Oil India Limited
                   </span>
-                  <h2 className="text-base font-bold text-white">
+                  <h2 className="text-base font-bold text-ink">
                     Well BAGHJAN-5 Blowout (2020) & Prevention Framework
                   </h2>
-                  <p className="text-slate-400 text-xs">
+                  <p className="text-muted text-xs">
                     NGT Katakey Committee & CAG Audit No. 42 Analysis
                   </p>
                 </div>
@@ -1422,7 +1502,7 @@ export default function KnowledgePage() {
 
               <button
                 onClick={() => setShowBaghjanModal(false)}
-                className="p-1.5 rounded-lg bg-[#0A1115] border border-[#1C2C35] hover:bg-slate-800 text-slate-300 hover:text-white transition-colors cursor-pointer"
+                className="p-1.5 rounded-lg bg-surface-muted border border-line hover:bg-surface-muted text-secondary hover:text-ink transition-colors cursor-pointer"
               >
                 <X size={16} />
               </button>
@@ -1430,68 +1510,68 @@ export default function KnowledgePage() {
 
             {/* Quick Facts */}
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
-              <div className="p-2.5 bg-[#0A1115] rounded-xl border border-[#1C2C35] shadow-inner">
-                <span className="text-[10px] text-slate-400 uppercase font-bold">DATE OF BLOWOUT</span>
-                <div className="text-sm font-bold text-white mt-0.5">27 May 2020</div>
-                <div className="text-[10px] text-slate-500">Burned 190 days</div>
+              <div className="p-2.5 bg-surface-muted rounded-lg border border-line shadow-inner">
+                <span className="text-xs text-muted uppercase font-bold">DATE OF BLOWOUT</span>
+                <div className="text-sm font-bold text-ink mt-0.5">27 May 2020</div>
+                <div className="text-xs text-muted">Burned 190 days</div>
               </div>
-              <div className="p-2.5 bg-[#0A1115] rounded-xl border border-[#1C2C35] shadow-inner">
-                <span className="text-[10px] text-slate-400 uppercase font-bold">RESERVOIR DEPTH</span>
-                <div className="text-sm font-bold text-[#38BDF8] mt-0.5 font-mono">3,870m MD</div>
-                <div className="text-[10px] text-slate-500">Lakadong / Therria Sand</div>
+              <div className="p-2.5 bg-surface-muted rounded-lg border border-line shadow-inner">
+                <span className="text-xs text-muted uppercase font-bold">RESERVOIR DEPTH</span>
+                <div className="text-sm font-bold text-accent mt-0.5 font-mono">3,870m MD</div>
+                <div className="text-xs text-muted">Lakadong / Therria Sand</div>
               </div>
-              <div className="p-2.5 bg-[#0A1115] rounded-xl border border-[#1C2C35] shadow-inner">
-                <span className="text-[10px] text-slate-400 uppercase font-bold">HUMAN TOLL</span>
-                <div className="text-sm font-bold text-red-400 mt-0.5">3 Fatalities</div>
-                <div className="text-[10px] text-slate-500">OIL Firefighters & Crew</div>
+              <div className="p-2.5 bg-surface-muted rounded-lg border border-line shadow-inner">
+                <span className="text-xs text-muted uppercase font-bold">HUMAN TOLL</span>
+                <div className="text-sm font-bold text-danger mt-0.5">3 Fatalities</div>
+                <div className="text-xs text-muted">OIL Firefighters & Crew</div>
               </div>
-              <div className="p-2.5 bg-[#0A1115] rounded-xl border border-[#1C2C35] shadow-inner">
-                <span className="text-[10px] text-slate-400 uppercase font-bold">ESTIMATED LOSS</span>
-                <div className="text-sm font-bold text-amber-300 mt-0.5 font-mono">₹2,500+ Cr</div>
-                <div className="text-[10px] text-slate-500">Compensation & Capping</div>
+              <div className="p-2.5 bg-surface-muted rounded-lg border border-line shadow-inner">
+                <span className="text-xs text-muted uppercase font-bold">ESTIMATED LOSS</span>
+                <div className="text-sm font-bold text-warning mt-0.5 font-mono">₹2,500+ Cr</div>
+                <div className="text-xs text-muted">Compensation & Capping</div>
               </div>
             </div>
 
             {/* 3 Pillars */}
             <div className="space-y-2">
-              <h3 className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-1.5">
-                <AlertTriangle size={13} className="text-amber-400" />
+              <h3 className="text-xs font-bold text-ink uppercase tracking-wider flex items-center gap-1.5">
+                <AlertTriangle size={13} className="text-warning" />
                 Root Causes & SRISHTI AI Prevention
               </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-[11px]">
-                <div className="p-3 bg-[#0A1115] rounded-xl border border-red-900/50 space-y-1.5 shadow-inner">
-                  <span className="text-[10px] font-bold text-red-400 uppercase">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2.5 text-xs">
+                <div className="p-3 bg-surface-muted rounded-lg border border-danger/25 space-y-1.5 shadow-inner">
+                  <span className="text-xs font-bold text-danger uppercase">
                     1. PREMATURE BOP REMOVAL
                   </span>
-                  <p className="text-slate-300 leading-relaxed">
+                  <p className="text-secondary leading-relaxed">
                     Workover crew unbolted the BOP stack before verifying dual mechanical barriers. Gas escaped into the cellar within minutes.
                   </p>
-                  <div className="p-2 bg-emerald-950/40 rounded-lg border border-emerald-800 text-emerald-300">
+                  <div className="p-2 bg-success-soft rounded-lg border border-success/25 text-success">
                     <strong>SRISHTI Fix:</strong> Enforces DGMS Rule 84: digitally locks sign-off until dual mechanical barriers are pressure tested.
                   </div>
                 </div>
 
-                <div className="p-3 bg-[#0A1115] rounded-xl border border-red-900/50 space-y-1.5 shadow-inner">
-                  <span className="text-[10px] font-bold text-red-400 uppercase">
+                <div className="p-3 bg-surface-muted rounded-lg border border-danger/25 space-y-1.5 shadow-inner">
+                  <span className="text-xs font-bold text-danger uppercase">
                     2. SHALLOW PLUG IN DEVIATED HOLE
                   </span>
-                  <p className="text-slate-300 leading-relaxed">
+                  <p className="text-secondary leading-relaxed">
                     A single cement plug placed at ~1,000m in a 40° deviated hole channeled high-pressure gas along the high side of the casing.
                   </p>
-                  <div className="p-2 bg-emerald-950/40 rounded-lg border border-emerald-800 text-emerald-300">
+                  <div className="p-2 bg-success-soft rounded-lg border border-success/25 text-success">
                     <strong>SRISHTI Fix:</strong> Flags high-angle intervals and mandates mechanical bridge plug placement within 50m of perforation.
                   </div>
                 </div>
 
-                <div className="p-3 bg-[#0A1115] rounded-xl border border-red-900/50 space-y-1.5 shadow-inner">
-                  <span className="text-[10px] font-bold text-red-400 uppercase">
+                <div className="p-3 bg-surface-muted rounded-lg border border-danger/25 space-y-1.5 shadow-inner">
+                  <span className="text-xs font-bold text-danger uppercase">
                     3. KNOWLEDGE DISCONNECT
                   </span>
-                  <p className="text-slate-300 leading-relaxed">
+                  <p className="text-secondary leading-relaxed">
                     Shift crew had no access to offset records showing Wells NHK-162 and Moran-29 experienced major gas kicks under identical Barail overpressure.
                   </p>
-                  <div className="p-2 bg-emerald-950/40 rounded-lg border border-emerald-800 text-emerald-300">
+                  <div className="p-2 bg-success-soft rounded-lg border border-success/25 text-success">
                     <strong>SRISHTI Fix:</strong> Projects offset kick signatures onto the active rig display, with 12.8 ppg kill mud mandatory in reserve pits.
                   </div>
                 </div>
@@ -1499,12 +1579,12 @@ export default function KnowledgePage() {
             </div>
 
             {/* Bottom Takeaway */}
-            <div className="p-3.5 bg-red-950/30 border border-red-800/80 rounded-xl space-y-1 text-xs text-red-200 shadow-md">
-              <div className="font-bold text-white flex items-center gap-1.5">
-                <ShieldCheck size={15} className="text-emerald-400" />
+            <div className="p-3.5 bg-danger-soft border border-danger/25 rounded-lg space-y-1 text-xs text-danger shadow-md">
+              <div className="font-bold text-ink flex items-center gap-1.5">
+                <ShieldCheck size={15} className="text-success" />
                 <span>Oil India Executive Takeaway:</span>
               </div>
-              <p className="leading-relaxed text-[11px] text-slate-300">
+              <p className="leading-relaxed text-xs text-secondary">
                 &ldquo;Baghjan-5 was not an unpredictable geological mystery; it was an institutional memory gap. The precursor gas kicks happened 3 times in nearby offset wells. SRISHTI AI ensures that 60 years of Oil India operational memory lives on the rig floor — safeguarding lives, ecosystems, and national energy assets.&rdquo;
               </p>
             </div>
@@ -1512,7 +1592,7 @@ export default function KnowledgePage() {
             <div className="flex justify-end">
               <button
                 onClick={() => setShowBaghjanModal(false)}
-                className="px-5 py-2 bg-[#0D5C75] hover:bg-[#147695] text-white font-bold rounded-xl text-xs transition-colors shadow-md cursor-pointer"
+                className="px-5 py-2 bg-brand hover:bg-brand-hover text-ink font-bold rounded-lg text-xs transition-colors shadow-md cursor-pointer"
               >
                 Close Case Study
               </button>

@@ -1,8 +1,8 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { 
-  ClipboardCheck, Printer, RefreshCw, MapPin, 
+import {
+  ClipboardCheck, Printer, RefreshCw, MapPin,
   Search, AlertOctagon, Layers, Shield
 } from 'lucide-react';
 import { api } from '@/lib/api';
@@ -231,20 +231,20 @@ export default function ReportPage() {
   }, [brief]);
 
   return (
-    <div className="space-y-3 font-sans text-slate-200 max-w-[1500px] mx-auto pb-12 select-none">
-      
+    <div className="space-y-3 font-sans text-secondary max-w-[1500px] mx-auto pb-12 select-none">
+
       {/* 1. Header Toolbar */}
-      <div className="print:hidden bg-[#0D1419] border border-[#1C2C35] rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
+      <div className="print:hidden bg-surface border border-line rounded-lg px-4 py-3 flex flex-wrap items-center justify-between gap-3 shadow-sm">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-sm font-bold text-white tracking-wide uppercase font-mono">
+            <h1 className=" font-bold text-ink    page-title">
               Pre-Drill Safety & Offset Brief
             </h1>
-            <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-slate-800 border border-slate-700 text-[#38BDF8]">
+            <span className="text-xs font-mono px-2 py-0.5 rounded bg-surface-muted border border-line text-accent">
               OIL INDIA LIMITED · UPPER ASSAM
             </span>
           </div>
-          <p className="text-xs text-slate-400 mt-0.5">
+          <p className="text-xs text-muted mt-0.5">
             Historical incident memory and driller precautions from nearby offset wells
           </p>
         </div>
@@ -254,7 +254,7 @@ export default function ReportPage() {
           <button
             onClick={handlePrint}
             disabled={!brief}
-            className="flex items-center gap-1.5 px-3 py-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 hover:text-white rounded transition-colors disabled:opacity-50 cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 bg-surface-muted hover:bg-surface-muted border border-line text-secondary hover:text-ink rounded transition-colors disabled:opacity-50 cursor-pointer"
           >
             <Printer size={13} />
             <span>EXPORT PDF</span>
@@ -263,7 +263,7 @@ export default function ReportPage() {
           <button
             onClick={() => generateBrief(wellId, radius)}
             disabled={loading}
-            className="p-1.5 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 hover:text-white rounded transition-colors disabled:opacity-50 cursor-pointer"
+            className="p-1.5 bg-surface-muted hover:bg-surface-muted border border-line text-secondary hover:text-ink rounded transition-colors disabled:opacity-50 cursor-pointer"
             title="Refresh Incidents"
           >
             <RefreshCw size={13} className={loading ? 'animate-spin' : ''} />
@@ -273,42 +273,42 @@ export default function ReportPage() {
 
       {/* 2. Top 4 Metric Cards */}
       <div className="print:hidden grid grid-cols-2 md:grid-cols-4 gap-3">
-        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg p-3 space-y-0.5">
-          <span className="text-[10px] font-mono uppercase text-slate-400 block">TOTAL INCIDENTS</span>
-          <div className="text-lg font-bold font-mono text-white">{stats.total} <span className="text-xs text-slate-400 font-normal">Events</span></div>
-          <p className="text-[11px] text-slate-400">Within {radius} km offset corridor</p>
+        <div className="bg-surface border border-line rounded-lg p-3 space-y-0.5">
+          <span className="text-xs font-mono uppercase text-muted block">TOTAL INCIDENTS</span>
+          <div className="text-lg font-bold font-mono text-ink">{stats.total} <span className="text-xs text-muted font-normal">Events</span></div>
+          <p className="text-xs text-muted">Within {radius} km offset corridor</p>
         </div>
 
-        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg p-3 space-y-0.5">
-          <span className="text-[10px] font-mono uppercase text-slate-400 block">CRITICAL THREATS</span>
-          <div className="text-lg font-bold font-mono text-rose-400">{stats.critical} <span className="text-xs text-slate-400 font-normal">Gas Kicks</span></div>
-          <p className="text-[11px] text-slate-400">Overpressure influx events</p>
+        <div className="bg-surface border border-line rounded-lg p-3 space-y-0.5">
+          <span className="text-xs font-mono uppercase text-muted block">CRITICAL THREATS</span>
+          <div className="text-lg font-bold font-mono text-danger">{stats.critical} <span className="text-xs text-muted font-normal">Gas Kicks</span></div>
+          <p className="text-xs text-muted">Overpressure influx events</p>
         </div>
 
-        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg p-3 space-y-0.5">
-          <span className="text-[10px] font-mono uppercase text-slate-400 block">HIGH RISK WARNINGS</span>
-          <div className="text-lg font-bold font-mono text-amber-300">{stats.high} <span className="text-xs text-slate-400 font-normal">Stuck Pipe / Loss</span></div>
-          <p className="text-[11px] text-slate-400">Swelling clay & circulation losses</p>
+        <div className="bg-surface border border-line rounded-lg p-3 space-y-0.5">
+          <span className="text-xs font-mono uppercase text-muted block">HIGH RISK WARNINGS</span>
+          <div className="text-lg font-bold font-mono text-warning">{stats.high} <span className="text-xs text-muted font-normal">Stuck Pipe / Loss</span></div>
+          <p className="text-xs text-muted">Swelling clay & circulation losses</p>
         </div>
 
-        <div className="bg-[#0D1419] border border-[#1C2C35] rounded-lg p-3 space-y-0.5">
-          <span className="text-[10px] font-mono uppercase text-slate-400 block">FIRST HAZARD DEPTH</span>
-          <div className="text-lg font-bold font-mono text-emerald-400">{stats.closestDepth ? `${stats.closestDepth}m` : 'None'}</div>
-          <p className="text-[11px] text-slate-400">Girujan Clay swelling zone</p>
+        <div className="bg-surface border border-line rounded-lg p-3 space-y-0.5">
+          <span className="text-xs font-mono uppercase text-muted block">FIRST HAZARD DEPTH</span>
+          <div className="text-lg font-bold font-mono text-success">{stats.closestDepth ? `${stats.closestDepth}m` : 'None'}</div>
+          <p className="text-xs text-muted">Girujan Clay swelling zone</p>
         </div>
       </div>
 
       {/* 3. Controls & Filter Bar */}
-      <div className="print:hidden bg-[#0D1419] border border-[#1C2C35] rounded-lg px-3 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
-        
+      <div className="print:hidden bg-surface border border-line rounded-lg px-3 py-2.5 flex flex-wrap items-center justify-between gap-3 text-xs">
+
         {/* Left: Well & Radius */}
         <div className="flex flex-wrap items-center gap-3 font-mono">
           <div className="flex items-center gap-1.5">
-            <span className="text-slate-400">WELL:</span>
+            <span className="text-muted">WELL:</span>
             <select
               value={wellId}
               onChange={(e) => setWellId(e.target.value)}
-              className="px-2.5 py-1 rounded bg-[#0D1419] border border-slate-700 text-white font-mono text-xs focus:outline-none"
+              className="px-2.5 py-1 rounded bg-surface border border-line text-ink font-mono text-xs focus:outline-none"
             >
               {wells.map(w => (
                 <option key={w.id} value={w.id}>{w.name} ({w.field})</option>
@@ -318,7 +318,7 @@ export default function ReportPage() {
           </div>
 
           <div className="flex items-center gap-1">
-            <span className="text-slate-400">RADIUS:</span>
+            <span className="text-muted">RADIUS:</span>
             {['5', '15', '25', '50'].map(r => (
               <button
                 key={r}
@@ -326,8 +326,8 @@ export default function ReportPage() {
                 onClick={() => setRadius(r)}
                 className={`px-2 py-0.5 rounded text-xs transition-colors cursor-pointer ${
                   radius === r
-                    ? 'bg-slate-800 text-[#38BDF8] font-bold border border-slate-700'
-                    : 'text-slate-400 hover:text-white'
+                    ? 'bg-surface-muted text-accent font-bold border border-line'
+                    : 'text-muted hover:text-ink'
                 }`}
               >
                 {r}km
@@ -342,8 +342,8 @@ export default function ReportPage() {
             onClick={() => setSeverityFilter('ALL')}
             className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
               severityFilter === 'ALL'
-                ? 'bg-slate-800 text-white border border-slate-700 font-semibold'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-surface-muted text-ink border border-line font-semibold'
+                : 'text-muted hover:text-ink'
             }`}
           >
             All ({stats.total})
@@ -352,8 +352,8 @@ export default function ReportPage() {
             onClick={() => setSeverityFilter('CRITICAL')}
             className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
               severityFilter === 'CRITICAL'
-                ? 'bg-rose-950/60 text-rose-300 border border-rose-800 font-semibold'
-                : 'text-rose-400 hover:bg-rose-950/30'
+                ? 'bg-danger-soft text-danger border border-danger/25 font-semibold'
+                : 'text-danger hover:bg-danger-soft'
             }`}
           >
             Critical ({stats.critical})
@@ -362,8 +362,8 @@ export default function ReportPage() {
             onClick={() => setSeverityFilter('HIGH')}
             className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
               severityFilter === 'HIGH'
-                ? 'bg-amber-950/60 text-amber-300 border border-amber-800 font-semibold'
-                : 'text-amber-400 hover:bg-amber-950/30'
+                ? 'bg-warning-soft text-warning border border-warning/25 font-semibold'
+                : 'text-warning hover:bg-warning-soft'
             }`}
           >
             High Risk ({stats.high})
@@ -372,8 +372,8 @@ export default function ReportPage() {
             onClick={() => setSeverityFilter('MEDIUM')}
             className={`px-2 py-0.5 rounded transition-colors cursor-pointer ${
               severityFilter === 'MEDIUM'
-                ? 'bg-slate-800 text-[#38BDF8] border border-slate-700 font-semibold'
-                : 'text-slate-400 hover:text-white'
+                ? 'bg-surface-muted text-accent border border-line font-semibold'
+                : 'text-muted hover:text-ink'
             }`}
           >
             Moderate
@@ -383,7 +383,7 @@ export default function ReportPage() {
 
       {/* Error State */}
       {error && (
-        <div className="p-3 bg-red-950/40 border border-red-800/80 rounded text-xs text-red-300 font-mono">
+        <div className="p-3 bg-danger-soft border border-danger/25 rounded text-xs text-danger font-mono">
           [FAULT] {error}
         </div>
       )}
@@ -391,16 +391,16 @@ export default function ReportPage() {
       {/* 4. Streamlined Incident List (Simplified, Jargon-Free, No Nested Boxes) */}
       <div className="space-y-2">
         {loading && (
-          <div className="p-8 text-center bg-[#0D1419] border border-[#1C2C35] rounded-lg space-y-2">
-            <RefreshCw size={20} className="animate-spin mx-auto text-[#38BDF8]" />
-            <div className="text-xs font-mono text-slate-400">LOADING OFFSET INCIDENTS...</div>
+          <div className="p-8 text-center bg-surface border border-line rounded-lg space-y-2">
+            <RefreshCw size={20} className="animate-spin mx-auto text-accent" />
+            <div className="text-xs font-mono text-muted">LOADING OFFSET INCIDENTS...</div>
           </div>
         )}
 
         {!loading && filteredEvents.length === 0 && (
-          <div className="p-8 text-center bg-[#0D1419] border border-[#1C2C35] rounded-lg space-y-1">
-            <div className="text-sm font-semibold text-white">No Matching Incidents</div>
-            <p className="text-xs text-slate-400">Try expanding the search radius or clearing filters.</p>
+          <div className="p-8 text-center bg-surface border border-line rounded-lg space-y-1">
+            <div className="text-sm font-semibold text-ink">No Matching Incidents</div>
+            <p className="text-xs text-muted">Try expanding the search radius or clearing filters.</p>
           </div>
         )}
 
@@ -412,52 +412,52 @@ export default function ReportPage() {
           return (
             <div
               key={index}
-              className="bg-[#0D1419] border border-[#1C2C35] hover:border-slate-700 rounded-lg p-3 space-y-2 transition-colors"
+              className="bg-surface border border-line hover:border-line rounded-lg p-3 space-y-2 transition-colors"
             >
               {/* Header Line */}
               <div className="flex flex-wrap items-center justify-between gap-2">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-mono font-semibold uppercase tracking-wider ${
-                    isCritical 
-                      ? 'bg-rose-500/10 text-rose-300 border border-rose-500/30' 
-                      : isHigh 
-                        ? 'bg-amber-500/10 text-amber-300 border border-amber-500/30' 
-                        : 'bg-slate-500/10 text-slate-300 border border-slate-500/30'
+                  <span className={`px-2 py-0.5 rounded text-xs font-mono font-semibold uppercase tracking-wider ${
+                    isCritical
+                      ? 'bg-danger-soft text-danger border border-danger/25'
+                      : isHigh
+                        ? 'bg-warning-soft text-warning border border-warning/25'
+                        : 'bg-slate-500/10 text-secondary border border-line'
                   }`}>
                     {item.severity}
                   </span>
 
-                  <h3 className="text-xs sm:text-sm font-bold text-white font-sans">
+                  <h3 className="text-xs sm:text-sm font-bold text-ink font-sans">
                     {info.title}
                   </h3>
                 </div>
 
                 {/* Metadata Tags */}
                 <div className="flex items-center gap-2 text-xs font-mono">
-                  <span className="text-[#38BDF8] font-semibold">{item.wells?.name ?? 'Offset Well'}</span>
-                  <span className="text-slate-500">·</span>
-                  <span className="text-purple-300">{item.formations?.canonical_name ?? 'Barail Group'}</span>
-                  <span className="text-slate-500">·</span>
-                  <span className="text-emerald-400 font-semibold">{item.depth_from_md_m}m MD</span>
+                  <span className="text-accent font-semibold">{item.wells?.name ?? 'Offset Well'}</span>
+                  <span className="text-muted">·</span>
+                  <span className="text-accent">{item.formations?.canonical_name ?? 'Barail Group'}</span>
+                  <span className="text-muted">·</span>
+                  <span className="text-success font-semibold">{item.depth_from_md_m}m MD</span>
                 </div>
               </div>
 
               {/* Clean 2-Column Summary (No nested boxes!) */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1.5 border-t border-[#1C2C35]/80">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs pt-1.5 border-t border-line/80">
                 <div>
-                  <span className="text-[10px] font-mono text-slate-400 uppercase font-semibold block mb-0.5">
+                  <span className="text-xs font-mono text-muted uppercase font-semibold block mb-0.5">
                     WHAT HAPPENED:
                   </span>
-                  <p className="text-slate-200 leading-relaxed font-sans">
+                  <p className="text-secondary leading-relaxed font-sans">
                     {info.occurrence}
                   </p>
                 </div>
 
                 <div>
-                  <span className="text-[10px] font-mono text-emerald-400 uppercase font-semibold block mb-0.5">
+                  <span className="text-xs font-mono text-success uppercase font-semibold block mb-0.5">
                     PREVENTION & ACTION:
                   </span>
-                  <p className="text-slate-200 leading-relaxed font-sans">
+                  <p className="text-secondary leading-relaxed font-sans">
                     {info.precaution}
                   </p>
                 </div>
