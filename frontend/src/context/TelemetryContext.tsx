@@ -149,7 +149,21 @@ export function TelemetryProvider({ children }: { children: React.ReactNode }) {
 
     const connectWebSocket = () => {
       try {
-        const wsUrl = process.env.NEXT_PUBLIC_WS_URL || 'ws://127.0.0.1:8000/ws/ertmac';
+        let wsUrl = process.env.NEXT_PUBLIC_WS_URL;
+        if (!wsUrl && process.env.NEXT_PUBLIC_API_URL) {
+          const wsProto = process.env.NEXT_PUBLIC_API_URL.startsWith('https') ? 'wss:' : 'ws:';
+          const host = process.env.NEXT_PUBLIC_API_URL.replace(/^https?:\/\//, '').replace(/\/+$/, '');
+          wsUrl = `${wsProto}//${host}/ws/ertmac`;
+        }
+        if (!wsUrl && typeof window !== 'undefined') {
+          if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
+            wsUrl = 'ws://127.0.0.1:8000/ws/ertmac';
+          } else {
+            const wsProto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+            wsUrl = `${wsProto}//${window.location.host}/ws/ertmac`;
+          }
+        }
+        if (!wsUrl) wsUrl = 'ws://127.0.0.1:8000/ws/ertmac';
         const ws = new WebSocket(wsUrl);
         wsRef.current = ws;
 
