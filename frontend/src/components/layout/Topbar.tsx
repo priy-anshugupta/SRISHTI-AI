@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useNetworkMode } from '@/context/NetworkModeContext';
-import { Bell, Cpu, LogOut, Wifi, WifiOff, ShieldCheck, Sun, Moon } from 'lucide-react';
+import { Bell, Cpu, LogOut, Wifi, WifiOff, Sun, Moon } from 'lucide-react';
 import SwarmTraceModal from '@/components/modals/SwarmTraceModal';
 import { useAuth } from '@/context/AuthContext';
 import { useTelemetry } from '@/context/TelemetryContext';
@@ -21,7 +21,6 @@ const routeLabels: Record<string, string> = {
   '/ingest': 'Upload & Read Reports',
   '/report': 'Pre-Drill Safety Brief',
   '/doghouse': 'Rig Floor View',
-  '/plan': 'Well Planning',
   '/review': 'Review & Verification',
 };
 
@@ -56,64 +55,61 @@ export default function Topbar() {
 
   return (
     <>
-    <header className="print:hidden h-14 shrink-0 bg-[#0A0F12]/95 backdrop-blur-md border-b border-[#1C2C35] shadow-sm flex items-center justify-between gap-2 sm:gap-3 px-3 sm:px-4 z-20 w-full font-sans select-none relative">
-      {/* Subtle bottom accent */}
-      <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-[#1C2C35] pointer-events-none" />
-
+    <header className="app-topbar print:hidden shrink-0 bg-surface border-b border-line z-20 w-full font-sans select-none relative">
       {/* 1. Left Breadcrumb Capsule */}
-      <div className="flex items-center gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#0D1419] border border-[#1C2C35] shadow-sm text-xs whitespace-nowrap shrink-0">
-        <Link href="/" className="text-slate-400 hover:text-white transition-colors font-medium flex items-center gap-1.5">
-          <span className="w-1.5 h-1.5 rounded-full bg-[#38BDF8]" />
+      <div className="topbar-breadcrumb flex items-center gap-2 text-sm">
+        <Link href="/" className="text-muted hover:text-ink transition-colors font-medium flex items-center gap-1.5 shrink-0">
+          <span className="w-1.5 h-1.5 rounded-full bg-accent" />
           <span>Operations</span>
         </Link>
-        <span className="text-slate-600 font-normal">/</span>
-        <span className="text-white font-semibold tracking-wide">{currentLabel}</span>
+        <span className="text-muted font-normal">/</span>
+        <span className="topbar-page-label text-ink font-semibold" title={currentLabel}>{currentLabel}</span>
       </div>
 
       {/* 2. Center Active Rig Live Telemetry Ticker */}
-      <div className="flex items-center justify-center flex-1 min-w-0 px-1 overflow-visible">
-        <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-[#0D1419] border border-[#1C2C35] shadow-sm text-xs text-slate-300 whitespace-nowrap shrink-0">
+      <div className="topbar-telemetry flex items-center min-w-0" aria-label="Active well telemetry">
+        <div className="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-lg bg-surface border border-line shadow-sm text-xs text-secondary whitespace-nowrap shrink-0">
           <span
             className={`w-2 h-2 rounded-full shrink-0 ${
-              isConnected ? 'bg-emerald-400 animate-pulse' : 'bg-amber-400'
+              isConnected ? 'bg-success ' : 'bg-warning'
             }`}
             title={isConnected ? 'Real-Time Telemetry Connected' : 'Polling Backend Telemetry'}
           />
-          <span className="text-[11px] text-[#38BDF8] font-semibold shrink-0">{rig || 'OIL-RIG-04'}</span>
-          <span className="text-slate-600">·</span>
-          <span className="text-[11px] font-bold text-white shrink-0">{wellName || 'MORAN-29'}</span>
-          <span className="text-slate-600">·</span>
-          <span className="text-[11px] tabular-nums text-emerald-400 font-semibold shrink-0">
+          <span className="text-xs text-accent font-semibold shrink-0">{rig || 'OIL-RIG-04'}</span>
+          <span className="text-muted">·</span>
+          <span className="text-xs font-bold text-ink shrink-0">{wellName || 'MORAN-29'}</span>
+          <span className="text-muted">·</span>
+          <span className="text-xs tabular-nums text-success font-semibold shrink-0">
             {Number(depthMd || 2418.0).toLocaleString('en-US', { minimumFractionDigits: 1, maximumFractionDigits: 1 })}m
           </span>
-          <span className="text-slate-600">·</span>
-          <span className="text-[11px] font-semibold text-[#38BDF8] shrink-0 whitespace-nowrap">
+          <span className="text-muted">·</span>
+          <span className="text-xs font-semibold text-accent shrink-0 whitespace-nowrap">
             {formation || 'Barail Group'}
           </span>
-          <span className="text-slate-600 hidden sm:inline">·</span>
-          <span className="text-[11px] tabular-nums text-white font-semibold shrink-0 hidden sm:inline">
+          <span className="text-muted hidden sm:inline">·</span>
+          <span className="text-xs tabular-nums text-ink font-semibold shrink-0 hidden sm:inline">
             {Number(rop || 14.2).toFixed(1)} m/h
           </span>
         </div>
       </div>
 
       {/* 3. Right Action Controls */}
-      <div className="flex items-center gap-1.5 sm:gap-2 shrink-0 whitespace-nowrap">
+      <div className="topbar-actions flex items-center gap-2 shrink-0">
         {/* Day / Night Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-[#0D1419] hover:bg-[#111B21] border border-[#1C2C35] hover:border-slate-500 text-slate-300 text-xs font-semibold rounded-lg transition-all cursor-pointer shadow-sm"
-          title={theme === 'dark' ? 'Switch to Government Daylight Mode' : 'Switch to Industrial SCADA Dark Mode'}
+          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-surface hover:bg-surface-muted border border-line hover:border-line text-secondary text-xs font-semibold rounded-lg transition-all cursor-pointer shadow-sm"
+          title={theme === 'dark' ? 'Switch to day view' : 'Switch to night view'}
         >
           {theme === 'dark' ? (
             <>
-              <Sun size={14} className="text-amber-400 shrink-0" />
-              <span className="hidden md:inline text-[11px] font-medium text-slate-200">Day View</span>
+              <Sun size={14} className="text-warning shrink-0" />
+              <span className="hidden md:inline text-xs font-medium text-secondary">Day View</span>
             </>
           ) : (
             <>
-              <Moon size={14} className="text-blue-500 shrink-0" />
-              <span className="hidden md:inline text-[11px] font-medium text-slate-800">Night View</span>
+              <Moon size={14} className="text-accent shrink-0" />
+              <span className="hidden md:inline text-xs font-medium text-secondary">Night View</span>
             </>
           )}
         </button>
@@ -123,8 +119,8 @@ export default function Topbar() {
           onClick={toggleNetworkMode}
           className={`flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg border text-xs font-medium transition-colors cursor-pointer shadow-sm ${
             isAirGapped
-              ? 'bg-[#0D1419] hover:bg-[#111B21] border-amber-500/40 text-amber-300'
-              : 'bg-[#0D1419] hover:bg-[#111B21] border-[#1C2C35] hover:border-slate-500 text-slate-300'
+              ? 'bg-surface hover:bg-surface-muted border-warning/25 text-warning'
+              : 'bg-surface hover:bg-surface-muted border-line hover:border-line text-secondary'
           }`}
           title={
             isAirGapped
@@ -134,13 +130,13 @@ export default function Topbar() {
         >
           {isAirGapped ? (
             <>
-              <WifiOff size={13} className="text-amber-400 shrink-0" />
-              <span className="text-[11px] font-medium text-amber-300">Local AI (Offline)</span>
+              <WifiOff size={13} className="text-warning shrink-0" />
+              <span className="text-xs font-medium text-warning">Local AI (Offline)</span>
             </>
           ) : (
             <>
-              <Wifi size={13} className="text-[#38BDF8] shrink-0" />
-              <span className="text-[11px] font-medium text-slate-200">Cloud AI</span>
+              <Wifi size={13} className="text-accent shrink-0" />
+              <span className="text-xs font-medium text-secondary">Cloud AI</span>
             </>
           )}
         </button>
@@ -148,22 +144,22 @@ export default function Topbar() {
         {/* AI Agent Trace Button */}
         <button
           onClick={() => setShowSwarmModal(true)}
-          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-[#0D1419] hover:bg-[#111B21] border border-[#1C2C35] hover:border-slate-600 text-slate-300 text-xs font-medium rounded-lg transition-colors cursor-pointer"
+          className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 bg-surface hover:bg-surface-muted border border-line hover:border-line text-secondary text-xs font-medium rounded-lg transition-colors cursor-pointer"
           title="Inspect Multi-Agent AI Decision Trace"
         >
-          <Cpu size={13} className="text-slate-400 shrink-0" />
-          <span>AI Agent Trace</span>
+          <Cpu size={13} className="text-muted shrink-0" />
+          <span className="hidden sm:inline">AI Agent Trace</span>
         </button>
 
         {/* Proactive Notification Bell with Badge */}
         <Link
           href="/alerts"
-          className="relative p-2 bg-[#0D1419] hover:bg-[#111B21] border border-[#1C2C35] hover:border-slate-600 rounded-lg text-slate-300 hover:text-white transition-colors shrink-0"
+          className="relative p-2 bg-surface hover:bg-surface-muted border border-line hover:border-line rounded-lg text-secondary hover:text-ink transition-colors shrink-0"
           title="Active Drilling Advisory Alerts"
         >
           <Bell size={15} />
           {unreadAlertsCount > 0 && (
-            <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 text-white rounded-full text-[9px] font-bold flex items-center justify-center border border-[#0A0F12]">
+            <span className="absolute -top-1 -right-1 w-4 h-4 bg-danger text-ink rounded-full text-xs font-bold flex items-center justify-center border border-line">
               {unreadAlertsCount}
             </span>
           )}
@@ -171,14 +167,14 @@ export default function Topbar() {
 
         {/* User Identity & Quick Log Out Button */}
         {user && (
-          <div className="flex items-center gap-2 bg-[#0D1419] border border-[#1C2C35] px-2 sm:px-2 py-1 rounded-lg shadow-sm shrink-0">
+          <div className="flex items-center gap-2 bg-surface border border-line px-2 sm:px-2 py-1 rounded-lg shadow-sm shrink-0">
             <div className="hidden xl:flex flex-col text-right text-xs">
-              <span className="text-white font-semibold text-[11px] leading-tight truncate max-w-[120px]">{user.name}</span>
-              <span className="text-[9px] text-slate-400 font-mono leading-tight">{user.badge}</span>
+              <span className="text-ink font-semibold text-xs leading-tight truncate max-w-[120px]">{user.name}</span>
+              <span className="text-xs text-muted font-mono leading-tight">{user.badge}</span>
             </div>
             <button
               onClick={logout}
-              className="p-1.5 bg-[#111B21] hover:bg-red-950/50 border border-slate-700/80 hover:border-red-600 rounded-md text-slate-400 hover:text-red-300 transition-colors"
+              className="p-1.5 bg-surface-muted hover:bg-danger-soft border border-line hover:border-danger/25 rounded-md text-muted hover:text-danger transition-colors"
               title="Sign Out / Lock Session"
             >
               <LogOut size={13} />
@@ -188,9 +184,9 @@ export default function Topbar() {
       </div>
     </header>
 
-    <SwarmTraceModal 
-      isOpen={showSwarmModal} 
-      onClose={() => setShowSwarmModal(false)} 
+    <SwarmTraceModal
+      isOpen={showSwarmModal}
+      onClose={() => setShowSwarmModal(false)}
     />
     </>
   );

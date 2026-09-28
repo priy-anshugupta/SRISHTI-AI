@@ -15,28 +15,9 @@ const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
 const STORAGE_KEY = 'srishti_theme';
 
-export function ThemeProvider({ children }: { children: ReactNode }) {
-  const [theme, setThemeState] = useState<Theme>('dark');
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-    try {
-      const saved = localStorage.getItem(STORAGE_KEY) as Theme | null;
-      if (saved === 'light' || saved === 'dark') {
-        setThemeState(saved);
-        applyTheme(saved);
-      } else {
-        applyTheme('dark');
-      }
-    } catch {
-      applyTheme('dark');
-    }
-  }, []);
-
-  const applyTheme = (t: Theme) => {
-    const root = document.documentElement;
-    if (t === 'light') {
+function applyTheme(t: Theme) {
+  const root = document.documentElement;
+  if (t === 'light') {
       root.classList.remove('dark');
       root.classList.add('light');
       root.setAttribute('data-theme', 'light');
@@ -45,7 +26,28 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
       root.classList.add('dark');
       root.setAttribute('data-theme', 'dark');
     }
-  };
+}
+
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setThemeState] = useState<Theme>('light');
+
+  useEffect(() => {
+    const frame = requestAnimationFrame(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY) as Theme | null;
+      if (saved === 'light' || saved === 'dark') {
+        setThemeState(saved);
+        applyTheme(saved);
+      } else {
+        applyTheme('light');
+      }
+    } catch {
+      applyTheme('light');
+    }
+    });
+    return () => cancelAnimationFrame(frame);
+  }, []);
+
 
   const setTheme = (newTheme: Theme) => {
     setThemeState(newTheme);

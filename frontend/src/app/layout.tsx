@@ -12,7 +12,7 @@ const inter = Inter({
 const jetbrainsMono = JetBrains_Mono({
   subsets: ['latin'],
   weight: ['400', '500', '600', '700'],
-  variable: '--font-code',
+  variable: '--font-jetbrains',
   display: 'swap',
 });
 
@@ -29,7 +29,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className={`${inter.variable} ${jetbrainsMono.variable} min-h-full antialiased scroll-smooth`}>
-      <body className="min-h-full font-sans selection:bg-[#0D5C75] selection:text-white">
+      <body className="min-h-full font-sans selection:bg-brand selection:text-ink">
         <AppShell>
           {children}
         </AppShell>

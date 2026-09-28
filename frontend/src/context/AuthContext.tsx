@@ -23,7 +23,7 @@ export const PRESET_PERSONAS: UserProfile[] = [
     department: 'Headquarters (Duliajan)',
     badge: 'Planning',
     initials: 'PS',
-    avatarColor: 'bg-[#0D5C75] text-[#38BDF8] border-[#38BDF8]/50',
+    avatarColor: 'bg-brand text-accent border-accent/50',
     clearanceLevel: 'Planning & Analysis',
     email: 'p.saikia@oilindia.in'
   },
@@ -34,7 +34,7 @@ export const PRESET_PERSONAS: UserProfile[] = [
     department: 'Field Operations (Moran)',
     badge: 'Operations',
     initials: 'RK',
-    avatarColor: 'bg-red-950 text-red-300 border-red-700',
+    avatarColor: 'bg-danger-soft text-danger border-danger/25',
     clearanceLevel: 'Full Operations',
     email: 'rajesh.kumar@oilindia.in'
   },
@@ -45,7 +45,7 @@ export const PRESET_PERSONAS: UserProfile[] = [
     department: 'Active Rig (OIL-RIG-04)',
     badge: 'Rig Floor',
     initials: 'KS',
-    avatarColor: 'bg-amber-950 text-amber-300 border-amber-700',
+    avatarColor: 'bg-warning-soft text-warning border-warning/25',
     clearanceLevel: 'Rig Floor View',
     email: 'k.sarma@oilindia.in'
   },
@@ -56,7 +56,7 @@ export const PRESET_PERSONAS: UserProfile[] = [
     department: 'Safety Directorate (OISD)',
     badge: 'Safety Audit',
     initials: 'MB',
-    avatarColor: 'bg-purple-950 text-purple-300 border-purple-700',
+    avatarColor: 'bg-accent-soft text-accent border-accent/25',
     clearanceLevel: 'Compliance Audit',
     email: 'm.bordoloi@oisd.gov.in'
   }
