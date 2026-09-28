@@ -12,7 +12,10 @@ Calibrated strictly for Oil India Limited (OIL) & ONGC operations in the Upper A
 from typing import Dict, List, Any, Optional, Set, Tuple
 import logging
 import re
-import networkx as nx
+try:
+    import networkx as nx
+except ImportError:
+    nx = None
 
 logger = logging.getLogger("srishti.graph")
 
