@@ -1,9 +1,11 @@
 'use client';
 
+import './leaflet.css';
+
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
-import { 
-  AlertCircle, MapPin, Search, ShieldCheck, Compass, Layers, 
-  ExternalLink, Crosshair, ChevronRight, Navigation, RefreshCw, 
+import {
+  AlertCircle, MapPin, Search, ShieldCheck, Compass, Layers,
+  ExternalLink, Crosshair, ChevronRight, Navigation, RefreshCw,
   ZoomIn, ZoomOut, Calendar, Clock, AlertTriangle, CheckCircle2,
   Info, Activity, Gauge
 } from 'lucide-react';
@@ -11,14 +13,14 @@ import { api } from '@/lib/api';
 import Link from 'next/link';
 
 // Leaflet & Well Types
-type OffsetWell = { 
-  id: string; 
-  name: string; 
-  field: string | null; 
+type OffsetWell = {
+  id: string;
+  name: string;
+  field: string | null;
   block?: string;
-  status: string; 
-  lat: number; 
-  lon: number; 
+  status: string;
+  lat: number;
+  lon: number;
   distance_km: number | string;
   td_depth_md?: number;
   current_depth_md_m?: number;
@@ -51,11 +53,11 @@ type AllWell = {
   mud_weight_ppg?: number;
 };
 
-type NearbyResponse = { 
-  center: { lat: number; lon: number }; 
-  radius_km: number; 
-  count: number; 
-  offset_wells: OffsetWell[] 
+type NearbyResponse = {
+  center: { lat: number; lon: number };
+  radius_km: number;
+  count: number;
+  offset_wells: OffsetWell[]
 };
 
 // Plain English Risk Level Helper
@@ -71,7 +73,7 @@ function getRiskDetails(well: any) {
       summary: 'Severe Gas Blowout / Fire Hazard',
       color: '#ef4444',
       markerColor: '#ef4444',
-      badgeClass: 'bg-red-950/80 text-red-300 border-red-800/80'
+      badgeClass: 'bg-danger-soft text-danger border-danger/25'
     };
   }
   if (status.includes('ACTIVE')) {
@@ -81,7 +83,7 @@ function getRiskDetails(well: any) {
       summary: 'Currently Drilling (Bit Rotating)',
       color: '#10b981',
       markerColor: '#10b981',
-      badgeClass: 'bg-emerald-950/80 text-emerald-300 border-emerald-700/80 '
+      badgeClass: 'bg-success-soft text-success border-success/25 '
     };
   }
   if (hazard.includes('sticking') || hazard.includes('stuck') || hazard.includes('loss') || hazard.includes('kick') || hazard.includes('caving') || hazard.includes('breakout') || hazard.includes('pack-off') || npt > 50) {
@@ -91,16 +93,16 @@ function getRiskDetails(well: any) {
       summary: 'Pipe Stuck or Mud Leak Issue',
       color: '#f59e0b',
       markerColor: '#f59e0b',
-      badgeClass: 'bg-amber-950/80 text-amber-300 border-amber-800/80'
+      badgeClass: 'bg-warning-soft text-warning border-warning/25'
     };
   }
   return {
     level: 'LOW RISK',
     shortLabel: 'Low Risk',
     summary: 'Standard Normal Drilling (Safe)',
-    color: '#06b6d4',
-    markerColor: '#06b6d4',
-    badgeClass: 'bg-cyan-950/80 text-[#38BDF8] border-cyan-800/80'
+    color: '#285b89',
+    markerColor: '#285b89',
+    badgeClass: 'bg-accent-soft text-accent border-accent/25'
   };
 }
 
@@ -259,13 +261,7 @@ export default function MapClient() {
       if (!mapContainerRef.current || mapInstanceRef.current) return;
 
       const L = (await import('leaflet')).default;
-      if (!document.getElementById('leaflet-css')) {
-        const link = document.createElement('link');
-        link.id = 'leaflet-css';
-        link.rel = 'stylesheet';
-        link.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
-        document.head.appendChild(link);
-      }
+
 
       if (!isMounted || !mapContainerRef.current) return;
 
@@ -358,7 +354,7 @@ export default function MapClient() {
       // Draw Search Radius Circle with Glow
       const circle = L.circle([centerLat, centerLon], {
         radius: radiusKm * 1000,
-        color: '#06b6d4',
+        color: '#285b89',
         weight: 2,
         dashArray: '5, 8',
         fillColor: '#0891b2',
@@ -373,8 +369,8 @@ export default function MapClient() {
           className: 'custom-center-marker',
           html: `
             <div style="position:relative; width:26px; height:26px;">
-              <div style="position:absolute; inset:0; border-radius:50%; background:#06b6d4; opacity:0.4; animation:ping 1.5s cubic-bezier(0,0,0.2,1) infinite;"></div>
-              <div style="position:absolute; inset:4px; border-radius:50%; background:#06b6d4; border:2.5px solid #ffffff; box-shadow:0 0 12px #06b6d4;"></div>
+              <div style="position:absolute; inset:0; border-radius:50%; background:var(--ui-accent); opacity:0.4; "></div>
+              <div style="position:absolute; inset:4px; border-radius:50%; background:var(--ui-accent); border:2.5px solid #ffffff; "></div>
             </div>
           `,
           iconSize: [26, 26],
@@ -396,14 +392,14 @@ export default function MapClient() {
           ? `
           <div style="display:flex; flex-direction:column; align-items:center; cursor:pointer; width:120px; pointer-events:auto;">
             <div style="position:relative; width:28px; height:28px; display:flex; align-items:center; justify-content:center;">
-              <div style="position:absolute; inset:-4px; border-radius:50%; background:#38BDF8; opacity:0.35; animation:ping 1.8s cubic-bezier(0,0,0.2,1) infinite;"></div>
-              <div style="width:24px; height:24px; border-radius:50%; background:#050C10; border:2px solid #38BDF8; box-shadow:0 0 16px #38BDF8; display:flex; align-items:center; justify-content:center;">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#38BDF8" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <div style="position:absolute; inset:-4px; border-radius:50%; background:var(--ui-accent); opacity:0.35; "></div>
+              <div style="width:24px; height:24px; border-radius:50%; background:var(--ui-surface); border:2px solid var(--ui-accent);  display:flex; align-items:center; justify-content:center;">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--ui-accent)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M12 2v20M7 22l5-18 5 18M5 14h14M7 8h10"/>
                 </svg>
               </div>
             </div>
-            <div style="font-size:9.5px; font-weight:700; color:#38BDF8; background:#050C10; padding:1.5px 6px; border-radius:4px; border:1px solid #38BDF8; white-space:nowrap; margin-top:2px; box-shadow:0 2px 8px rgba(0,0,0,0.95); font-family:var(--font-inter),sans-serif; display:flex; align-items:center; gap:3px;">
+            <div style="font-size:11px; font-weight:700; color:var(--ui-accent); background:var(--ui-surface); padding:1.5px 6px; border-radius:4px; border:1px solid var(--ui-accent); white-space:nowrap; margin-top:2px; box-shadow:0 2px 8px rgba(0,0,0,0.95); font-family:var(--font-inter),sans-serif; display:flex; align-items:center; gap:3px;">
               <span style="width:5px; height:5px; border-radius:50%; background:#10B981; display:inline-block;"></span>
               ${w.name} (RIG-04)
             </div>
@@ -412,9 +408,9 @@ export default function MapClient() {
           : `
           <div style="display:flex; flex-direction:column; align-items:center; cursor:pointer; width:100px; pointer-events:auto;">
             <div style="
-              width:22px; height:22px; border-radius:50%; 
-              background:#050C10; border:2px solid ${risk.color}; 
-              box-shadow: 0 0 12px ${risk.color}; 
+              width:22px; height:22px; border-radius:50%;
+              background:var(--ui-surface); border:2px solid ${risk.color};
+              box-shadow: 0 0 12px ${risk.color};
               display:flex; align-items:center; justify-content:center;
             ">
               <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="${risk.color}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -422,7 +418,7 @@ export default function MapClient() {
                 <circle cx="12" cy="12" r="3" fill="${risk.color}"/>
               </svg>
             </div>
-            <div style="font-size:9px; font-weight:700; color:#f1f5f9; background:rgba(5,12,16,0.92); padding:1px 5px; border-radius:3px; border:1px solid ${risk.color}99; white-space:nowrap; margin-top:2px; box-shadow:0 2px 6px rgba(0,0,0,0.9); font-family:var(--font-inter),sans-serif;">
+            <div style="font-size:11px; font-weight:700; color:var(--ui-ink); background:var(--ui-surface); padding:1px 5px; border-radius:3px; border:1px solid ${risk.color}99; white-space:nowrap; margin-top:2px; box-shadow:0 2px 6px rgba(0,0,0,0.9); font-family:var(--font-inter),sans-serif;">
               ${w.id || w.name}
             </div>
           </div>
@@ -440,9 +436,9 @@ export default function MapClient() {
         // Informative Hover Tooltip with Construction Year & Plain Risk
         marker.bindTooltip(
           `<div style="font-family:sans-serif; font-size:11px; padding:4px 6px; line-height:1.4;">
-            <div style="font-weight:bold; color:#ffffff; font-size:12px;">${w.name} (${w.field})</div>
+            <div style="font-weight:bold; color:var(--ui-ink); font-size:12px;">${w.name} (${w.field})</div>
             <div style="color:${risk.color}; font-weight:600; font-size:10px; margin-top:1px;">● ${risk.level}</div>
-            <div style="color:#94a3b8; font-size:10px;">${getConstructionYear(w.spud_date)}</div>
+            <div style="color:var(--ui-muted); font-size:10px;">${getConstructionYear(w.spud_date)}</div>
           </div>`,
           { direction: 'top', offset: [0, -12], className: 'custom-leaflet-tooltip' }
         );
@@ -530,44 +526,44 @@ export default function MapClient() {
   });
 
   return (
-    <div className="min-h-full flex flex-col space-y-3.5 font-sans text-slate-100 pb-8">
-      
+    <div className="min-h-full flex flex-col space-y-3.5 font-sans text-secondary pb-8">
+
       {/* 1. Top Controls Banner */}
-      <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-[#0D1419] border border-[#1C2C35] shadow-sm rounded-xl relative">
+      <div className="flex flex-wrap items-center justify-between gap-3 p-3.5 bg-surface border border-line shadow-sm rounded-lg relative">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 " />
-            <h1 className="text-base font-bold tracking-tight text-white flex items-center gap-2">
-              <Compass className="text-[#38BDF8]" size={19} />
+            <span className="w-2.5 h-2.5 rounded-full bg-success " />
+            <h1 className=" font-bold tracking-tight text-ink flex items-center gap-2 page-title">
+              <Compass className="text-accent" size={19} />
               Geospatial Well Intelligence Map
             </h1>
           </div>
-          <span className="hidden md:inline text-xs px-2.5 py-1 rounded-full bg-[#111B21]/60 text-slate-300 border border-[#1C2C35]/60 font-medium">
+          <span className="hidden md:inline text-xs px-2.5 py-1 rounded-full bg-surface-muted/60 text-secondary border border-line/60 font-medium">
             Upper Assam Basin · 18 Wells Mapped
           </span>
         </div>
 
         {/* Layer Switcher & Re-Center View */}
         <div className="flex items-center gap-2 text-xs">
-          <div className="flex items-center bg-[#0A1115] border border-[#1C2C35] rounded-xl p-1 shadow-inner gap-0.5">
+          <div className="flex items-center bg-surface-muted border border-line rounded-lg p-1 shadow-inner gap-0.5">
             <button
               onClick={() => setTileLayer('satellite')}
               title="Real Surface View: Aerial photos of drill pads, tea gardens, forests, and villages"
-              className={`px-3 py-1 rounded-lg transition-all ${tileLayer === 'satellite' ? 'bg-[#0D5C75] text-white font-bold shadow-md' : 'text-slate-400 hover:text-white'}`}
+              className={`px-3 py-1 rounded-lg transition-all ${tileLayer === 'satellite' ? 'bg-brand text-ink font-bold shadow-md' : 'text-muted hover:text-ink'}`}
             >
               Satellite
             </button>
             <button
               onClick={() => setTileLayer('dark')}
               title="24/7 Control Room View: High contrast to clearly track well risks & radius circle"
-              className={`px-3 py-1 rounded-lg transition-all ${tileLayer === 'dark' ? 'bg-[#0D5C75] text-white font-bold shadow-md' : 'text-slate-400 hover:text-white'}`}
+              className={`px-3 py-1 rounded-lg transition-all ${tileLayer === 'dark' ? 'bg-brand text-ink font-bold shadow-md' : 'text-muted hover:text-ink'}`}
             >
               Dark Ops
             </button>
             <button
               onClick={() => setTileLayer('street')}
               title="Flood & Elevation View: River drainage and contour heights for monsoon safety"
-              className={`px-3 py-1 rounded-lg transition-all ${tileLayer === 'street' ? 'bg-[#0D5C75] text-white font-bold shadow-md' : 'text-slate-400 hover:text-white'}`}
+              className={`px-3 py-1 rounded-lg transition-all ${tileLayer === 'street' ? 'bg-brand text-ink font-bold shadow-md' : 'text-muted hover:text-ink'}`}
             >
               Terrain / Topo
             </button>
@@ -575,10 +571,10 @@ export default function MapClient() {
 
           <button
             onClick={handleResetView}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0A1115] hover:bg-[#0D1419] border border-[#1C2C35] hover:border-cyan-500/60 text-slate-200 hover:text-white transition-all shadow-md"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-muted hover:bg-surface border border-line hover:border-accent/25 text-secondary hover:text-ink transition-all shadow-md"
             title="Reset Map to Active Moran Rig-04 Position"
           >
-            <Crosshair size={13} className="text-[#38BDF8]" />
+            <Crosshair size={13} className="text-accent" />
             <span className="hidden sm:inline font-medium">Re-Center Rig-04</span>
           </button>
         </div>
@@ -586,64 +582,65 @@ export default function MapClient() {
 
       {/* 2. Main Content Layout: 12 Cols */}
       <div className="grid grid-cols-12 gap-4 items-start">
-        
+
         {/* Left Column: Proximity Search & Nearby Wells List (4 cols) */}
         <div className="col-span-12 lg:col-span-4 flex flex-col space-y-3.5">
-          
+
           {/* Spatial Search Form Card */}
-          <div className="p-4 bg-[#0D1419] border border-[#1C2C35] rounded-xl space-y-3 shadow-sm ring-1 ring-cyan-500/10">
-            <div className="flex items-center justify-between border-b border-[#1C2C35] pb-2.5">
-              <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                <Navigation size={14} className="text-[#38BDF8]" />
+          <div className="p-4 bg-surface border border-line rounded-lg space-y-3 shadow-sm ring-1 ring-accent/25">
+            <div className="flex items-center justify-between border-b border-line pb-2.5">
+              <span className="text-xs font-bold text-ink uppercase tracking-wider flex items-center gap-2">
+                <Navigation size={14} className="text-accent" />
                 Find Nearby Wells
               </span>
-              <span className="text-xs text-slate-400 font-medium bg-[#0A1115] px-2 py-0.5 rounded border border-[#1C2C35]">Click map to set</span>
+              <span className="text-xs text-muted font-medium bg-surface-muted px-2 py-0.5 rounded border border-line">Click map to set</span>
             </div>
 
             <form onSubmit={handleSearchSubmit} className="space-y-3 text-xs">
               <div className="grid grid-cols-2 gap-2.5">
                 <div>
-                  <label className="block text-[11px] text-slate-400 mb-1 font-semibold">LATITUDE (°N)</label>
-                  <input
+                  <label htmlFor="map-latitude" className="block text-xs text-muted mb-1 font-semibold">LATITUDE (°N)</label>
+                  <input id="map-latitude"
                     required
                     value={latitude}
                     onChange={(e) => setLatitude(e.target.value)}
                     inputMode="decimal"
-                    className="w-full px-3 py-1.5 rounded-lg bg-[#0A1115] border border-[#1C2C35] text-white tabular-nums focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 shadow-inner"
+                    className="w-full px-3 py-1.5 rounded-lg bg-surface-muted border border-line text-ink tabular-nums focus:outline-none focus:border-accent/25 focus:ring-1 focus:ring-accent/25 shadow-inner"
                   />
                 </div>
                 <div>
-                  <label className="block text-[11px] text-slate-400 mb-1 font-semibold">LONGITUDE (°E)</label>
-                  <input
+                  <label htmlFor="map-longitude" className="block text-xs text-muted mb-1 font-semibold">LONGITUDE (°E)</label>
+                  <input id="map-longitude"
                     required
                     value={longitude}
                     onChange={(e) => setLongitude(e.target.value)}
                     inputMode="decimal"
-                    className="w-full px-3 py-1.5 rounded-lg bg-[#0A1115] border border-[#1C2C35] text-white tabular-nums focus:outline-none focus:border-cyan-400 focus:ring-1 focus:ring-cyan-400 shadow-inner"
+                    className="w-full px-3 py-1.5 rounded-lg bg-surface-muted border border-line text-ink tabular-nums focus:outline-none focus:border-accent/25 focus:ring-1 focus:ring-accent/25 shadow-inner"
                   />
                 </div>
               </div>
 
               <div>
-                <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
-                  <span>SEARCH RADIUS: <strong className="text-[#38BDF8] tabular-nums font-bold">{radius} km</strong></span>
-                  <span className="text-xs text-slate-500">Max 50 km</span>
+                <div className="flex items-center justify-between text-xs text-muted mb-1">
+                  <span>SEARCH RADIUS: <strong className="text-accent tabular-nums font-bold">{radius} km</strong></span>
+                  <span className="text-xs text-muted">Max 50 km</span>
                 </div>
                 <input
+                  aria-label="Search radius in kilometres"
                   type="range"
                   min="2"
                   max="50"
                   step="1"
                   value={radius}
                   onChange={(e) => setRadius(e.target.value)}
-                  className="w-full accent-cyan-400 cursor-pointer"
+                  className="w-full accent-accent cursor-pointer"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={loading}
-                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-[#0D5C75] hover:bg-[#0F6D8A] text-white text-sm font-medium transition-colors disabled:opacity-50 cursor-pointer"
+                className="w-full flex items-center justify-center gap-2 py-2.5 rounded-lg bg-brand hover:bg-brand-hover text-ink text-sm font-medium transition-colors disabled:opacity-50 cursor-pointer"
               >
                 <Search size={14} />
                 <span>{loading ? 'Searching Coordinates…' : 'Find Nearby Historical Wells'}</span>
@@ -652,16 +649,16 @@ export default function MapClient() {
           </div>
 
           {/* Synchronized Field Filter Buttons */}
-          <div className="p-2.5 bg-[#0D1419] border border-[#1C2C35] rounded-xl flex items-center gap-1.5 overflow-x-auto text-[11px] no-scrollbar shadow-md">
-            <span className="text-slate-400 text-xs uppercase font-bold pl-1">FIELD:</span>
+          <div className="p-2.5 bg-surface border border-line rounded-lg flex items-center gap-1.5 overflow-x-auto text-xs no-scrollbar shadow-md">
+            <span className="text-muted text-xs uppercase font-bold pl-1">FIELD:</span>
             {FIELDS_LIST.map((f) => (
               <button
                 key={f}
                 onClick={() => handleSelectField(f)}
                 className={`px-3 py-1 rounded-lg whitespace-nowrap transition-colors border font-medium cursor-pointer ${
                   fieldFilter === f
-                    ? 'bg-[#0D5C75]/30 text-white border-[#38BDF8]/50 font-semibold'
-                    : 'bg-[#0A1115] text-slate-400 border-[#1C2C35] hover:border-slate-600 hover:text-white'
+                    ? 'bg-brand/30 text-ink border-accent/50 font-semibold'
+                    : 'bg-surface-muted text-muted border-line hover:border-line hover:text-ink'
                 }`}
               >
                 {f}
@@ -670,13 +667,13 @@ export default function MapClient() {
           </div>
 
           {/* Detailed Nearby Wells List with Construction Year & Plain Issues */}
-          <div className="bg-[#0D1419] border border-[#1C2C35] rounded-xl flex flex-col shadow-sm overflow-hidden">
-            <div className="p-3.5 border-b border-[#1C2C35] bg-[#0D1419] flex items-center justify-between">
-              <span className="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#38BDF8]" />
+          <div className="bg-surface border border-line rounded-lg flex flex-col shadow-sm overflow-hidden">
+            <div className="p-3.5 border-b border-line bg-surface flex items-center justify-between">
+              <span className="text-xs font-bold text-ink uppercase tracking-wider flex items-center gap-2">
+                <span className="w-1.5 h-1.5 rounded-full bg-accent" />
                 {fieldFilter === 'ALL' ? `NEARBY WELLS (WITHIN ${radius} KM)` : `${fieldFilter.toUpperCase()} WELLS`}
               </span>
-              <span className="text-xs tabular-nums px-2.5 py-0.5 rounded-full bg-[#111B21]/60 text-slate-300 border border-[#1C2C35]/60 font-semibold">
+              <span className="text-xs tabular-nums px-2.5 py-0.5 rounded-full bg-surface-muted/60 text-secondary border border-line/60 font-semibold">
                 {displayedOffsets.length} {fieldFilter === 'ALL' ? 'Wells Found' : 'Wells in Field'}
               </span>
             </div>
@@ -684,23 +681,23 @@ export default function MapClient() {
             {/* Scrollable Wells Container with Natural Heights */}
             <div className="overflow-y-auto max-h-[500px] p-3 space-y-2.5 text-xs">
               {loading && (
-                <div className="p-8 text-center text-slate-400 flex items-center justify-center gap-2">
-                  <RefreshCw size={14} className="animate-spin text-[#38BDF8]" />
+                <div className="p-8 text-center text-muted flex items-center justify-center gap-2">
+                  <RefreshCw size={14} className="animate-spin text-accent" />
                   <span>Searching offset wells & historical logs…</span>
                 </div>
               )}
 
               {error && (
-                <div className="p-3 bg-red-950/30 border border-red-800/50 rounded-lg text-red-300 text-xs flex items-center gap-2">
+                <div className="p-3 bg-danger-soft border border-danger/25 rounded-lg text-danger text-xs flex items-center gap-2">
                   <AlertCircle size={14} />
                   <span>{error}</span>
                 </div>
               )}
 
               {!loading && displayedOffsets.length === 0 && (
-                <div className="p-8 text-center text-slate-500">
-                  <p className="font-semibold text-slate-300">No {fieldFilter !== 'ALL' ? fieldFilter : ''} wells found in this search radius.</p>
-                  <p className="text-[11px] mt-1 text-slate-500">Click &quot;ALL&quot; or expand the radius slider.</p>
+                <div className="p-8 text-center text-muted">
+                  <p className="font-semibold text-secondary">No {fieldFilter !== 'ALL' ? fieldFilter : ''} wells found in this search radius.</p>
+                  <p className="text-xs mt-1 text-muted">Click &quot;ALL&quot; or expand the radius slider.</p>
                 </div>
               )}
 
@@ -713,42 +710,42 @@ export default function MapClient() {
                   <div
                     key={well.id}
                     onClick={() => focusWell(well)}
-                    className={`p-3.5 rounded-xl border transition-all cursor-pointer space-y-2 ${
+                    className={`p-3.5 rounded-lg border transition-all cursor-pointer space-y-2 ${
                       isSelected
-                        ? 'bg-gradient-to-r from-[#0D5C75]/40 via-[#0D5C75]/20 to-transparent border-cyan-400 shadow-sm shadow-cyan-950/40 ring-1 ring-cyan-400/30'
-                        : 'bg-[#0A1115] border-[#1C2C35] hover:border-cyan-600/60 hover:bg-[#0D1419]'
+                        ? 'bg-accent-soft border-accent/25 shadow-sm  ring-1 ring-accent/25'
+                        : 'bg-surface-muted border-line hover:border-accent/25 hover:bg-surface'
                     }`}
                   >
                     {/* Header: Name + Distance */}
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
                         <span className="w-2.5 h-2.5 rounded-full shrink-0" style={{ backgroundColor: risk.color }} />
-                        <span className="font-bold text-white text-xs">{well.name}</span>
-                        <span className="text-xs text-slate-400 font-medium">({well.field})</span>
+                        <span className="font-bold text-ink text-xs">{well.name}</span>
+                        <span className="text-xs text-muted font-medium">({well.field})</span>
                       </div>
-                      <span className="font-bold text-[#38BDF8] tabular-nums text-xs bg-[#0D1419] px-2 py-0.5 rounded border border-[#1C2C35]">
+                      <span className="font-bold text-accent tabular-nums text-xs bg-surface px-2 py-0.5 rounded border border-line">
                         {Number(well.distance_km).toFixed(1)} km away
                       </span>
                     </div>
 
                     {/* Meta: Construction Year & Depth */}
-                    <div className="flex items-center justify-between text-[11px] text-slate-400">
-                      <span className="flex items-center gap-1 text-slate-300">
-                        <Calendar size={11} className="text-[#38BDF8]" />
+                    <div className="flex items-center justify-between text-xs text-muted">
+                      <span className="flex items-center gap-1 text-secondary">
+                        <Calendar size={11} className="text-accent" />
                         {getConstructionYear(well.spud_date)}
                       </span>
-                      <span className="tabular-nums text-slate-300">
-                        Depth: <strong className="text-white">{depth}m</strong>
+                      <span className="tabular-nums text-secondary">
+                        Depth: <strong className="text-ink">{depth}m</strong>
                       </span>
                     </div>
 
                     {/* Plain English Issue & Risk Badge */}
-                    <div className="pt-1.5 border-t border-[#1C2C35] flex items-start justify-between gap-2">
-                      <p className="text-[11px] text-slate-300 leading-snug flex-1">
-                        <strong className="text-slate-400 font-medium">Past Issue: </strong>
+                    <div className="pt-1.5 border-t border-line flex items-start justify-between gap-2">
+                      <p className="text-xs text-secondary leading-snug flex-1">
+                        <strong className="text-muted font-medium">Past Issue: </strong>
                         {getPlainHazardText(well.primary_hazard)}
                       </p>
-                      <span className={`px-2 py-0.5 rounded text-[11px] font-bold shrink-0 border ${risk.badgeClass}`}>
+                      <span className={`px-2 py-0.5 rounded text-xs font-bold shrink-0 border ${risk.badgeClass}`}>
                         {risk.shortLabel}
                       </span>
                     </div>
@@ -760,11 +757,11 @@ export default function MapClient() {
         </div>
 
         {/* Right Column: Fullscreen Leaflet Map (8 cols) */}
-        <div className="col-span-12 lg:col-span-8 relative rounded-xl overflow-hidden border border-[#1C2C35] bg-[#0A1115] flex flex-col shadow-sm ring-1 ring-cyan-500/10 min-h-[550px] lg:min-h-[720px]">
-          
+        <div className="col-span-12 lg:col-span-8 relative rounded-lg overflow-hidden border border-line bg-surface-muted flex flex-col shadow-sm ring-1 ring-accent/25 min-h-[550px] lg:min-h-[720px]">
+
           {/* Leaflet Canvas Container */}
-          <div 
-            ref={mapContainerRef} 
+          <div
+            ref={mapContainerRef}
             onMouseEnter={() => {
               if (mapInstanceRef.current) {
                 mapInstanceRef.current.scrollWheelZoom.enable();
@@ -776,11 +773,11 @@ export default function MapClient() {
                 mapInstanceRef.current.scrollWheelZoom.disable();
               }
             }}
-            className="w-full h-full min-h-[550px] lg:min-h-[720px] z-0 cursor-grab active:cursor-grabbing" 
+            className="w-full h-full min-h-[550px] lg:min-h-[720px] z-0 cursor-grab active:cursor-grabbing"
           />
 
           {/* Floating Zoom Controls */}
-          <div 
+          <div
             onMouseEnter={() => {
               if (mapInstanceRef.current) {
                 mapInstanceRef.current.scrollWheelZoom.disable();
@@ -793,18 +790,18 @@ export default function MapClient() {
                 mapInstanceRef.current.dragging.enable();
               }
             }}
-            className="absolute top-4 right-4 z-10 flex flex-col gap-1.5 bg-[#0D1419]/95 backdrop-blur-md border border-[#1C2C35] rounded-xl p-1 shadow-sm"
+            className="absolute top-4 right-4 z-10 flex flex-col gap-1.5 bg-surface/95 backdrop-blur-md border border-line rounded-lg p-1 shadow-sm"
           >
             <button
               onClick={() => mapInstanceRef.current?.zoomIn()}
-              className="p-2 hover:bg-[#111B21] rounded-lg text-slate-300 hover:text-white transition-colors cursor-pointer"
+              className="p-2 hover:bg-surface-muted rounded-lg text-secondary hover:text-ink transition-colors cursor-pointer"
               title="Zoom In"
             >
               <ZoomIn size={16} />
             </button>
             <button
               onClick={() => mapInstanceRef.current?.zoomOut()}
-              className="p-2 hover:bg-[#111B21] rounded-lg text-slate-300 hover:text-white transition-colors cursor-pointer"
+              className="p-2 hover:bg-surface-muted rounded-lg text-secondary hover:text-ink transition-colors cursor-pointer"
               title="Zoom Out"
             >
               <ZoomOut size={16} />
@@ -812,7 +809,7 @@ export default function MapClient() {
           </div>
 
           {/* Tactical Map Legend Overlay (Simple Jargon-Free Words) */}
-          <div 
+          <div
             onMouseEnter={() => {
               if (mapInstanceRef.current) {
                 mapInstanceRef.current.scrollWheelZoom.disable();
@@ -825,23 +822,23 @@ export default function MapClient() {
                 mapInstanceRef.current.dragging.enable();
               }
             }}
-            className="absolute bottom-4 left-4 z-10 bg-[#0D1419]/95 backdrop-blur-md border border-[#1C2C35] rounded-xl p-3 text-[11px] shadow-sm hidden sm:block font-sans ring-1 ring-cyan-500/10"
+            className="absolute bottom-4 left-4 z-10 bg-surface/95 backdrop-blur-md border border-line rounded-lg p-3 text-xs shadow-sm hidden sm:block font-sans ring-1 ring-accent/25"
           >
-            <div className="text-xs font-bold text-slate-300 uppercase tracking-wider mb-2 flex items-center gap-1.5">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
+            <div className="text-xs font-bold text-secondary uppercase tracking-wider mb-2 flex items-center gap-1.5">
+              <span className="w-1.5 h-1.5 rounded-full bg-accent" />
               Tactical Map Legend
             </div>
             <div className="grid grid-cols-2 gap-x-4 gap-y-1.5">
-              <span className="flex items-center gap-1.5 text-slate-300 font-medium"><span className="w-2 h-2 rounded-full bg-emerald-400" /> Active Drilling Now</span>
-              <span className="flex items-center gap-1.5 text-slate-300 font-medium"><span className="w-2 h-2 rounded-full bg-cyan-400" /> Low Risk (Safe Well)</span>
-              <span className="flex items-center gap-1.5 text-slate-300 font-medium"><span className="w-2 h-2 rounded-full bg-amber-400" /> Medium Risk (Stuck/Loss)</span>
-              <span className="flex items-center gap-1.5 text-slate-300 font-medium"><span className="w-2 h-2 rounded-full bg-red-500" /> High Risk (Kick/Blowout)</span>
+              <span className="flex items-center gap-1.5 text-secondary font-medium"><span className="w-2 h-2 rounded-full bg-success" /> Active Drilling Now</span>
+              <span className="flex items-center gap-1.5 text-secondary font-medium"><span className="w-2 h-2 rounded-full bg-accent" /> Low Risk (Safe Well)</span>
+              <span className="flex items-center gap-1.5 text-secondary font-medium"><span className="w-2 h-2 rounded-full bg-warning" /> Medium Risk (Stuck/Loss)</span>
+              <span className="flex items-center gap-1.5 text-secondary font-medium"><span className="w-2 h-2 rounded-full bg-danger" /> High Risk (Kick/Blowout)</span>
             </div>
           </div>
 
           {/* Selected Well Intelligence Floating Card (Plain English) */}
           {selectedWell && (
-            <div 
+            <div
               onMouseEnter={() => {
                 if (mapInstanceRef.current) {
                   mapInstanceRef.current.scrollWheelZoom.disable();
@@ -854,70 +851,70 @@ export default function MapClient() {
                   mapInstanceRef.current.dragging.enable();
                 }
               }}
-              className="absolute top-4 left-4 z-10 max-w-sm w-full bg-[#0D1419]/95 backdrop-blur-md border border-cyan-500/80 rounded-xl p-4 shadow-sm space-y-3 animate-in fade-in zoom-in-95 duration-200 ring-1 ring-cyan-400/30"
+              className="absolute top-4 left-4 z-10 max-w-sm w-full bg-surface/95 backdrop-blur-md border border-accent/25 rounded-lg p-4 shadow-sm space-y-3 animate-in fade-in zoom-in-95 duration-200 ring-1 ring-accent/25"
             >
-              
+
               {/* Card Header */}
-              <div className="flex items-center justify-between border-b border-[#1C2C35] pb-2">
+              <div className="flex items-center justify-between border-b border-line pb-2">
                 <div className="flex items-center gap-2">
                   <span className="w-3 h-3 rounded-full shrink-0" style={{ backgroundColor: getRiskDetails(selectedWell).color }} />
                   <div>
-                    <h3 className="font-bold text-white text-sm leading-none">{selectedWell.name}</h3>
-                    <span className="text-xs text-slate-400">{selectedWell.field} Field · {selectedWell.block || 'Block I'}</span>
+                    <h3 className="font-bold text-ink text-sm leading-none">{selectedWell.name}</h3>
+                    <span className="text-xs text-muted">{selectedWell.field} Field · {selectedWell.block || 'Block I'}</span>
                   </div>
                 </div>
                 <button
                   onClick={() => setSelectedWell(null)}
-                  className="text-slate-400 hover:text-white text-sm p-1 cursor-pointer"
+                  className="text-muted hover:text-ink text-sm p-1 cursor-pointer"
                 >
-                  ✕
+
                 </button>
               </div>
 
               {/* Key Well Parameters */}
               <div className="grid grid-cols-2 gap-2 text-xs">
-                <div className="p-2 bg-[#080E11] rounded-lg border border-[#1C2C35]">
-                  <div className="text-xs text-slate-400 font-medium">CONSTRUCTION</div>
-                  <div className="text-slate-200 font-semibold">{getConstructionYear(selectedWell.spud_date)}</div>
+                <div className="p-2 bg-canvas rounded-lg border border-line">
+                  <div className="text-xs text-muted font-medium">CONSTRUCTION</div>
+                  <div className="text-secondary font-semibold">{getConstructionYear(selectedWell.spud_date)}</div>
                 </div>
-                <div className="p-2 bg-[#080E11] rounded-lg border border-[#1C2C35]">
-                  <div className="text-xs text-slate-400 font-medium">TOTAL DEPTH</div>
-                  <div className="text-[#38BDF8] font-bold tabular-nums">{selectedWell.current_depth_md_m ?? selectedWell.td_depth_md ?? '—'} m MD</div>
+                <div className="p-2 bg-canvas rounded-lg border border-line">
+                  <div className="text-xs text-muted font-medium">TOTAL DEPTH</div>
+                  <div className="text-accent font-bold tabular-nums">{selectedWell.current_depth_md_m ?? selectedWell.td_depth_md ?? '—'} m MD</div>
                 </div>
-                <div className="p-2 bg-[#080E11] rounded-lg border border-[#1C2C35]">
-                  <div className="text-xs text-slate-400 font-medium">RISK LEVEL</div>
+                <div className="p-2 bg-canvas rounded-lg border border-line">
+                  <div className="text-xs text-muted font-medium">RISK LEVEL</div>
                   <div className="font-bold" style={{ color: getRiskDetails(selectedWell).color }}>{getRiskDetails(selectedWell).level}</div>
                 </div>
-                <div className="p-2 bg-[#080E11] rounded-lg border border-[#1C2C35]">
-                  <div className="text-xs text-slate-400 font-medium">OPERATING RIG</div>
-                  <div className="text-slate-200 font-medium">{selectedWell.rig || 'OIL-RIG-01'}</div>
+                <div className="p-2 bg-canvas rounded-lg border border-line">
+                  <div className="text-xs text-muted font-medium">OPERATING RIG</div>
+                  <div className="text-secondary font-medium">{selectedWell.rig || 'OIL-RIG-01'}</div>
                 </div>
               </div>
 
               {/* Plain English Past Hazard Explanation */}
-              <div className="p-2.5 rounded-lg bg-[#080E11] border border-[#1C2C35] space-y-1">
-                <div className="text-xs text-amber-400 font-bold uppercase flex items-center gap-1.5">
+              <div className="p-2.5 rounded-lg bg-canvas border border-line space-y-1">
+                <div className="text-xs text-warning font-bold uppercase flex items-center gap-1.5">
                   <AlertTriangle size={12} />
                   What Happened in this Well:
                 </div>
-                <p className="text-[11px] text-slate-300 leading-snug">
+                <p className="text-xs text-secondary leading-snug">
                   {getPlainHazardText(selectedWell.primary_hazard)}
                 </p>
                 {selectedWell.total_npt_hrs ? (
-                  <div className="text-xs text-slate-400 mt-1">
-                    ⏱️ Historical Drilling Delay: <strong className="text-amber-300 tabular-nums">{selectedWell.total_npt_hrs} hours delayed</strong>
+                  <div className="text-xs text-muted mt-1">
+                    Historical Drilling Delay: <strong className="text-warning tabular-nums">{selectedWell.total_npt_hrs} hours delayed</strong>
                   </div>
                 ) : null}
               </div>
 
               {/* Coordinates & Link to Dossier */}
-              <div className="pt-1 flex items-center justify-between border-t border-[#1C2C35]/80">
-                <span className="text-xs tabular-nums text-slate-400">
+              <div className="pt-1 flex items-center justify-between border-t border-line/80">
+                <span className="text-xs tabular-nums text-muted">
                   {selectedWell.lat.toFixed(4)}°N, {selectedWell.lon.toFixed(4)}°E
                 </span>
                 <Link
                   href={`/well/${selectedWell.id}`}
-                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#0D5C75] hover:bg-[#0F6D8A] text-white text-xs font-semibold transition-colors shadow-md"
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-brand hover:bg-brand-hover text-ink text-xs font-semibold transition-colors shadow-md"
                 >
                   <span>{selectedWell.id === 'MOR-29' ? 'Open Active Rig (MOR-29)' : `Open Dossier (${selectedWell.name})`}</span>
                   <ExternalLink size={12} />

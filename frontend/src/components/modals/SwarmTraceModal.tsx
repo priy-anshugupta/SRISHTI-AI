@@ -1,9 +1,11 @@
 'use client';
 
+import { useDialogFocus } from '@/lib/useDialogFocus';
+
 import React, { useState, useEffect } from 'react';
-import { 
-  X, Cpu, CheckCircle2, ShieldCheck, Play, ArrowRight, 
-  Layers, Database, FileText, Activity, AlertTriangle, 
+import {
+  X, Cpu, CheckCircle2, ShieldCheck, Play, ArrowRight,
+  Layers, Database, FileText, Activity, AlertTriangle,
   Sparkles, Terminal, BookOpen, Clock, ChevronRight, Share2, Zap
 } from 'lucide-react';
 import { api } from '@/lib/api';
@@ -16,7 +18,7 @@ interface SwarmTraceModalProps {
 const SCENARIOS = [
   {
     id: 'girujan',
-    title: '🚨 Girujan Clay Swelling & Stuck Pipe',
+    title: ' Girujan Clay Swelling & Stuck Pipe',
     field: 'Moran Field (MOR-I)',
     depth: '1,240m MD',
     formation: 'Girujan Clay',
@@ -39,7 +41,7 @@ const SCENARIOS = [
   },
   {
     id: 'tipam',
-    title: '💧 Tipam Sandstone Severe Mud Loss',
+    title: ' Tipam Sandstone Severe Mud Loss',
     field: 'Naharkatiya Field (NHK-Main)',
     depth: '2,540m MD',
     formation: 'Tipam Sandstone',
@@ -62,7 +64,7 @@ const SCENARIOS = [
   },
   {
     id: 'barail',
-    title: '⚡ Barail Gas Kick Precursor',
+    title: ' Barail Gas Kick Precursor',
     field: 'Baghjan Field (BGH-Ext)',
     depth: '2,450m MD',
     formation: 'Barail Group',
@@ -85,7 +87,7 @@ const SCENARIOS = [
   },
   {
     id: 'alluvium',
-    title: '🟢 Smooth Drilling Baseline in Alluvium',
+    title: ' Smooth Drilling Baseline in Alluvium',
     field: 'Duliajan Field (HQ-Central)',
     depth: '450m MD',
     formation: 'Alluvium & Dhekiajuli',
@@ -109,6 +111,7 @@ const SCENARIOS = [
 ];
 
 export default function SwarmTraceModal({ isOpen, onClose }: SwarmTraceModalProps) {
+  const dialogRef = useDialogFocus(isOpen, onClose);
   const [selectedScenario, setSelectedScenario] = useState(SCENARIOS[0]);
   const [activeTab, setActiveTab] = useState<'dag' | 'evidence' | 'citation' | 'payload'>('dag');
   const [animatingStep, setAnimatingStep] = useState(10);
@@ -151,42 +154,43 @@ export default function SwarmTraceModal({ isOpen, onClose }: SwarmTraceModalProp
   const currentAgents = isLiveMode && liveTraceAgents.length > 0 ? liveTraceAgents : selectedScenario.agents;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-5xl max-h-[90vh] bg-[#0A1013] border border-cyan-800/60 rounded-xl shadow-sm flex flex-col overflow-hidden text-slate-200">
-        
+    <div ref={dialogRef} role="dialog" aria-modal="true" aria-label="AI decision trace" tabIndex={-1} className="fixed inset-0 z-50 flex items-center justify-center bg-black/45 backdrop-blur-sm p-4 animate-in fade-in duration-200">
+      <div className="trace-dialog min-w-0 w-full max-w-5xl max-h-[90vh] bg-surface-muted border border-accent/25 rounded-lg shadow-sm flex flex-col overflow-hidden text-secondary">
+
         {/* Header */}
-        <div className="h-16 px-6 bg-[#080E11] border-b border-[#1C2C35] flex items-center justify-between shrink-0">
+        <div className="dialog-header min-h-16 py-4 px-6 bg-canvas border-b border-line flex items-center justify-between shrink-0">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-lg bg-[#0D5C75]/30 border border-[#0D5C75] flex items-center justify-center text-[#38BDF8]">
+            <div className="w-9 h-9 rounded-lg bg-brand/30 border border-accent flex items-center justify-center text-accent">
               <Cpu size={20} />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-white font-bold text-base">10-Agent LangGraph Swarm Execution Trace</h2>
-                <span className="px-2 py-0.5 rounded text-xs font-semibold bg-cyan-950/60 text-[#38BDF8] border border-cyan-800/60">
+                <h2 className="text-ink font-bold text-base">10-Agent LangGraph Swarm Execution Trace</h2>
+                <span className="px-2 py-0.5 rounded text-xs font-semibold bg-accent-soft text-accent border border-accent/25">
                   HYBRID ARCHITECTURE
                 </span>
-                <span className="px-2 py-0.5 rounded text-xs font-semibold bg-emerald-950/60 text-emerald-300 border border-emerald-800/60 flex items-center gap-1">
+                <span className="px-2 py-0.5 rounded text-xs font-semibold bg-success-soft text-success border border-success/25 flex items-center gap-1">
                   <ShieldCheck size={11} /> ZERO HALLUCINATIONS
                 </span>
               </div>
-              <p className="text-xs text-slate-400">
+              <p className="text-xs text-muted">
                 Real-time deterministic state-graph traversal calibrated for Oil India Limited (eRTMAC)
               </p>
             </div>
           </div>
-          <button 
+          <button
+            aria-label="Close dialog"
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-[#111B21] transition-colors"
+            className="p-1.5 rounded-lg text-muted hover:text-ink hover:bg-surface-muted transition-colors"
           >
             <X size={20} />
           </button>
         </div>
 
         {/* 4 Scenario Selector Bar + Live Trace Toggle */}
-        <div className="bg-[#0D1518] px-6 py-2.5 border-b border-[#1C2C35] flex flex-wrap gap-2 items-center justify-between">
+        <div className="bg-surface-muted px-6 py-2.5 border-b border-line flex flex-wrap gap-2 items-center justify-between">
           <div className="flex flex-wrap gap-2 items-center">
-            <span className="text-xs text-amber-500 uppercase tracking-wider mr-1 font-semibold">
+            <span className="text-xs text-warning uppercase tracking-wider mr-1 font-semibold">
               Scenarios:
             </span>
             {SCENARIOS.map(sc => (
@@ -195,8 +199,8 @@ export default function SwarmTraceModal({ isOpen, onClose }: SwarmTraceModalProp
                 onClick={() => { setIsLiveMode(false); setSelectedScenario(sc); setAnimatingStep(10); }}
                 className={`px-3 py-1.5 rounded-md text-xs transition-all flex items-center gap-1.5 ${
                   !isLiveMode && selectedScenario.id === sc.id
-                    ? 'bg-[#0D5C75] text-white border border-cyan-400 font-bold'
-                    : 'bg-[#111B21] text-slate-400 hover:text-slate-200 border border-[#1C2C35]/80'
+                    ? 'bg-brand text-ink border border-accent/25 font-bold'
+                    : 'bg-surface-muted text-muted hover:text-secondary border border-line/80'
                 }`}
               >
                 <span>{sc.title}</span>
@@ -208,45 +212,45 @@ export default function SwarmTraceModal({ isOpen, onClose }: SwarmTraceModalProp
             onClick={() => { setIsLiveMode(true); setAnimatingStep(10); }}
             className={`px-3 py-1.5 rounded-md text-xs transition-all flex items-center gap-1.5 font-bold ${
               isLiveMode
-                ? 'bg-emerald-600 text-white border border-emerald-400 '
-                : 'bg-[#081a17] text-emerald-400 hover:text-white border border-emerald-800/80'
+                ? 'bg-success text-ink border border-success/25 '
+                : 'bg-success-soft text-success hover:text-ink border border-success/25'
             }`}
           >
             <Zap size={13} className="" />
-            <span>⚡ Live API Trace ({liveTraceAgents.length || 10} Agents)</span>
+            <span> Live API Trace ({liveTraceAgents.length || 10} Agents)</span>
           </button>
         </div>
 
         {/* Tab Navigation */}
-        <div className="px-6 border-b border-[#1C2C35] bg-[#080E11] flex gap-6 text-xs">
-          <button 
+        <div className="dialog-tabs px-6 border-b border-line bg-canvas flex gap-6 text-xs">
+          <button
             onClick={() => setActiveTab('dag')}
             className={`py-3 border-b-2 font-medium transition-all ${
-              activeTab === 'dag' ? 'border-cyan-400 text-[#38BDF8]' : 'border-transparent text-slate-400 hover:text-slate-200'
+              activeTab === 'dag' ? 'border-accent/25 text-accent' : 'border-transparent text-muted hover:text-secondary'
             }`}
           >
             1. Sequential 10-Agent Progression
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('evidence')}
             className={`py-3 border-b-2 font-medium transition-all ${
-              activeTab === 'evidence' ? 'border-cyan-400 text-[#38BDF8]' : 'border-transparent text-slate-400 hover:text-slate-200'
+              activeTab === 'evidence' ? 'border-accent/25 text-accent' : 'border-transparent text-muted hover:text-secondary'
             }`}
           >
             2. Causal Evidence Chain
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('citation')}
             className={`py-3 border-b-2 font-medium transition-all ${
-              activeTab === 'citation' ? 'border-cyan-400 text-[#38BDF8]' : 'border-transparent text-slate-400 hover:text-slate-200'
+              activeTab === 'citation' ? 'border-accent/25 text-accent' : 'border-transparent text-muted hover:text-secondary'
             }`}
           >
             3. Source PDF Traceability
           </button>
-          <button 
+          <button
             onClick={() => setActiveTab('payload')}
             className={`py-3 border-b-2 font-medium transition-all ${
-              activeTab === 'payload' ? 'border-cyan-400 text-[#38BDF8]' : 'border-transparent text-slate-400 hover:text-slate-200'
+              activeTab === 'payload' ? 'border-accent/25 text-accent' : 'border-transparent text-muted hover:text-secondary'
             }`}
           >
             4. StateGraph JSON Payload
@@ -259,16 +263,16 @@ export default function SwarmTraceModal({ isOpen, onClose }: SwarmTraceModalProp
           {/* TAB 1: 10-Agent Animated Progression */}
           {activeTab === 'dag' && (
             <div className="space-y-4">
-              <div className="p-4 rounded-lg bg-[#080E11] border border-[#1C2C35] flex items-center justify-between">
+              <div className="p-4 rounded-lg bg-canvas border border-line flex items-center justify-between">
                 <div>
-                  <p className="text-xs uppercase text-slate-400">Active Test Target</p>
-                  <h3 className="text-sm font-bold text-white mt-0.5">
-                    {selectedScenario.field} · Depth: <span className="font-mono tabular-nums text-[#38BDF8]">{selectedScenario.depth}</span> · Formation: <span className="text-amber-400">{selectedScenario.formation}</span>
+                  <p className="text-xs uppercase text-muted">Active Test Target</p>
+                  <h3 className="text-sm font-bold text-ink mt-0.5">
+                    {selectedScenario.field} · Depth: <span className="font-mono tabular-nums text-accent">{selectedScenario.depth}</span> · Formation: <span className="text-warning">{selectedScenario.formation}</span>
                   </h3>
                 </div>
                 <div className="flex items-center gap-3 text-xs">
-                  <span className="text-slate-400">Total Latency: <strong className="text-emerald-400 font-mono tabular-nums">372 ms</strong></span>
-                  <span className="px-2.5 py-1 rounded bg-emerald-950/60 border border-emerald-700/60 text-emerald-300 font-bold">
+                  <span className="text-muted">Total Latency: <strong className="text-success font-mono tabular-nums">372 ms</strong></span>
+                  <span className="px-2.5 py-1 rounded bg-success-soft border border-success/25 text-success font-bold">
                     STATE COMMITTED
                   </span>
                 </div>
@@ -278,31 +282,31 @@ export default function SwarmTraceModal({ isOpen, onClose }: SwarmTraceModalProp
                 {currentAgents.map((ag: any, idx: number) => {
                   const isDone = idx < animatingStep;
                   return (
-                    <div 
+                    <div
                       key={ag.name}
                       className={`p-3 rounded-lg border transition-all flex items-center justify-between ${
-                        isDone 
-                          ? 'bg-[#111B21] border-[#1C2C35]/80 text-slate-200' 
-                          : 'bg-[#080D0F] border-[#1C2C35]/40 opacity-40 text-slate-500'
+                        isDone
+                          ? 'bg-surface-muted border-line/80 text-secondary'
+                          : 'bg-canvas border-line/40 opacity-40 text-muted'
                       }`}
                     >
                       <div className="flex items-center gap-3">
                         <div className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-mono tabular-nums font-bold ${
-                          isDone ? 'bg-cyan-950 border border-cyan-500 text-[#38BDF8]' : 'bg-[#111B21] text-slate-600'
+                          isDone ? 'bg-accent-soft border border-accent/25 text-accent' : 'bg-surface-muted text-muted'
                         }`}>
                           {idx + 1}
                         </div>
                         <div>
-                          <span className="font-bold text-xs text-white">{ag.name}</span>
-                          <p className="text-xs text-slate-400 mt-0.5">{ag.detail}</p>
+                          <span className="font-bold text-xs text-ink">{ag.name}</span>
+                          <p className="text-xs text-muted mt-0.5">{ag.detail}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-3 text-xs shrink-0">
-                        <span className="text-slate-500 font-mono tabular-nums">{ag.time}</span>
+                        <span className="text-muted font-mono tabular-nums">{ag.time}</span>
                         <span className={`px-2 py-0.5 rounded text-xs font-bold ${
-                          ag.status === 'TRIGGERED' ? 'bg-red-950 text-red-300 border border-red-800' :
-                          ag.status === 'PREDICTED' ? 'bg-amber-950 text-amber-300 border border-amber-800' :
-                          'bg-[#111B21] text-[#38BDF8]'
+                          ag.status === 'TRIGGERED' ? 'bg-danger-soft text-danger border border-danger/25' :
+                          ag.status === 'PREDICTED' ? 'bg-warning-soft text-warning border border-warning/25' :
+                          'bg-surface-muted text-accent'
                         }`}>
                           {ag.status}
                         </span>
@@ -317,30 +321,30 @@ export default function SwarmTraceModal({ isOpen, onClose }: SwarmTraceModalProp
           {/* TAB 2: Causal Evidence Chain */}
           {activeTab === 'evidence' && (
             <div className="space-y-4">
-              <div className="p-5 rounded-lg bg-[#111B21] border border-[#1C2C35]">
-                <p className="text-xs uppercase text-amber-500 font-semibold">Institutional Memory Causal Graph</p>
+              <div className="p-5 rounded-lg bg-surface-muted border border-line">
+                <p className="text-xs uppercase text-warning font-semibold">Institutional Memory Causal Graph</p>
                 <div className="mt-4 grid gap-3 md:grid-cols-4">
-                  <div className="p-3 bg-[#0b1417] rounded border border-[#1C2C35]">
-                    <span className="text-xs uppercase text-slate-400">Target Formation</span>
-                    <p className="font-bold text-white mt-1">{selectedScenario.formation}</p>
+                  <div className="p-3 bg-surface-muted rounded border border-line">
+                    <span className="text-xs uppercase text-muted">Target Formation</span>
+                    <p className="font-bold text-ink mt-1">{selectedScenario.formation}</p>
                   </div>
-                  <div className="p-3 bg-[#0b1417] rounded border border-[#1C2C35]">
-                    <span className="text-xs uppercase text-slate-400">Primary Hazard</span>
-                    <p className="font-bold text-amber-400 mt-1">{selectedScenario.hazard}</p>
+                  <div className="p-3 bg-surface-muted rounded border border-line">
+                    <span className="text-xs uppercase text-muted">Primary Hazard</span>
+                    <p className="font-bold text-warning mt-1">{selectedScenario.hazard}</p>
                   </div>
-                  <div className="p-3 bg-[#0b1417] rounded border border-[#1C2C35]">
-                    <span className="text-xs uppercase text-slate-400">Historical Depth</span>
-                    <p className="font-mono tabular-nums text-[#38BDF8] font-bold mt-1">{selectedScenario.depth}</p>
+                  <div className="p-3 bg-surface-muted rounded border border-line">
+                    <span className="text-xs uppercase text-muted">Historical Depth</span>
+                    <p className="font-mono tabular-nums text-accent font-bold mt-1">{selectedScenario.depth}</p>
                   </div>
-                  <div className="p-3 bg-[#0b1417] rounded border border-[#1C2C35]">
-                    <span className="text-xs uppercase text-slate-400">Audit Status</span>
-                    <p className="font-bold text-emerald-400 mt-1">VERIFIED GROUNDED</p>
+                  <div className="p-3 bg-surface-muted rounded border border-line">
+                    <span className="text-xs uppercase text-muted">Audit Status</span>
+                    <p className="font-bold text-success mt-1">VERIFIED GROUNDED</p>
                   </div>
                 </div>
 
-                <div className="mt-5 p-4 rounded bg-[#080E11] border border-[#1C2C35] space-y-2">
-                  <p className="text-xs uppercase text-slate-400">Field-Proven Mitigation Strategy:</p>
-                  <p className="text-sm text-slate-200 leading-relaxed font-sans">{selectedScenario.mitigation}</p>
+                <div className="mt-5 p-4 rounded bg-canvas border border-line space-y-2">
+                  <p className="text-xs uppercase text-muted">Field-Proven Mitigation Strategy:</p>
+                  <p className="text-sm text-secondary leading-relaxed font-sans">{selectedScenario.mitigation}</p>
                 </div>
               </div>
             </div>
@@ -349,21 +353,21 @@ export default function SwarmTraceModal({ isOpen, onClose }: SwarmTraceModalProp
           {/* TAB 3: Source PDF Traceability */}
           {activeTab === 'citation' && (
             <div className="space-y-4">
-              <div className="p-5 rounded-lg bg-[#111B21] border border-[#1C2C35] space-y-3">
+              <div className="p-5 rounded-lg bg-surface-muted border border-line space-y-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
-                    <FileText className="text-[#38BDF8]" size={20} />
-                    <h3 className="font-bold text-white text-sm">Official Oil India Directorate Record</h3>
+                    <FileText className="text-accent" size={20} />
+                    <h3 className="font-bold text-ink text-sm">Official Oil India Directorate Record</h3>
                   </div>
-                  <span className="px-2.5 py-1 rounded text-xs font-semibold bg-emerald-950 text-emerald-300 border border-emerald-800">
+                  <span className="px-2.5 py-1 rounded text-xs font-semibold bg-success-soft text-success border border-success/25">
                     100% AUDITABLE SOURCE
                   </span>
                 </div>
-                <div className="p-4 rounded bg-[#0b1417] border border-[#1C2C35] text-xs space-y-2">
-                  <p className="text-[#38BDF8] font-bold">Source Document: <span className="font-mono">{selectedScenario.citation}</span></p>
-                  <p className="text-slate-400">Verified By: P. Saikia (Chief Drilling Engineer, Oil India Ltd.)</p>
-                  <p className="text-slate-400">Compliance Guideline: <span className="font-mono">OISD-STD-174</span> (Well Control Operations)</p>
-                  <p className="text-slate-300 mt-2 font-sans italic border-l-2 border-amber-500 pl-3 py-1">
+                <div className="p-4 rounded bg-surface-muted border border-line text-xs space-y-2">
+                  <p className="text-accent font-bold">Source Document: <span className="font-mono">{selectedScenario.citation}</span></p>
+                  <p className="text-muted">Verified By: P. Saikia (Chief Drilling Engineer, Oil India Ltd.)</p>
+                  <p className="text-muted">Compliance Guideline: <span className="font-mono">OISD-STD-174</span> (Well Control Operations)</p>
+                  <p className="text-secondary mt-2 font-sans italic border-l-2 border-warning/25 pl-3 py-1">
                     "{selectedScenario.summary}"
                   </p>
                 </div>
@@ -373,7 +377,7 @@ export default function SwarmTraceModal({ isOpen, onClose }: SwarmTraceModalProp
 
           {/* TAB 4: Raw StateGraph JSON Payload */}
           {activeTab === 'payload' && (
-            <div className="p-4 rounded-lg bg-[#080E11] border border-[#1C2C35] font-mono text-xs overflow-x-auto text-[#38BDF8]">
+            <div className="p-4 rounded-lg bg-canvas border border-line font-mono text-xs overflow-x-auto text-accent">
               <pre>{JSON.stringify({
                 scenario_id: selectedScenario.id,
                 target_field: selectedScenario.field,
@@ -399,14 +403,15 @@ export default function SwarmTraceModal({ isOpen, onClose }: SwarmTraceModalProp
         </div>
 
         {/* Footer */}
-        <div className="h-14 px-6 bg-[#080E11] border-t border-[#1C2C35] flex items-center justify-between shrink-0 text-xs">
-          <div className="flex items-center gap-2 text-slate-400">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 "></span>
+        <div className="min-h-14 py-3 px-6 bg-canvas border-t border-line flex items-center justify-between shrink-0 text-xs">
+          <div className="flex items-center gap-2 text-muted">
+            <span className="w-2 h-2 rounded-full bg-success "></span>
             <span>Local Rig Mode: Deterministic Air-Gap Fallback Active</span>
           </div>
           <button
+            aria-label="Close dialog"
             onClick={onClose}
-            className="px-4 py-1.5 rounded bg-[#111B21] hover:bg-[#1C2C35] text-white font-semibold transition-colors"
+            className="px-4 py-1.5 rounded bg-surface-muted hover:bg-surface-muted text-ink font-semibold transition-colors"
           >
             Close Trace
           </button>

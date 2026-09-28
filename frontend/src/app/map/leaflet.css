@@ -1,1 +1,6 @@
 @import "leaflet/dist/leaflet.css";
+
+.leaflet-container { font-family: var(--font-inter), sans-serif; background: var(--ui-inset); }
+.leaflet-tooltip.custom-leaflet-tooltip { background: var(--ui-surface); color: var(--ui-ink); border: 1px solid var(--ui-line); padding: 10px 14px; box-shadow: 0 2px 8px rgb(23 43 67 / 12%); }
+.leaflet-tooltip-top.custom-leaflet-tooltip::before { border-top-color: var(--ui-line); }
+.leaflet-control-attribution { font-size: 10px; }
