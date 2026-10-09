@@ -143,7 +143,7 @@ $$ECD = MW + \frac{\Delta P_{annular}}{0.052 \times TVD}$$
 ## 📡 Continuous WITSML Telemetry Streaming
 
 - **WebSocket Route**: `ws://127.0.0.1:8000/ws/ertmac`
-- **Fallback Polling**: `GET /api/telemetry/current` (automated sub-second failover)
+- **Fallback Polling**: `GET /api/telemetry/current` every 30 seconds while a monitoring dashboard is visible (no overlapping requests).
 - **TopBar Ticker**: Persistent operational telemetry broadcast across all dashboards:
   $$\text{OIL-RIG-04 · Well: MORAN-29 · Depth: 2,422.0m MD · Stratum: Barail Group · ROP: 14.2 m/hr}$$
 - **Zero-Desync Architecture**: Centralized React context broadcasts identical values synchronously to the Topbar, Doghouse Terminal, DCS Wall, and Well Dossier.
@@ -378,3 +378,25 @@ npm run dev
 *Built for Oil India Limited (OIL) · Advancing Energy Security & Zero-NPT Drilling Operations.*
 
 </div>
+
+
+### Frontend polling and idle hosting
+
+Automatic telemetry and alert badge updates run only for authenticated users on
+`/doghouse`, `/alerts`, and the active well dashboard `/well/MOR-29`. The live
+WebSocket closes when the tab is hidden or the user leaves these pages; if the
+stream is unavailable, telemetry refreshes every 30 seconds. The badge refreshes
+every 60 seconds, and the visible alerts list refreshes every 30 seconds. Healthy
+telemetry streams skip the fallback HTTP request. Historical dossiers, maps,
+analytics, uploads, reports, and AI tools load on demand without background polling.
+Audit history loads when opened and after acknowledgements.
+
+Hiding a tab or leaving a dashboard clears timers and aborts outstanding polling
+requests. Returning to a visible dashboard refreshes immediately. Each poll waits
+for the previous request to finish before scheduling the next, so a sleeping
+backend's cold start does not cause a burst of retries. Existing values stay on
+screen until the backend responds; failures retry at the normal interval.
+
+With all dashboard tabs closed or hidden, the frontend sends no recurring backend
+traffic, allowing idle Render services to sleep when their hosting plan permits.
+External uptime monitors or other clients can still keep a service active.

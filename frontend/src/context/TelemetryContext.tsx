@@ -2,6 +2,10 @@
 
 import React, { createContext, useContext, useState, useEffect, useRef, useCallback } from 'react';
 import { api } from '@/lib/api';
+import { usePathname } from 'next/navigation';
+import { useAuth } from '@/context/AuthContext';
+import { useDashboardPolling } from '@/lib/useDashboardPolling';
+import { ALERTS_POLL_MS, TELEMETRY_POLL_MS } from '@/lib/visiblePolling';
 
 export interface PhysicsData {
   d_exponent: number;
@@ -14,6 +18,25 @@ export interface PhysicsData {
   ecd_ppg: number;
   delta_ecd_ppg: number;
   annular_pressure_loss_psi: number;
+}
+
+interface TelemetryPacket {
+  depth_md?: number;
+  tvd_md?: number;
+  rop_m_per_hr?: number;
+  wob_klbs?: number;
+  rpm?: number;
+  spp_psi?: number;
+  torque_ftlbs?: number;
+  flow_rate_gpm?: number;
+  pit_volume_bbl?: number;
+  distance_to_hazard_m?: number;
+  formation?: string;
+  well?: string;
+  rig?: string;
+  field?: string;
+  corridor_status?: string;
+  physics?: PhysicsData;
 }
 
 export interface TelemetryState {
@@ -69,7 +92,7 @@ const TelemetryContext = createContext<TelemetryState>({
   corridorStatus: 'KICK_PRECURSOR_HORIZON',
   physics: defaultPhysics,
   unreadAlertsCount: 2,
-  isConnected: true,
+  isConnected: false,
   refreshAlerts: async () => {}
 });
 
@@ -91,16 +114,24 @@ export function TelemetryProvider({ children }: { children: React.ReactNode }) {
   const [corridorStatus, setCorridorStatus] = useState('KICK_PRECURSOR_HORIZON');
   const [physics, setPhysics] = useState<PhysicsData>(defaultPhysics);
   const [unreadAlertsCount, setUnreadAlertsCount] = useState(2);
-  const [isConnected, setIsConnected] = useState(true);
+  const [isConnected, setIsConnected] = useState(false);
 
   const wsRef = useRef<WebSocket | null>(null);
 
+  const pathname = usePathname();
+  const { isAuthenticated, isLoading } = useAuth();
+  // Historical dossiers and tools only load data on demand. The global header
+  // must not keep a Render instance awake on public or non-monitoring pages.
+  const isDashboard = pathname === '/doghouse' || pathname === '/alerts' || pathname === '/well/MOR-29';
+  const pollingEnabled = isAuthenticated && !isLoading && isDashboard;
+
+  // Also used after explicit acknowledge actions; it does not create a timer.
   // Function to refresh alert badge count from API
-  const refreshAlerts = useCallback(async () => {
+  const refreshAlerts = useCallback(async (signal?: AbortSignal) => {
     try {
-      const res = await api<any>('/api/alerts');
-      if (res && res.alerts) {
-        const unread = res.alerts.filter((a: any) => !a.acknowledged).length;
+      const res = await api<{ alerts: { acknowledged: boolean }[] }>('/api/alerts', { signal });
+      if (!signal?.aborted && res && res.alerts) {
+        const unread = res.alerts.filter(a => !a.acknowledged).length;
         setUnreadAlertsCount(unread);
       }
     } catch {
@@ -108,135 +139,107 @@ export function TelemetryProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Poll alerts count periodically
-  useEffect(() => {
-    refreshAlerts();
-    const alertInterval = setInterval(refreshAlerts, 10000);
-    return () => clearInterval(alertInterval);
-  }, [refreshAlerts]);
+  useDashboardPolling(refreshAlerts, ALERTS_POLL_MS, pollingEnabled, pathname);
 
-  // Connect to live WebSocket telemetry stream with polling fallback
-  useEffect(() => {
-    let pollTimer: NodeJS.Timeout | null = null;
-    let isMounted = true;
+  const applyTelemetry = useCallback((packet: TelemetryPacket) => {
+    if (packet.depth_md !== undefined) setDepthMd(packet.depth_md);
+    if (packet.tvd_md !== undefined) setTvdMd(packet.tvd_md);
+    if (packet.rop_m_per_hr !== undefined) setRop(packet.rop_m_per_hr);
+    if (packet.wob_klbs !== undefined) setWob(packet.wob_klbs);
+    if (packet.rpm !== undefined) setRpm(packet.rpm);
+    if (packet.spp_psi !== undefined) setSpp(packet.spp_psi);
+    if (packet.torque_ftlbs !== undefined) setTorque(packet.torque_ftlbs / 1000.0);
+    if (packet.flow_rate_gpm !== undefined) setFlowRate(packet.flow_rate_gpm);
+    if (packet.pit_volume_bbl !== undefined) setPitGain(packet.pit_volume_bbl - 420.0);
+    if (packet.distance_to_hazard_m !== undefined) setHazardDistance(packet.distance_to_hazard_m);
+    if (packet.formation) setFormation(packet.formation);
+    if (packet.well) setWellName(packet.well);
+    if (packet.rig) setRig(packet.rig);
+    if (packet.field) setField(packet.field);
+    if (packet.corridor_status) setCorridorStatus(packet.corridor_status);
+    if (packet.physics) setPhysics(packet.physics);
+  }, []);
 
-    const pollFallback = async () => {
-      if (!isMounted) return;
-      try {
-        const res = await api<any>('/api/telemetry/current');
-        if (res && isMounted) {
-          if (res.depth_md !== undefined) setDepthMd(res.depth_md);
-          if (res.tvd_md !== undefined) setTvdMd(res.tvd_md);
-          if (res.rop_m_per_hr !== undefined) setRop(res.rop_m_per_hr);
-          if (res.wob_klbs !== undefined) setWob(res.wob_klbs);
-          if (res.rpm !== undefined) setRpm(res.rpm);
-          if (res.spp_psi !== undefined) setSpp(res.spp_psi);
-          if (res.torque_ftlbs !== undefined) setTorque(res.torque_ftlbs / 1000.0);
-          if (res.flow_rate_gpm !== undefined) setFlowRate(res.flow_rate_gpm);
-          if (res.pit_volume_bbl !== undefined) setPitGain(res.pit_volume_bbl - 420.0);
-          if (res.distance_to_hazard_m !== undefined) setHazardDistance(res.distance_to_hazard_m);
-          if (res.formation) setFormation(res.formation);
-          if (res.well) setWellName(res.well);
-          if (res.rig) setRig(res.rig);
-          if (res.field) setField(res.field);
-          if (res.corridor_status) setCorridorStatus(res.corridor_status);
-          if (res.physics) setPhysics(res.physics);
-        }
-      } catch {
-        // ignore
+  const pollTelemetry = useCallback(async (signal: AbortSignal) => {
+    // A healthy dashboard stream already supplies telemetry; no duplicate HTTP polling.
+    if (wsRef.current?.readyState === WebSocket.OPEN) return;
+    try {
+      const packet = await api<TelemetryPacket>('/api/telemetry/current', { signal });
+      if (!signal.aborted) {
+        applyTelemetry(packet);
+        setIsConnected(true);
       }
-    };
+    } catch {
+      if (!signal.aborted) setIsConnected(false);
+    }
+  }, [applyTelemetry]);
 
-    const connectWebSocket = () => {
+  useDashboardPolling(pollTelemetry, TELEMETRY_POLL_MS, pollingEnabled, pathname);
+
+  // Preserve live rig replay, but only while a monitoring dashboard is visible.
+  useEffect(() => {
+    if (!pollingEnabled) return;
+    let pageActive = true;
+    let disposed = false;
+    const disconnect = () => {
+      const ws = wsRef.current;
+      wsRef.current = null;
+      if (ws) {
+        ws.onopen = ws.onmessage = ws.onerror = ws.onclose = null;
+        ws.close();
+      }
+      setIsConnected(false);
+    };
+    const connect = () => {
+      if (disposed || !pageActive || document.visibilityState !== 'visible' || wsRef.current) return;
       try {
-        let wsUrl = process.env.NEXT_PUBLIC_WS_URL;
-        if (!wsUrl && process.env.NEXT_PUBLIC_API_URL) {
-          const wsProto = process.env.NEXT_PUBLIC_API_URL.startsWith('https') ? 'wss:' : 'ws:';
-          const host = process.env.NEXT_PUBLIC_API_URL.replace(/^https?:\/\//, '').replace(/\/+$/, '');
-          wsUrl = `${wsProto}//${host}/ws/ertmac`;
-        }
-        if (!wsUrl && typeof window !== 'undefined') {
-          if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-            wsUrl = 'ws://127.0.0.1:8000/ws/ertmac';
-          } else {
-            const wsProto = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-            wsUrl = `${wsProto}//${window.location.host}/ws/ertmac`;
-          }
-        }
-        if (!wsUrl) wsUrl = 'ws://127.0.0.1:8000/ws/ertmac';
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL?.replace(/\/+$/, '');
+        const origin = apiUrl || (
+          ['localhost', '127.0.0.1'].includes(window.location.hostname)
+            ? 'http://127.0.0.1:8000' : window.location.origin
+        );
+        const wsUrl = process.env.NEXT_PUBLIC_WS_URL || `${origin.replace(/^http/, 'ws')}/ws/ertmac`;
         const ws = new WebSocket(wsUrl);
         wsRef.current = ws;
-
-        ws.onopen = () => {
-          if (isMounted) {
-            setIsConnected(true);
-            if (pollTimer) clearInterval(pollTimer);
-          }
-        };
-
-        ws.onmessage = (event) => {
-          if (!isMounted) return;
+        const isCurrent = () => !disposed && wsRef.current === ws;
+        ws.onopen = () => { if (isCurrent()) setIsConnected(true); };
+        ws.onmessage = event => {
+          if (!isCurrent()) return;
           try {
-            const packet = JSON.parse(event.data);
-            if (packet) {
-              if (packet.depth_md !== undefined) setDepthMd(packet.depth_md);
-              if (packet.tvd_md !== undefined) setTvdMd(packet.tvd_md);
-              if (packet.rop_m_per_hr !== undefined) setRop(packet.rop_m_per_hr);
-              if (packet.wob_klbs !== undefined) setWob(packet.wob_klbs);
-              if (packet.rpm !== undefined) setRpm(packet.rpm);
-              if (packet.spp_psi !== undefined) setSpp(packet.spp_psi);
-              if (packet.torque_ftlbs !== undefined) setTorque(packet.torque_ftlbs / 1000.0);
-              if (packet.flow_rate_gpm !== undefined) setFlowRate(packet.flow_rate_gpm);
-              if (packet.pit_volume_bbl !== undefined) setPitGain(packet.pit_volume_bbl - 420.0);
-              if (packet.distance_to_hazard_m !== undefined) setHazardDistance(packet.distance_to_hazard_m);
-              if (packet.formation) setFormation(packet.formation);
-              if (packet.well) setWellName(packet.well);
-              if (packet.rig) setRig(packet.rig);
-              if (packet.field) setField(packet.field);
-              if (packet.corridor_status) setCorridorStatus(packet.corridor_status);
-              if (packet.physics) setPhysics(packet.physics);
-            }
+            applyTelemetry(JSON.parse(event.data));
           } catch {
-            // ignore
+            // Ignore malformed stream packets; HTTP fallback remains available.
           }
         };
-
-        ws.onerror = () => {
-          if (isMounted) {
-            setIsConnected(false);
-          }
-        };
-
+        ws.onerror = () => { if (isCurrent()) setIsConnected(false); };
         ws.onclose = () => {
-          if (isMounted) {
+          if (isCurrent()) {
+            wsRef.current = null;
             setIsConnected(false);
-            if (!pollTimer) {
-              pollTimer = setInterval(pollFallback, 1500);
-            }
           }
         };
       } catch {
-        if (isMounted) {
-          setIsConnected(false);
-          if (!pollTimer) {
-            pollTimer = setInterval(pollFallback, 1500);
-          }
-        }
+        setIsConnected(false);
       }
     };
-
-    connectWebSocket();
-
+    const onVisibilityChange = () => {
+      if (document.visibilityState === 'visible') connect();
+      else disconnect();
+    };
+    const onPageHide = () => { pageActive = false; disconnect(); };
+    const onPageShow = () => { pageActive = true; connect(); };
+    document.addEventListener('visibilitychange', onVisibilityChange);
+    window.addEventListener('pagehide', onPageHide);
+    window.addEventListener('pageshow', onPageShow);
+    connect();
     return () => {
-      isMounted = false;
-      if (wsRef.current) {
-        wsRef.current.close();
-      }
-      if (pollTimer) {
-        clearInterval(pollTimer);
-      }
+      disposed = true;
+      document.removeEventListener('visibilitychange', onVisibilityChange);
+      window.removeEventListener('pagehide', onPageHide);
+      window.removeEventListener('pageshow', onPageShow);
+      disconnect();
     };
-  }, []);
+  }, [pollingEnabled, pathname, applyTelemetry]);
 
   return (
     <TelemetryContext.Provider

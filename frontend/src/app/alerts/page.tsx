@@ -8,6 +8,8 @@ import {
   ExternalLink, Info
 } from 'lucide-react';
 import { api } from '@/lib/api';
+import { useDashboardPolling } from '@/lib/useDashboardPolling';
+import { TELEMETRY_POLL_MS } from '@/lib/visiblePolling';
 import { useTelemetry } from '@/context/TelemetryContext';
 import EvidenceModal, { EvidenceRecord } from '@/components/modals/EvidenceModal';
 
@@ -239,14 +241,14 @@ export default function AlertsPage() {
     loadWells();
   }, []);
 
-  const loadAlerts = useCallback(async (targetWell: string) => {
+  const loadAlerts = useCallback(async (targetWell: string, signal?: AbortSignal) => {
     setLoading(true);
     setError(null);
     try {
-      const data = await api<{ alerts: Alert[] }>(`/api/alerts/active?well_id=${encodeURIComponent(targetWell)}`);
-      setAlerts(data.alerts || []);
+      const data = await api<{ alerts: Alert[] }>(`/api/alerts/active?well_id=${encodeURIComponent(targetWell)}`, { signal });
+      if (!signal?.aborted) setAlerts(data.alerts || []);
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Could not load alerts.');
+      if (!signal?.aborted) setError(err instanceof Error ? err.message : 'Could not load alerts.');
     } finally {
       setLoading(false);
     }
@@ -272,10 +274,14 @@ export default function AlertsPage() {
     }
   }, []);
 
-  useEffect(() => {
-    loadAlerts(selectedWellId);
-    loadAuditLogs();
-  }, [selectedWellId, loadAlerts, loadAuditLogs]);
+  const pollAlerts = useCallback((signal: AbortSignal) => loadAlerts(selectedWellId, signal), [selectedWellId, loadAlerts]);
+  useDashboardPolling(pollAlerts, TELEMETRY_POLL_MS, activeTab === 'alerts');
+
+  // Audit history changes through user actions; no background audit polling.
+  const openAuditLog = () => {
+    setActiveTab('audit');
+    void loadAuditLogs();
+  };
 
   const handleAcknowledge = async (alert: Alert) => {
     const action = actions[alert.id];
@@ -368,7 +374,7 @@ export default function AlertsPage() {
             <span>Active Alerts ({alerts.length})</span>
           </button>
           <button
-            onClick={() => setActiveTab('audit')}
+            onClick={openAuditLog}
             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg transition-all cursor-pointer ${
               activeTab === 'audit'
                 ? 'bg-brand text-ink font-semibold shadow-sm'
@@ -801,7 +807,7 @@ export default function AlertsPage() {
                           <span>Recorded by: <strong className="text-secondary">Driller DR-8429</strong></span>
                           <button
                             type="button"
-                            onClick={() => setActiveTab('audit')}
+                            onClick={openAuditLog}
                             className="text-accent hover:text-ink font-semibold underline flex items-center gap-1 cursor-pointer transition-colors"
                           >
                             <span>View in Action Log →</span>

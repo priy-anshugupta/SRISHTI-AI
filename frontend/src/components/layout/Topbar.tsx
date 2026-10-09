@@ -73,7 +73,7 @@ export default function Topbar() {
             className={`w-2 h-2 rounded-full shrink-0 ${
               isConnected ? 'bg-success ' : 'bg-warning'
             }`}
-            title={isConnected ? 'Real-Time Telemetry Connected' : 'Polling Backend Telemetry'}
+            title={isConnected ? 'Dashboard telemetry connected' : 'Telemetry paused or unavailable'}
           />
           <span className="text-xs text-accent font-semibold shrink-0">{rig || 'OIL-RIG-04'}</span>
           <span className="text-muted">·</span>
